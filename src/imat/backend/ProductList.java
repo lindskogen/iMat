@@ -2,6 +2,7 @@ package imat.backend;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,7 +10,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-public class ProductList {
+public class ProductList implements Iterable<ShoppingItem> {
 	private List<ShoppingItem> list;
     private String name;
     
@@ -70,6 +71,15 @@ public class ProductList {
         return sb.toString();
     }
     
+	public int size() {
+		return list.size();
+	}
+
+	@Override
+	public Iterator<ShoppingItem> iterator() {
+		return list.iterator();
+	}
+    
     private static class ShoppingItemSorter implements Comparator<ShoppingItem> {
 
         public int compare(ShoppingItem s1, ShoppingItem s2) {
@@ -77,8 +87,4 @@ public class ProductList {
         }
         
     }
-    
-	public int size() {
-		return list.size();
-	}
 }
