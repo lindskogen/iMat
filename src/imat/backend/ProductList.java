@@ -108,13 +108,12 @@ public class ProductList implements Iterable<ShoppingItem> {
         list.remove(o);
     }
     
-    @Override
     /**
      * Returns the string value of the list, to be parsed with {@link #parseString(String) parseString} 
      * 
      * @return the parsable value of the list
      */
-    public String toString() {
+    public String stringify() {
         StringBuilder sb = new StringBuilder(name).append(";");
         for (ShoppingItem s : list) {
             sb.append(s.getProduct().getProductId()).append(",").append(s.getAmount()).append(";");
