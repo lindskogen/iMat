@@ -10,7 +10,8 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
-import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.event.ChangeEvent;
@@ -46,6 +47,8 @@ public class ProductThumbnail extends JPanel {
 	private JLabel priceLabel;
 	private JPanel panel_1;
 	private JLabel imageLabel;
+	
+	private static NumberFormat format = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")); 
 
 	/**
 	 * Create the panel.
@@ -134,7 +137,7 @@ public class ProductThumbnail extends JPanel {
 		
 		// Set labels and image according to the product
 		titleLabel.setText(p.getName());
-		priceLabel.setText(p.getPrice() + " " + p.getUnit());
+		priceLabel.setText(format.format(p.getPrice()) + p.getUnit().substring(2));
 		
 		if (featured) {
 			titleLabel.setFont(new Font("SansSerif", Font.BOLD, 27));
@@ -162,8 +165,7 @@ public class ProductThumbnail extends JPanel {
 		} else {
 			newSum = newSum * (int) q;
 		}
-		DecimalFormat d = new DecimalFormat("#.00");
-		sumLabel.setText(d.format(newSum) + " kr");
+		sumLabel.setText(format.format(newSum));
 	}
 	private class QSpinnerChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent arg0) {
