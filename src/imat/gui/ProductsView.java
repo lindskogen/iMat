@@ -17,6 +17,10 @@ import se.chalmers.ait.dat215.project.ProductCategory;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import java.awt.Font;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.BoxLayout;
+import java.awt.Dimension;
+import java.awt.Color;
 
 public class ProductsView extends JPanel {
 	
@@ -33,29 +37,28 @@ public class ProductsView extends JPanel {
 	 * Create the panel.
 	 */
 	public ProductsView() {
+		setBackground(Color.WHITE);
 		
 		scrollPane = new JScrollPane();
+		scrollPane.setBorder(null);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setDoubleBuffered(true);
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 563, Short.MAX_VALUE)
-		);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
+		setLayout(new MigLayout("", "[900px]", "[563px]"));
 		
 		scrollPanel = new JPanel();
+		scrollPanel.setBackground(Color.WHITE);
 		scrollPane.setViewportView(scrollPanel);
 		
 		featuredPanel = new JPanel();
+		featuredPanel.setBackground(Color.WHITE);
 		
 		lblDuHarTidigare = new JLabel("Du har tidigare köpt");
 		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 16));
 		
 		featuredThumb = new JPanel();
+		featuredThumb.setBackground(Color.WHITE);
+		featuredThumb.setPreferredSize(new Dimension(600, 126));
 		GroupLayout gl_featuredPanel = new GroupLayout(featuredPanel);
 		gl_featuredPanel.setHorizontalGroup(
 			gl_featuredPanel.createParallelGroup(Alignment.LEADING)
@@ -73,12 +76,15 @@ public class ProductsView extends JPanel {
 					.addContainerGap()
 					.addComponent(lblDuHarTidigare)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(featuredThumb, GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE))
+					.addComponent(featuredThumb, GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		featuredThumb.setLayout(new GridLayout(1, 1, 0, 0));
 		featuredPanel.setLayout(gl_featuredPanel);
 		
 		productsPanel = new JPanel();
+		productsPanel.setBackground(Color.WHITE);
+		productsPanel.setPreferredSize(new Dimension(600, 252));
 		GroupLayout gl_scrollPanel = new GroupLayout(scrollPanel);
 		gl_scrollPanel.setHorizontalGroup(
 			gl_scrollPanel.createParallelGroup(Alignment.LEADING)
@@ -88,7 +94,7 @@ public class ProductsView extends JPanel {
 							.addGap(12)
 							.addComponent(productsPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 						.addComponent(featuredPanel, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 858, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(21, Short.MAX_VALUE))
+					.addContainerGap())
 		);
 		gl_scrollPanel.setVerticalGroup(
 			gl_scrollPanel.createParallelGroup(Alignment.LEADING)
@@ -100,7 +106,7 @@ public class ProductsView extends JPanel {
 		);
 		productsPanel.setLayout(new GridLayout(0, 2, 0, 0));
 		scrollPanel.setLayout(gl_scrollPanel);
-		setLayout(groupLayout);
+		add(scrollPane, "cell 0 0,grow");
 
 	}
 	
