@@ -6,22 +6,52 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
+
+/**
+ * Class that represents a list of <code>ShoppingItem</code>s.
+ * @author Johan
+ *
+ */
 public class ProductList implements Iterable<ShoppingItem> {
 	private List<ShoppingItem> list;
     private String name;
     
     private static ShoppingItemSorter ps = new ShoppingItemSorter();
     
-    
-    public ProductList(String n) {
-        list = new LinkedList<ShoppingItem>();
-        name = n;
+    /**
+     * Creates a list with the name "Namnlös".
+     */
+    public ProductList() {
+    	this("Namnlös");
     }
     
+    /**
+     * Creates a list with the given name.
+     * @param n the name of the list
+     */
+    public ProductList(String n) {
+    	name = n;
+    	list = new LinkedList<ShoppingItem>();
+    }
+    
+    /**
+     * Returns a <code>String</code> the name of the list
+     * @return the name of the list
+     */
+    public String getName() {
+    	return name;
+    }
+    
+    /**
+     * Parse method for creating a list from a <code>String</code> object.
+     * @param s the input string
+     * @return the <code>ProductList</code> that was parsed from the input 
+     */
     public static ProductList parseString(String s) {
         Scanner sc = new Scanner(s);
         sc.useDelimiter(";");
@@ -40,6 +70,10 @@ public class ProductList implements Iterable<ShoppingItem> {
         return new ShoppingItem(p, amount);
     }
     
+    /**
+     * Calculates the total price of all the items in the list.
+     * @return the total price of the list.
+     */
     public double getPrice() {
         double total = 0;
         for (ShoppingItem s : list) {
@@ -48,21 +82,38 @@ public class ProductList implements Iterable<ShoppingItem> {
         return total;
     }
     
-    public boolean add(ShoppingItem s) {
-        boolean b = list.add(s);
+    /**
+     * Adds a <code>ShoppingItem</code> to the list, also sorts the <code>ProductList</code>.
+     * @param s the item to be added to the list
+     */
+    public void add(ShoppingItem s) {
+        list.add(s);
         Collections.sort(list, ps);
-        return b;
     }
     
+    /**
+     * Removes an item with a specified index from the list.
+     * @param index the index of the item to be removed
+     * @return the item that was removed
+     */
     public ShoppingItem remove(int index) {
         return list.remove(index);
     }
     
-    public boolean remove(Object o) {
-        return list.remove(o);
+    /**
+     * Removes a specified item from the list
+     * @param o the item to be removed
+     */
+    public void remove(Object o) {
+        list.remove(o);
     }
     
     @Override
+    /**
+     * Returns the string value of the list, to be parsed with {@link #parseString(String) parseString} 
+     * 
+     * @return the parsable value of the list
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder(name).append(";");
         for (ShoppingItem s : list) {
@@ -71,6 +122,10 @@ public class ProductList implements Iterable<ShoppingItem> {
         return sb.toString();
     }
     
+    /**
+     * Returns the size of the list.
+     * @return the amount of items in the list
+     */
 	public int size() {
 		return list.size();
 	}
@@ -80,6 +135,7 @@ public class ProductList implements Iterable<ShoppingItem> {
 		return list.iterator();
 	}
     
+	// To be used to sort the ShoppingItems
     private static class ShoppingItemSorter implements Comparator<ShoppingItem> {
 
         public int compare(ShoppingItem s1, ShoppingItem s2) {
