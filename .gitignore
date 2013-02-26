@@ -9,6 +9,11 @@
 *.war
 *.ear
 
+# Include libraries
+
+!/libs/*.jar
+!/libs/*.zip
+
 ############
 # Netbeans #
 ############
