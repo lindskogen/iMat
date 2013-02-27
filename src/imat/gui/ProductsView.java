@@ -28,6 +28,7 @@ public class ProductsView extends JPanel {
 	private JPanel productsPanel;
 	private JLabel lblDuHarTidigare;
 	private JPanel featuredThumb;
+	protected static ProductsView instance;
 	
 	private final String TIDIGARE = "Du har tidigare köpt: ";
 	private final String RESULTAT = "Sökresultat för ";
@@ -35,7 +36,7 @@ public class ProductsView extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public ProductsView() {
+	private ProductsView() {
 		setBackground(Color.WHITE);
 		
 		scrollPane = new JScrollPane();
@@ -118,6 +119,13 @@ public class ProductsView extends JPanel {
 	public void setProducts(List<Product> products, String searchString) {
 		setTitle(RESULTAT + "\"" + searchString + "\":");
 		setProducts(products);
+	}
+	
+	public static ProductsView getSharedInstance() {
+		if(instance == null) {
+			instance = new ProductsView();
+		}
+		return instance;
 	}
 	
 	public void setProducts(List<Product> products) {
