@@ -1,6 +1,7 @@
 package imat.gui;
 
 import java.awt.EventQueue;
+import se.chalmers.ait.dat215.project.*;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
@@ -41,6 +42,10 @@ public class checkout implements ActionListener {
 	private JRadioButton visa;
 	private JRadioButton mastercard;
 	private JRadioButton iButik;
+	private CreditCard cc;
+	private ButtonGroup cardGroup;
+	private ButtonGroup payGroup;
+	private ButtonGroup deliveryGroup;
 
 	/**
 	 * Launch the application.
@@ -63,7 +68,7 @@ public class checkout implements ActionListener {
 	 */
 	public checkout() {
 		initialize();
-		// TODO: Fill cardfields with already entered info, provided such exists
+		InitCardInfo();
 	}
 	
 	public void actionPerformed (ActionEvent e){
@@ -89,7 +94,17 @@ public class checkout implements ActionListener {
 			month.setEnabled(true);
 		} else if (e.getActionCommand().equals("finish")){
 			JOptionPane.showMessageDialog(null, "Tack för ditt köp");
-			// TODO: Save customers card info, provided this is wanted
+			cc.setHoldersName(txtName.getText());
+			cc.setCardNumber(txtCard.getText());
+			cc.setVerificationCode(Integer.parseInt(txtSec.getText()));
+			cc.setValidMonth(getChosenMonth());
+			cc.setValidYear(getChosenYear());
+			cc.setCardType(selectedCard());
+			
+			System.out.println(cc.getValidMonth());
+			
+			IMatDataHandler.getInstance().shutDown();
+			System.exit(1); //Remove later, only for testing
 		} else {
 			cardPanel.setBackground(Color.LIGHT_GRAY);
 			visa.setBackground(Color.LIGHT_GRAY);
@@ -103,14 +118,51 @@ public class checkout implements ActionListener {
 			month.setEnabled(false);
 		}
 	}
+	
+	private String selectedCard() {
+		if(mastercard.isSelected()){
+			return "Mastercard";
+		} else {
+			return "Visa";
+		}
+	}
+	
+	private int getChosenYear() {
+		String s = (String)year.getSelectedItem();
+		return Integer.parseInt(s);
+	}
+	
+	private int getChosenMonth() {
+		String s = (String)month.getSelectedItem();
+		return Integer.parseInt(s);
+	}
+	
+	private void setYearAndMonth() {
+		String s = String.valueOf(cc.getValidMonth());
+		month.setSelectedItem(s);
+		s = String.valueOf(cc.getValidYear());
+		year.setSelectedItem(s);
+	}
+	
+	private void InitCardInfo() {
+		cc = IMatDataHandler.getInstance().getCreditCard();
+		txtName.setText(cc.getHoldersName());
+		txtCard.setText(cc.getCardNumber());
+		txtSec.setText(String.valueOf(cc.getVerificationCode()));
+		setYearAndMonth();
+		if(cc.getCardType().equals("Mastercard")){
+			mastercard.setSelected(true);
+		}
+	
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		ButtonGroup payGroup = new ButtonGroup();
-		ButtonGroup deliveryGroup = new ButtonGroup();
-		ButtonGroup cardGroup = new ButtonGroup();
+		payGroup = new ButtonGroup();
+		deliveryGroup = new ButtonGroup();
+		cardGroup = new ButtonGroup();
 		
 		frame = new JFrame();
 		frame.setBounds(100, 100, 600, 530);
@@ -253,13 +305,13 @@ public class checkout implements ActionListener {
 		
 		JLabel lblKorttyp = new JLabel("Korttyp");
 		
-		JComboBox comboYear = new JComboBox();
-		year = comboYear;
-		comboYear.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"}));
-		
 		JComboBox comboMonth = new JComboBox();
 		month = comboMonth;
-		comboMonth.setModel(new DefaultComboBoxModel(new String[] {"13", "14", "15", "16", "17", "18", "19", "20", "21"}));
+		comboMonth.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+		
+		JComboBox comboYear = new JComboBox();
+		year = comboYear;
+		comboYear.setModel(new DefaultComboBoxModel(new String[] {"13", "14", "15", "16", "17", "18", "19", "20", "21"}));
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
@@ -271,11 +323,11 @@ public class checkout implements ActionListener {
 							.addGap(18)
 							.addComponent(lblKorttyp))
 						.addGroup(gl_panel_4.createSequentialGroup()
-							.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
+							.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(label)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+							.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
 							.addComponent(rdbtnVisa)
 							.addGap(18)
@@ -317,8 +369,8 @@ public class checkout implements ActionListener {
 						.addComponent(label)
 						.addComponent(rdbtnVisa)
 						.addComponent(rdbtnMastercard)
-						.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		panel_4.setLayout(gl_panel_4);
