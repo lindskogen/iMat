@@ -30,8 +30,19 @@ import javax.swing.UIManager;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 
-public class checkout implements ActionListener {
+public class Checkout implements ActionListener {
 
+	//Constants
+	//The price of home delivery
+	private int DELIVERY = 20;
+	//The price of pickup
+	private int PICKUP = 0;
+	
+	//Various variables
+	private double sum;
+	private double shoppingCart;
+	private JLabel sumLabel;
+	private JLabel deliveryLabel;
 	private JCheckBox save;
 	private JFrame frame;
 	private JTextField txtCard;
@@ -57,7 +68,7 @@ public class checkout implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					checkout window = new checkout();
+					Checkout window = new Checkout();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -69,7 +80,7 @@ public class checkout implements ActionListener {
 	/**
 	 * Create the application.
 	 */
-	public checkout() {
+	public Checkout() {
 		initialize();
 		InitCardInfo();
 	}
@@ -82,12 +93,16 @@ public class checkout implements ActionListener {
 			pickup.setEnabled(false);
 			delivery.setEnabled(true);
 			iButik.setEnabled(false);
+			deliveryLabel.setText("Leverans: " + DELIVERY + " kr");
+			amendSum(DELIVERY);
 		} else if (e.getActionCommand().equals("pickup")){
 			//If customer chooses pick up at store, set related
 			//elements enabled and disable irrelevant ones
 			pickup.setEnabled(true);
 			delivery.setEnabled(false);
 			iButik.setEnabled(true);
+			deliveryLabel.setText("Leverans: " + PICKUP + " kr");
+			amendSum(-DELIVERY);
 		} else if (e.getActionCommand().equals("credit")){
 			//If customer chooses to pay by credit card, set 
 			//related elements enabled and add color to show
@@ -143,6 +158,12 @@ public class checkout implements ActionListener {
 		}
 	}
 	
+	//Amends the displayed sum with the specified value
+	private void amendSum (int i) {
+		sum += i;
+		sumLabel.setText("Summa: " + sum + " kr");
+	}
+	
 	//Gets the chosen year for the credit cards validity
 	private int getChosenYear() {
 		String s = (String)year.getSelectedItem();
@@ -182,6 +203,9 @@ public class checkout implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		shoppingCart = IMatDataHandler.getInstance().getShoppingCart().getTotal();
+		sum = shoppingCart + DELIVERY;
+		
 		payGroup = new ButtonGroup();
 		deliveryGroup = new ButtonGroup();
 		cardGroup = new ButtonGroup();
@@ -430,10 +454,19 @@ public class checkout implements ActionListener {
 		pickup = pickupBox;
 		
 		JLabel label_1 = new JLabel("");
-		label_1.setIcon(new ImageIcon(checkout.class.getResource("/imat/resources/homeDelivery150x100.PNG")));
+		label_1.setIcon(new ImageIcon(Checkout.class.getResource("/imat/resources/homeDelivery150x100.PNG")));
 		
 		JLabel label_2 = new JLabel("");
-		label_2.setIcon(new ImageIcon(checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
+		label_2.setIcon(new ImageIcon(Checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
+		
+		JLabel lblSumma = new JLabel("Summa: " + sum + " kr");
+		sumLabel = lblSumma;
+		lblSumma.setFont(new Font("Dialog", Font.BOLD, 16));
+		
+		JLabel lblLeveransKr = new JLabel("Leverans: " + DELIVERY + " kr");
+		deliveryLabel = lblLeveransKr;
+		
+		JLabel lblVarukorgKr = new JLabel("Varukorg: " + shoppingCart + " kr");
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
@@ -447,13 +480,25 @@ public class checkout implements ActionListener {
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
 						.addComponent(pickupBox, 0, 150, Short.MAX_VALUE)
 						.addComponent(label_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
-					.addGap(359))
+						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblSumma)
+						.addComponent(lblVarukorgKr)
+						.addComponent(lblLeveransKr))
+					.addGap(125))
 		);
 		gl_panel_2.setVerticalGroup(
-			gl_panel_2.createParallelGroup(Alignment.TRAILING)
+			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel_2.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(lblSumma)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblVarukorgKr)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblLeveransKr))
 						.addComponent(label_1)
 						.addComponent(label_2))
 					.addGap(18)
@@ -464,7 +509,7 @@ public class checkout implements ActionListener {
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
 						.addComponent(deliveryBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
+					.addContainerGap(29, Short.MAX_VALUE))
 		);
 		panel_2.setLayout(gl_panel_2);
 		
