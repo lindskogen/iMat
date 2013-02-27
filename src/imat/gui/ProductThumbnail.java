@@ -21,6 +21,8 @@ import javax.swing.JButton;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
+import se.chalmers.ait.dat215.project.ShoppingItem;
+
 import javax.swing.BoxLayout;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -156,8 +158,12 @@ public class ProductThumbnail extends JPanel {
 		}
 		updateSum();
 	}
-
-	public void updateSum() {
+	
+	public ShoppingItem getItem() {
+		return new ShoppingItem(product,getAmount());
+	}
+	
+	private double getAmount() {
 		Object q = qSpinner.getValue();
 		double newSum = product.getPrice();
 		if (q instanceof Double) {
@@ -165,7 +171,11 @@ public class ProductThumbnail extends JPanel {
 		} else {
 			newSum = newSum * (int) q;
 		}
-		sumLabel.setText(format.format(newSum));
+		return newSum;
+	}
+
+	public void updateSum() {
+		sumLabel.setText(format.format(getAmount()));
 	}
 	private class QSpinnerChangeListener implements ChangeListener {
 		public void stateChanged(ChangeEvent arg0) {
