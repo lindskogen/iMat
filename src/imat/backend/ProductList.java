@@ -87,6 +87,12 @@ public class ProductList implements Iterable<ShoppingItem> {
      * @param s the item to be added to the list
      */
     public void add(ShoppingItem s) {
+    	for (ShoppingItem item : list) {
+    		if(item.getProduct().equals(s.getProduct())) {
+    			item.setAmount(item.getAmount() + s.getAmount());
+    			return;
+    		}
+    	}
         list.add(s);
         Collections.sort(list, ps);
     }
