@@ -28,7 +28,7 @@ public class ProductsView extends JPanel {
 	private JPanel productsPanel;
 	private JLabel lblDuHarTidigare;
 	private JPanel featuredThumb;
-	protected static ProductsView instance;
+	private static ProductsView instance;
 	
 	private final String TIDIGARE = "Du har tidigare köpt: ";
 	private final String RESULTAT = "Sökresultat för ";
@@ -150,7 +150,6 @@ public class ProductsView extends JPanel {
 	}
 	
 	public void dispCategory(ProductCategory c) {
-		System.out.println(c.name());
 		setProducts(IDH.getProducts(c));
 	}
 }
