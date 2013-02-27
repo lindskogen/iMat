@@ -32,11 +32,16 @@ import javax.swing.JCheckBox;
 
 public class Checkout implements ActionListener {
 
+	// TODO: Better confirmation of order
+	
 	//Constants
 	//The price of home delivery
 	private int DELIVERY = 20;
 	//The price of pickup
 	private int PICKUP = 0;
+	
+	//The IMatDataHandler
+	private IMatDataHandler imdh;
 	
 	//Various variables
 	private double sum;
@@ -120,18 +125,22 @@ public class Checkout implements ActionListener {
 		} else if (e.getActionCommand().equals("finish")){
 			//If the customer wishes to finish his purchase,
 			//store data (and shutdown, for now)
-			JOptionPane.showMessageDialog(null, "Tack för ditt köp");
-			if(save.isSelected()){
-				cc.setHoldersName(txtName.getText());
-				cc.setCardNumber(txtCard.getText());
-				cc.setVerificationCode(Integer.parseInt(txtSec.getText()));
-				cc.setValidMonth(getChosenMonth());
-				cc.setValidYear(getChosenYear());
-				cc.setCardType(selectedCard());
-			}
 			
-			IMatDataHandler.getInstance().shutDown();
-			System.exit(1); //Remove later, only for testing
+			//DEBUG ONLY -----------------------------------------------
+			System.out.println("The password is now Test123");
+			imdh.getUser().setPassword("Test123");
+			//DEBUG ONLY -----------------------------------------------
+			
+			if(shallPass()){
+				JOptionPane.showMessageDialog(null, "Tack för ditt köp");
+				if(save.isSelected()){
+					saveCardInfo();
+				}
+				imdh.placeOrder();
+				
+				imdh.shutDown();//Remove later, only for testing
+				System.exit(1); //Remove later, only for testing
+			}
 		} else {
 			//If any other way of paying is chosen but credit card,
 			//disable all elements in the cardPanel and darken it
@@ -147,6 +156,17 @@ public class Checkout implements ActionListener {
 			year.setEnabled(false);
 			month.setEnabled(false);
 		}
+	}
+	
+	private boolean shallPass() {
+		String s = JOptionPane.showInputDialog("Lösenord krävs");
+		while(s != null){
+			if(s.equals(imdh.getUser().getPassword())){
+				return true;
+			}			
+			s = JOptionPane.showInputDialog("Felaktigt lösenord");
+		}
+		return false;
 	}
 	
 	//Checks what card the customer has selected
@@ -185,10 +205,20 @@ public class Checkout implements ActionListener {
 		year.setSelectedItem(s);
 	}
 	
+	//Saves the customers card info
+	private void saveCardInfo(){
+		cc.setHoldersName(txtName.getText());
+		cc.setCardNumber(txtCard.getText());
+		cc.setVerificationCode(Integer.parseInt(txtSec.getText()));
+		cc.setValidMonth(getChosenMonth());
+		cc.setValidYear(getChosenYear());
+		cc.setCardType(selectedCard());
+	}
+	
 	//Fills the fields containing information about the costumers 
 	//credit card
 	private void InitCardInfo() {
-		cc = IMatDataHandler.getInstance().getCreditCard();
+		cc = imdh.getCreditCard();
 		txtName.setText(cc.getHoldersName());
 		txtCard.setText(cc.getCardNumber());
 		txtSec.setText(String.valueOf(cc.getVerificationCode()));
@@ -203,7 +233,8 @@ public class Checkout implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		shoppingCart = IMatDataHandler.getInstance().getShoppingCart().getTotal();
+		imdh = IMatDataHandler.getInstance();
+		shoppingCart = imdh.getShoppingCart().getTotal();
 		sum = shoppingCart + DELIVERY;
 		
 		payGroup = new ButtonGroup();
