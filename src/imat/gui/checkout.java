@@ -10,6 +10,7 @@ import java.awt.CardLayout;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -22,12 +23,24 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.UIManager;
 
-public class checkout {
+public class checkout implements ActionListener {
 
 	private JFrame frame;
-	private JTextField txtWhat;
-	private JTextField txtWhat_1;
+	private JTextField txtCard;
+	private JTextField txtSec;
+	private JPanel cardPanel;
+	private JComboBox delivery;
+	private JComboBox pickup;
+	private JComboBox year;
+	private JComboBox month;
+	private JTextField txtName;
+	private JRadioButton visa;
+	private JRadioButton mastercard;
+	private JRadioButton iButik;
 
 	/**
 	 * Launch the application.
@@ -50,6 +63,45 @@ public class checkout {
 	 */
 	public checkout() {
 		initialize();
+		// TODO: Fill cardfields with already entered info, provided such exists
+	}
+	
+	public void actionPerformed (ActionEvent e){
+		
+		if(e.getActionCommand().equals("delivery")){
+			pickup.setEnabled(false);
+			delivery.setEnabled(true);
+			iButik.setEnabled(false);
+		} else if (e.getActionCommand().equals("pickup")){
+			pickup.setEnabled(true);
+			delivery.setEnabled(false);
+			iButik.setEnabled(true);
+		} else if (e.getActionCommand().equals("credit")){
+			cardPanel.setBackground(new Color(238,238,238));
+			visa.setBackground(new Color(238,238,238));
+			mastercard.setBackground(new Color(238,238,238));
+			visa.setEnabled(true);
+			mastercard.setEnabled(true);
+			txtCard.setEnabled(true);
+			txtSec.setEnabled(true);
+			txtName.setEnabled(true);
+			year.setEnabled(true);
+			month.setEnabled(true);
+		} else if (e.getActionCommand().equals("finish")){
+			JOptionPane.showMessageDialog(null, "Tack för ditt köp");
+			// TODO: Save customers card info, provided this is wanted
+		} else {
+			cardPanel.setBackground(Color.LIGHT_GRAY);
+			visa.setBackground(Color.LIGHT_GRAY);
+			mastercard.setBackground(Color.LIGHT_GRAY);
+			visa.setEnabled(false);
+			mastercard.setEnabled(false);
+			txtCard.setEnabled(false);
+			txtSec.setEnabled(false);
+			txtName.setEnabled(false);
+			year.setEnabled(false);
+			month.setEnabled(false);
+		}
 	}
 
 	/**
@@ -58,9 +110,10 @@ public class checkout {
 	private void initialize() {
 		ButtonGroup payGroup = new ButtonGroup();
 		ButtonGroup deliveryGroup = new ButtonGroup();
+		ButtonGroup cardGroup = new ButtonGroup();
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 400, 400);
+		frame.setBounds(100, 100, 600, 530);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel checkoutPanel = new JPanel();
@@ -99,36 +152,52 @@ public class checkout {
 		);
 		
 		JRadioButton rdbtnKreditkort = new JRadioButton("Kreditkort");
+		rdbtnKreditkort.setSelected(true);
 		
 		JRadioButton rdbtnInternetbank = new JRadioButton("Internetbank");
 		
 		JRadioButton rdbtnIButik = new JRadioButton("I butik");
-
-		rdbtnIButik.setSelected(true);
+		rdbtnIButik.setEnabled(false);
+		
+		iButik = rdbtnIButik;
 		
 		payGroup.add(rdbtnKreditkort);
 		payGroup.add(rdbtnInternetbank);
 		payGroup.add(rdbtnIButik);
 		
+		rdbtnKreditkort.addActionListener(this);
+		rdbtnKreditkort.setActionCommand("credit");
+		rdbtnInternetbank.addActionListener(this);
+		rdbtnInternetbank.setActionCommand("bank");
+		rdbtnIButik.addActionListener(this);
+		rdbtnIButik.setActionCommand("store");
+		
+		
 		JLabel lblHurVillDu_1 = new JLabel("Hur vill du betala?");
 		
 		JPanel panel_4 = new JPanel();
-		panel_4.setBackground(SystemColor.inactiveCaptionBorder);
+		panel_4.setBackground(UIManager.getColor("Panel.background"));
 		panel_4.setBorder(new LineBorder(new Color(0, 0, 0)));
+		
+		JButton btnSlutfr = new JButton("Slutför");
+		btnSlutfr.addActionListener(this);
+		btnSlutfr.setActionCommand("finish");
 		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
 		gl_panel_3.setHorizontalGroup(
 			gl_panel_3.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_3.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-							.addComponent(rdbtnInternetbank)
-							.addComponent(rdbtnIButik))
-						.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-							.addComponent(lblHurVillDu_1)
-							.addComponent(rdbtnKreditkort)))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE))
+						.addGroup(gl_panel_3.createSequentialGroup()
+							.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
+								.addComponent(rdbtnInternetbank)
+								.addComponent(rdbtnIButik)
+								.addComponent(lblHurVillDu_1)
+								.addComponent(rdbtnKreditkort))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 421, Short.MAX_VALUE))
+						.addComponent(btnSlutfr, Alignment.TRAILING))
+					.addContainerGap())
 		);
 		gl_panel_3.setVerticalGroup(
 			gl_panel_3.createParallelGroup(Alignment.LEADING)
@@ -143,45 +212,114 @@ public class checkout {
 							.addComponent(rdbtnInternetbank)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(rdbtnIButik))
-						.addComponent(panel_4, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
+						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+					.addComponent(btnSlutfr)
 					.addContainerGap())
 		);
 		
+		cardPanel = panel_4;
+		
 		JLabel lblKortnummer = new JLabel("Kortnummer");
 		
-		txtWhat = new JTextField();
-		txtWhat.setEditable(false);
-		txtWhat.setColumns(10);
+		txtCard = new JTextField();
+		txtCard.setColumns(10);
 		
 		JLabel lblSakerhetsKod = new JLabel("Säkerhetskod (CVC)");
 		
-		txtWhat_1 = new JTextField();
-		txtWhat_1.setEditable(false);
-		txtWhat_1.setColumns(10);
+		txtSec = new JTextField();
+		txtSec.setColumns(10);
+		
+		JLabel lblKortinnehavare = new JLabel("Kortinnehavare");
+		
+		txtName = new JTextField();
+		txtName.setColumns(10);
+		
+		JLabel lblGiltligTill = new JLabel("Giltlig till (Månad/År)");
+		
+		JLabel label = new JLabel("/");
+		
+		JRadioButton rdbtnVisa = new JRadioButton("Visa");
+		rdbtnVisa.setSelected(true);
+		rdbtnVisa.setBackground(UIManager.getColor("Panel.background"));
+		visa = rdbtnVisa;
+		
+		JRadioButton rdbtnMastercard = new JRadioButton("Mastercard");
+		rdbtnMastercard.setBackground(UIManager.getColor("Panel.background"));
+		mastercard = rdbtnMastercard;
+		
+		cardGroup.add(rdbtnVisa);
+		cardGroup.add(rdbtnMastercard);
+		
+		JLabel lblKorttyp = new JLabel("Korttyp");
+		
+		JComboBox comboYear = new JComboBox();
+		year = comboYear;
+		comboYear.setModel(new DefaultComboBoxModel(new String[] {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"}));
+		
+		JComboBox comboMonth = new JComboBox();
+		month = comboMonth;
+		comboMonth.setModel(new DefaultComboBoxModel(new String[] {"13", "14", "15", "16", "17", "18", "19", "20", "21"}));
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_4.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
-						.addComponent(txtWhat, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-						.addComponent(lblKortnummer)
-						.addComponent(lblSakerhetsKod)
-						.addComponent(txtWhat_1, GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE))
-					.addContainerGap())
+						.addGroup(gl_panel_4.createSequentialGroup()
+							.addComponent(lblGiltligTill)
+							.addGap(18)
+							.addComponent(lblKorttyp))
+						.addGroup(gl_panel_4.createSequentialGroup()
+							.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(label)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(rdbtnVisa)
+							.addGap(18)
+							.addComponent(rdbtnMastercard))
+						.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(lblKortinnehavare)
+							.addGroup(gl_panel_4.createSequentialGroup()
+								.addGroup(gl_panel_4.createParallelGroup(Alignment.LEADING)
+									.addComponent(lblKortnummer)
+									.addComponent(txtCard, GroupLayout.PREFERRED_SIZE, 241, GroupLayout.PREFERRED_SIZE))
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addGroup(gl_panel_4.createParallelGroup(Alignment.TRAILING, false)
+									.addComponent(txtSec)
+									.addComponent(lblSakerhetsKod)))
+							.addComponent(txtName)))
+					.addGap(65))
 		);
 		gl_panel_4.setVerticalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_4.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblKortnummer)
+					.addComponent(lblKortinnehavare)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(txtWhat, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(txtName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(lblSakerhetsKod)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblKortnummer)
+						.addComponent(lblSakerhetsKod))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(txtWhat_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(31, Short.MAX_VALUE))
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(txtCard, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtSec, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblGiltligTill)
+						.addComponent(lblKorttyp))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_panel_4.createParallelGroup(Alignment.BASELINE)
+						.addComponent(label)
+						.addComponent(rdbtnVisa)
+						.addComponent(rdbtnMastercard)
+						.addComponent(comboYear, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(comboMonth, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(12, Short.MAX_VALUE))
 		);
 		panel_4.setLayout(gl_panel_4);
 		panel_3.setLayout(gl_panel_3);
@@ -189,40 +327,50 @@ public class checkout {
 		JRadioButton rdbtnHemleveransKr = new JRadioButton("Hemleverans (+20 kr)");
 		rdbtnHemleveransKr.setSelected(true);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
+		JComboBox deliveryBox = new JComboBox();
+		deliveryBox.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
 		
 		JRadioButton rdbtnHmtaIButik = new JRadioButton("Hämta i butik");
 		
 		deliveryGroup.add(rdbtnHemleveransKr);
 		deliveryGroup.add(rdbtnHmtaIButik);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setEditable(true);
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
+		rdbtnHemleveransKr.addActionListener(this);
+		rdbtnHemleveransKr.setActionCommand("delivery");
+		rdbtnHmtaIButik.addActionListener(this);
+		rdbtnHmtaIButik.setActionCommand("pickup");
+		
+		JComboBox pickupBox = new JComboBox();
+		pickupBox.setEnabled(false);
+		pickupBox.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
+		
+		delivery = deliveryBox;
+		pickup = pickupBox;
+		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(comboBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(deliveryBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 						.addComponent(rdbtnHemleveransKr, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addGap(18)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-						.addComponent(comboBox_1, 0, 183, Short.MAX_VALUE)))
+						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(rdbtnHmtaIButik))
+					.addGap(264))
 		);
 		gl_panel_2.setVerticalGroup(
-			gl_panel_2.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, gl_panel_2.createSequentialGroup()
+			gl_panel_2.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel_2.createSequentialGroup()
 					.addContainerGap(93, Short.MAX_VALUE)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
 						.addComponent(rdbtnHemleveransKr)
 						.addComponent(rdbtnHmtaIButik))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(deliveryBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(15))
 		);
 		panel_2.setLayout(gl_panel_2);
