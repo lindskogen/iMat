@@ -28,9 +28,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 
 public class checkout implements ActionListener {
 
+	private JCheckBox save;
 	private JFrame frame;
 	private JTextField txtCard;
 	private JTextField txtSec;
@@ -101,15 +103,17 @@ public class checkout implements ActionListener {
 			year.setEnabled(true);
 			month.setEnabled(true);
 		} else if (e.getActionCommand().equals("finish")){
-			//If the customer wishes to fnish his purchase,
+			//If the customer wishes to finish his purchase,
 			//store data (and shutdown, for now)
 			JOptionPane.showMessageDialog(null, "Tack för ditt köp");
-			cc.setHoldersName(txtName.getText());
-			cc.setCardNumber(txtCard.getText());
-			cc.setVerificationCode(Integer.parseInt(txtSec.getText()));
-			cc.setValidMonth(getChosenMonth());
-			cc.setValidYear(getChosenYear());
-			cc.setCardType(selectedCard());
+			if(save.isSelected()){
+				cc.setHoldersName(txtName.getText());
+				cc.setCardNumber(txtCard.getText());
+				cc.setVerificationCode(Integer.parseInt(txtSec.getText()));
+				cc.setValidMonth(getChosenMonth());
+				cc.setValidYear(getChosenYear());
+				cc.setCardType(selectedCard());
+			}
 			
 			IMatDataHandler.getInstance().shutDown();
 			System.exit(1); //Remove later, only for testing
@@ -206,7 +210,7 @@ public class checkout implements ActionListener {
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
 						.addComponent(panel_2, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 590, Short.MAX_VALUE)
 						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
-						.addComponent(panel_3, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(panel_3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_panel_1.setVerticalGroup(
@@ -217,7 +221,7 @@ public class checkout implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		
@@ -252,21 +256,27 @@ public class checkout implements ActionListener {
 		JButton btnSlutfr = new JButton("Slutför");
 		btnSlutfr.addActionListener(this);
 		btnSlutfr.setActionCommand("finish");
+		
+		JCheckBox chckbxSparaMinaUppgifter = new JCheckBox("Spara mina uppgifter");
+		save = chckbxSparaMinaUppgifter;
+		chckbxSparaMinaUppgifter.setSelected(true);
 		GroupLayout gl_panel_3 = new GroupLayout(panel_3);
 		gl_panel_3.setHorizontalGroup(
 			gl_panel_3.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_3.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_panel_3.createSequentialGroup()
-							.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-								.addComponent(rdbtnInternetbank)
-								.addComponent(rdbtnIButik)
-								.addComponent(lblHurVillDu_1)
-								.addComponent(rdbtnKreditkort))
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 421, Short.MAX_VALUE))
-						.addComponent(btnSlutfr, Alignment.TRAILING))
+						.addComponent(rdbtnInternetbank)
+						.addComponent(rdbtnIButik)
+						.addComponent(lblHurVillDu_1)
+						.addComponent(rdbtnKreditkort))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
+						.addGroup(Alignment.TRAILING, gl_panel_3.createSequentialGroup()
+							.addComponent(chckbxSparaMinaUppgifter)
+							.addPreferredGap(ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
+							.addComponent(btnSlutfr))
+						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 421, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_panel_3.setVerticalGroup(
@@ -283,8 +293,10 @@ public class checkout implements ActionListener {
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(rdbtnIButik))
 						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-					.addComponent(btnSlutfr)
+					.addPreferredGap(ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnSlutfr)
+						.addComponent(chckbxSparaMinaUppgifter))
 					.addContainerGap())
 		);
 		
