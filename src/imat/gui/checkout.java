@@ -27,6 +27,7 @@ import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.UIManager;
+import javax.swing.ImageIcon;
 
 public class checkout implements ActionListener {
 
@@ -74,14 +75,21 @@ public class checkout implements ActionListener {
 	public void actionPerformed (ActionEvent e){
 		
 		if(e.getActionCommand().equals("delivery")){
+			//If customer chooses home delivery, set related
+			//elements enabled and disable irrelevant ones
 			pickup.setEnabled(false);
 			delivery.setEnabled(true);
 			iButik.setEnabled(false);
 		} else if (e.getActionCommand().equals("pickup")){
+			//If customer chooses pick up at store, set related
+			//elements enabled and disable irrelevant ones
 			pickup.setEnabled(true);
 			delivery.setEnabled(false);
 			iButik.setEnabled(true);
 		} else if (e.getActionCommand().equals("credit")){
+			//If customer chooses to pay by credit card, set 
+			//related elements enabled and add color to show
+			//how the fields and panels are now enabled
 			cardPanel.setBackground(new Color(238,238,238));
 			visa.setBackground(new Color(238,238,238));
 			mastercard.setBackground(new Color(238,238,238));
@@ -93,6 +101,8 @@ public class checkout implements ActionListener {
 			year.setEnabled(true);
 			month.setEnabled(true);
 		} else if (e.getActionCommand().equals("finish")){
+			//If the customer wishes to fnish his purchase,
+			//store data (and shutdown, for now)
 			JOptionPane.showMessageDialog(null, "Tack för ditt köp");
 			cc.setHoldersName(txtName.getText());
 			cc.setCardNumber(txtCard.getText());
@@ -101,11 +111,12 @@ public class checkout implements ActionListener {
 			cc.setValidYear(getChosenYear());
 			cc.setCardType(selectedCard());
 			
-			System.out.println(cc.getValidMonth());
-			
 			IMatDataHandler.getInstance().shutDown();
 			System.exit(1); //Remove later, only for testing
 		} else {
+			//If any other way of paying is chosen but credit card,
+			//disable all elements in the cardPanel and darken it
+			//to make it seem unusable
 			cardPanel.setBackground(Color.LIGHT_GRAY);
 			visa.setBackground(Color.LIGHT_GRAY);
 			mastercard.setBackground(Color.LIGHT_GRAY);
@@ -119,6 +130,7 @@ public class checkout implements ActionListener {
 		}
 	}
 	
+	//Checks what card the customer has selected
 	private String selectedCard() {
 		if(mastercard.isSelected()){
 			return "Mastercard";
@@ -127,16 +139,20 @@ public class checkout implements ActionListener {
 		}
 	}
 	
+	//Gets the chosen year for the credit cards validity
 	private int getChosenYear() {
 		String s = (String)year.getSelectedItem();
 		return Integer.parseInt(s);
 	}
 	
+	//Gets the chosen month for the credit cards validity
 	private int getChosenMonth() {
 		String s = (String)month.getSelectedItem();
 		return Integer.parseInt(s);
 	}
 	
+	//Sets the corrects year and month validity for the credit card,
+	//as received from the CreditCard class.
 	private void setYearAndMonth() {
 		String s = String.valueOf(cc.getValidMonth());
 		month.setSelectedItem(s);
@@ -144,6 +160,8 @@ public class checkout implements ActionListener {
 		year.setSelectedItem(s);
 	}
 	
+	//Fills the fields containing information about the costumers 
+	//credit card
 	private void InitCardInfo() {
 		cc = IMatDataHandler.getInstance().getCreditCard();
 		txtName.setText(cc.getHoldersName());
@@ -165,7 +183,7 @@ public class checkout implements ActionListener {
 		cardGroup = new ButtonGroup();
 		
 		frame = new JFrame();
-		frame.setBounds(100, 100, 600, 530);
+		frame.setBounds(100, 100, 600, 540);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel checkoutPanel = new JPanel();
@@ -186,9 +204,9 @@ public class checkout implements ActionListener {
 				.addGroup(gl_panel_1.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel_1.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel_3, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-						.addComponent(panel_2, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE))
+						.addComponent(panel_2, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 590, Short.MAX_VALUE)
+						.addComponent(panel, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+						.addComponent(panel_3, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_panel_1.setVerticalGroup(
@@ -197,9 +215,9 @@ public class checkout implements ActionListener {
 					.addContainerGap()
 					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 157, GroupLayout.PREFERRED_SIZE)
+					.addComponent(panel_2, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+					.addComponent(panel_3, GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		
@@ -376,7 +394,7 @@ public class checkout implements ActionListener {
 		panel_4.setLayout(gl_panel_4);
 		panel_3.setLayout(gl_panel_3);
 		
-		JRadioButton rdbtnHemleveransKr = new JRadioButton("Hemleverans (+20 kr)");
+		JRadioButton rdbtnHemleveransKr = new JRadioButton("Hemleverans");
 		rdbtnHemleveransKr.setSelected(true);
 		
 		JComboBox deliveryBox = new JComboBox();
@@ -399,31 +417,42 @@ public class checkout implements ActionListener {
 		delivery = deliveryBox;
 		pickup = pickupBox;
 		
+		JLabel label_1 = new JLabel("");
+		label_1.setIcon(new ImageIcon(checkout.class.getResource("/imat/resources/homeDelivery150x100.PNG")));
+		
+		JLabel label_2 = new JLabel("");
+		label_2.setIcon(new ImageIcon(checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
+		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(deliveryBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(rdbtnHemleveransKr, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING, false)
+						.addComponent(deliveryBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(rdbtnHemleveransKr, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(label_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addGap(18)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(rdbtnHmtaIButik))
-					.addGap(264))
+						.addComponent(pickupBox, 0, 150, Short.MAX_VALUE)
+						.addComponent(label_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
+					.addGap(359))
 		);
 		gl_panel_2.setVerticalGroup(
 			gl_panel_2.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panel_2.createSequentialGroup()
-					.addContainerGap(93, Short.MAX_VALUE)
+					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+						.addComponent(label_1)
+						.addComponent(label_2))
+					.addGap(18)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
 						.addComponent(rdbtnHemleveransKr)
 						.addComponent(rdbtnHmtaIButik))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
 						.addComponent(deliveryBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(15))
+					.addContainerGap())
 		);
 		panel_2.setLayout(gl_panel_2);
 		
