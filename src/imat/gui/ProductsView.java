@@ -1,6 +1,5 @@
 package imat.gui;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -8,7 +7,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.GridLayout;
 import java.util.List;
 
-import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
@@ -18,7 +16,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import java.awt.Font;
 import net.miginfocom.swing.MigLayout;
-import javax.swing.BoxLayout;
 import java.awt.Dimension;
 import java.awt.Color;
 
@@ -32,6 +29,8 @@ public class ProductsView extends JPanel {
 	private JLabel lblDuHarTidigare;
 	private JPanel featuredThumb;
 	
+	private final String TIDIGARE = "Du har tidigare köpt: ";
+	private final String RESULTAT = "Sökresultat för ";
 
 	/**
 	 * Create the panel.
@@ -53,7 +52,8 @@ public class ProductsView extends JPanel {
 		featuredPanel = new JPanel();
 		featuredPanel.setBackground(Color.WHITE);
 		
-		lblDuHarTidigare = new JLabel("Du har tidigare köpt");
+		lblDuHarTidigare = new JLabel();
+		setTitle(TIDIGARE);
 		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 16));
 		
 		featuredThumb = new JPanel();
@@ -110,22 +110,39 @@ public class ProductsView extends JPanel {
 
 	}
 	
-	public void dispCategory(ProductCategory c) {
-		List<Product> products = IDH.getProducts(c);
-		IDH.addFavorite(39);
+	private void setTitle(String title) {
+		if (title != null) {			
+			lblDuHarTidigare.setText("<html>" + title);
+		}
+	}
+	public void setProducts(List<Product> products, String searchString) {
+		setTitle(RESULTAT + "\"" + searchString + "\":");
+		setProducts(products);
+	}
+	
+	public void setProducts(List<Product> products) {
 		GridLayout l = (GridLayout)productsPanel.getLayout();
 		int nbrOfProducts = products.size();
 		if(nbrOfProducts % 2 == 0) {
 			l.setRows(nbrOfProducts / 2);
-		}else{
+		} else {
 			l.setRows(nbrOfProducts / 2 + 1);
 		}
 		
+		productsPanel.removeAll();
+		boolean hasFavorite = false;
 		for(Product p : products) {
-			if(IDH.isFavorite(p)) {
+			if(IDH.isFavorite(p) && !hasFavorite) {
+				featuredThumb.removeAll();
 				featuredThumb.add(new ProductThumbnail(p,true));
+				hasFavorite = true;
 			}
 			productsPanel.add(new ProductThumbnail(p,false));
 		}
+	}
+	
+	public void dispCategory(ProductCategory c) {
+		System.out.println(c.name());
+		setProducts(IDH.getProducts(c));
 	}
 }
