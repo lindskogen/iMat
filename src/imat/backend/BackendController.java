@@ -5,13 +5,16 @@ import imat.gui.TabbedView;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class BackendController implements PropertyChangeListener {
 	
-	private final TabbedView tView;
+	private ShopModel model;
+	private TabbedView tView;
 	
-	public BackendController(TabbedView view) {
+	public BackendController(ShopModel model, TabbedView view) {
+		this.model = model;
 		tView = view;
 	}
 
@@ -20,7 +23,7 @@ public class BackendController implements PropertyChangeListener {
 		if (evt.getPropertyName().equals("buy")) {
 			Object o = evt.getNewValue();
 			if (o instanceof ShoppingItem) {
-				//TODO code for adding a ShoppingItem to the cart
+				model.addToCart((ShoppingItem)o);
 			}
 		}
 	}

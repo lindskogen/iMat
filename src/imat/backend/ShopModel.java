@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingCart;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class ShopModel {
 	private List<ProductList> userLists = new LinkedList<ProductList>();
@@ -91,5 +92,9 @@ public class ShopModel {
 			}
 		}
 		return res;
+	}
+	
+	public void addToCart(ShoppingItem item) {
+		cart.add(item);
 	}
 }
