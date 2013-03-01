@@ -1,39 +1,36 @@
 package imat.gui;
 
-import javax.swing.JPanel;
-
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridLayout;
-import javax.swing.JLabel;
-import javax.swing.GroupLayout;
-import javax.swing.SpinnerModel;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.JSpinner;
-import javax.swing.JButton;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-import javax.swing.BoxLayout;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import java.awt.BorderLayout;
-import javax.swing.SwingConstants;
-import net.miginfocom.swing.MigLayout;
-import java.awt.CardLayout;
-import javax.swing.JTextField;
-import javax.swing.ImageIcon;
-
-public class ProductThumbnail extends JPanel {
+public class ProductThumbnail extends JPanel implements ActionListener {
 	private static final IMatDataHandler IDH = IMatDataHandler.getInstance();
 	SpinnerModel stModel = new SpinnerNumberModel(new Integer(1),
 			new Integer(1), null, new Integer(1));
@@ -50,6 +47,8 @@ public class ProductThumbnail extends JPanel {
 	private JPanel panel_1;
 	private JLabel imageLabel;
 	
+	private PropertyChangeSupport ps;
+
 	private static NumberFormat format = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")); 
 
 	/**
@@ -58,6 +57,8 @@ public class ProductThumbnail extends JPanel {
 	public ProductThumbnail(Product p, boolean featured) {
 		setBackground(Color.WHITE);
 		
+		ps = new PropertyChangeSupport(this);
+
 		product = p;
 		
 		setPreferredSize(new Dimension(300, 126));
@@ -181,5 +182,13 @@ public class ProductThumbnail extends JPanel {
 		public void stateChanged(ChangeEvent arg0) {
 			updateSum();
 		}
+	}
+	public void addListener(PropertyChangeListener listener) {
+		ps.addPropertyChangeListener(listener);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent evt) {
+		ps.firePropertyChange("buy", null, getItem());
 	}
 }

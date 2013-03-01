@@ -1,23 +1,23 @@
 package imat.gui;
 
-import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.List;
 
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ScrollPaneConstants;
 
+import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ProductCategory;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JLabel;
-import java.awt.Font;
-import net.miginfocom.swing.MigLayout;
-import java.awt.Dimension;
-import java.awt.Color;
 
 public class ProductsView extends JPanel {
 	
@@ -28,7 +28,7 @@ public class ProductsView extends JPanel {
 	private JPanel productsPanel;
 	private JLabel lblDuHarTidigare;
 	private JPanel featuredThumb;
-	protected static ProductsView instance;
+	private static ProductsView instance;
 	
 	private final String TIDIGARE = "Du har tidigare köpt: ";
 	private final String RESULTAT = "Sökresultat för ";
@@ -150,7 +150,6 @@ public class ProductsView extends JPanel {
 	}
 	
 	public void dispCategory(ProductCategory c) {
-		System.out.println(c.name());
 		setProducts(IDH.getProducts(c));
 	}
 }
