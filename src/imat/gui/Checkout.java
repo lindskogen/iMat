@@ -151,6 +151,8 @@ public class Checkout implements ActionListener {
 			imdh.getUser().setPassword("Test123");
 			//---------------------DEBUG ONLY -------------------------
 			
+			checkInput();
+			
 			if(shallPass()){
 				JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
 				if(save.isSelected()){
@@ -278,8 +280,42 @@ public class Checkout implements ActionListener {
 	}
 	
 	private boolean checkInput() {
+		String errorMessages[] = new String[10];
 		//Could return a string array of faults
-		String toTest = txtName.getText();
+		String toTest = txtCard.getText();
+		
+		try{
+			int test = Integer.parseInt(toTest);
+		} catch (NumberFormatException nfe){
+			errorMessages[0] = "Letter in cardnumber";
+			txtCard.setForeground(Color.red);
+		}
+		
+		if(toTest.length() != 16){
+			errorMessages[1] = "A cardnumber should consist of 16 digits";
+			txtCard.setForeground(Color.red);
+		}
+		
+		toTest = txtSec.getText();
+		
+		try{
+			int test = Integer.parseInt(toTest);
+		} catch (NumberFormatException nfe){
+			errorMessages[3] = "Letter in securitynumber";
+			txtSec.setForeground(Color.red);
+		}
+		
+		if(toTest.length() != 16){
+			errorMessages[4] = "A securitynumber should consist of 3 digits";
+			txtSec.setForeground(Color.red);
+		}
+		
+		toTest = txtName.getText();
+		
+		System.out.println(errorMessages[1]);
+		System.out.println(errorMessages[2]);
+		System.out.println(errorMessages[3]);
+		System.out.println(errorMessages[4]);
 		
 		return false;
 	}
