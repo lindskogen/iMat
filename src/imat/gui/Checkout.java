@@ -7,7 +7,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -16,12 +19,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -38,11 +44,15 @@ public class Checkout implements ActionListener {
 	private int DELIVERY = 20;
 	//The price of pickup
 	private int PICKUP = 0;
+	//Options for the password dialog
+	String options[] = {"Submit", "Cancel"};
 	
 	//The IMatDataHandler
 	private IMatDataHandler imdh;
 	
 	//Various variables
+	private JDialog passDialog;
+	private JPasswordField pwd;
 	private double sum;
 	private double shoppingCart;
 	private JLabel sumLabel;
@@ -64,6 +74,14 @@ public class Checkout implements ActionListener {
 	private ButtonGroup cardGroup;
 	private ButtonGroup payGroup;
 	private ButtonGroup deliveryGroup;
+	
+	private Action closeWindow = new AbstractAction() {
+	    public void actionPerformed(ActionEvent e) {
+	        passDialog.dispose();
+	        passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+					JOptionPane.OK_CANCEL_OPTION, null, options, pwd).createDialog(frame, "Lösenord krävs");
+	    }
+	};
 
 	/**
 	 * Launch the application.
@@ -86,7 +104,8 @@ public class Checkout implements ActionListener {
 	 */
 	public Checkout() {
 		initialize();
-		InitCardInfo();
+		initCardInfo();
+		initPassDialog();
 	}
 	
 	public void actionPerformed (ActionEvent e){
@@ -131,7 +150,7 @@ public class Checkout implements ActionListener {
 			//---------------------DEBUG ONLY -------------------------
 			
 			if(shallPass()){
-				JOptionPane.showMessageDialog(null, "Tack för ditt köp");
+				JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
 				if(save.isSelected()){
 					saveCardInfo();
 				}
@@ -160,17 +179,41 @@ public class Checkout implements ActionListener {
 	}
 	
 	private boolean shallPass() {
-		String s = JOptionPane.showInputDialog("Lösenord krävs");
-		while(s != null){
+		
+		passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, null, options, pwd).createDialog(frame, "Lösenord krävs");
+		
+		passDialog.setVisible(true);
+		
+		//Fetches password, blanks out array
+		char[] pass = pwd.getPassword();
+		String s = String.copyValueOf(pass);
+		pwd.setText("");
+		Arrays.fill(pass, '0');
+		
+		while(pass.length != 0){ // A blank sting is what is returned by passDialog when cancelled
+			
 			if(s.equals(imdh.getUser().getPassword())){
+				passDialog.dispose();
 				return true;
-			}			
-			s = JOptionPane.showInputDialog("Felaktigt lösenord");
+			}
+			s = null;
+			
+			passDialog.setVisible(true);
+			//Fetches password, blanks out array
+			pass = pwd.getPassword();
+			s = String.copyValueOf(pass);
+			System.out.println(s);
+			System.out.println(pass);
+			System.out.println(pass.length);
+			System.out.println(passDialog);
+			pwd.setText("");
+			Arrays.fill(pass, '0');
 		}
 		return false;
 	}
 	
-	//Checks what card the customer has selected
+	//Checks what card the customer has selected and returns it
 	private String selectedCard() {
 		if(mastercard.isSelected()){
 			return "Mastercard";
@@ -185,13 +228,13 @@ public class Checkout implements ActionListener {
 		sumLabel.setText("Summa: " + sum + " kr");
 	}
 	
-	//Gets the chosen year for the credit cards validity
+	//Gets the chosen year for the credit cards validity and returns it
 	private int getChosenYear() {
 		String s = (String)year.getSelectedItem();
 		return Integer.parseInt(s);
 	}
 	
-	//Gets the chosen month for the credit cards validity
+	//Gets the chosen month for the credit cards validity and returns it
 	private int getChosenMonth() {
 		String s = (String)month.getSelectedItem();
 		return Integer.parseInt(s);
@@ -218,7 +261,7 @@ public class Checkout implements ActionListener {
 	
 	//Fills the fields containing information about the costumers 
 	//credit card
-	private void InitCardInfo() {
+	private void initCardInfo() {
 		cc = imdh.getCreditCard();
 		txtName.setText(cc.getHoldersName());
 		txtCard.setText(cc.getCardNumber());
@@ -229,11 +272,17 @@ public class Checkout implements ActionListener {
 		}
 	
 	}
+	
+	private void initPassDialog() {
+		pwd.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "closeDialog");
+		pwd.getActionMap().put("closeDialog", closeWindow);
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		pwd = new JPasswordField();
 		imdh = IMatDataHandler.getInstance();
 		shoppingCart = imdh.getShoppingCart().getTotal();
 		sum = shoppingCart + DELIVERY;
