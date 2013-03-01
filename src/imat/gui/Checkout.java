@@ -81,7 +81,7 @@ public class Checkout implements ActionListener {
 	
 	private Action closeWindow = new AbstractAction() {
 	    public void actionPerformed(ActionEvent e) {
-	        destroyAndCreate();
+	        destroyAndCreate("Felaktigt lösenord");
 	    }
 	};
 
@@ -180,6 +180,7 @@ public class Checkout implements ActionListener {
 		}
 	}
 	
+	//Decides whether the user shall pass or not, based on what password they enter
 	private boolean shallPass() {
 		
 		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
@@ -195,7 +196,7 @@ public class Checkout implements ActionListener {
 		pwd.setText("");
 		Arrays.fill(pass, '0');
 		
-		destroyAndCreate();
+		destroyAndCreate("Felaktigt lösenord");
 		
 		while(!value.equalsIgnoreCase("cancel")){ 
 			//When cancel is pressed, getValue on 
@@ -215,7 +216,7 @@ public class Checkout implements ActionListener {
 			stringPass = String.copyValueOf(pass);
 			pwd.setText("");
 			Arrays.fill(pass, '0');
-			destroyAndCreate();
+			destroyAndCreate("Felaktigt lösenord");
 		}
 		return false;
 	}
@@ -267,12 +268,20 @@ public class Checkout implements ActionListener {
 	}
 	
 	//Destroys and creates the password prompt dialog so it will display
-	//and focus correctly
-	private void destroyAndCreate() {
+	//and focus correctly with the specified title
+	private void destroyAndCreate(String title) {
+
 		passDialog.dispose();
 		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
-        passDialog = parentPane.createDialog(frame, "Lösenord krävs");
+        passDialog = parentPane.createDialog(frame, title);
+	}
+	
+	private boolean checkInput() {
+		//Could return a string array of faults
+		String toTest = txtName.getText();
+		
+		return false;
 	}
 	
 	//Fills the fields containing information about the costumers 
