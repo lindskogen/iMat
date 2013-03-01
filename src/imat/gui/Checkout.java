@@ -15,6 +15,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -47,6 +48,8 @@ public class Checkout implements ActionListener {
 	//Options for the password dialog
 	String options[] = {"Submit", "Cancel"};
 	
+	Icon passIcon = new ImageIcon(Checkout.class.getResource("/imat/resources/frameIcon32x32.PNG"));
+	
 	//The IMatDataHandler
 	private IMatDataHandler imdh;
 	
@@ -77,9 +80,7 @@ public class Checkout implements ActionListener {
 	
 	private Action closeWindow = new AbstractAction() {
 	    public void actionPerformed(ActionEvent e) {
-	        passDialog.dispose();
-	        passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
-					JOptionPane.OK_CANCEL_OPTION, null, options, pwd).createDialog(frame, "Lösenord krävs");
+	        destroyAndCreate();
 	    }
 	};
 
@@ -181,7 +182,7 @@ public class Checkout implements ActionListener {
 	private boolean shallPass() {
 		
 		passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION, null, options, pwd).createDialog(frame, "Lösenord krävs");
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd).createDialog(frame, "Lösenord krävs");
 		
 		passDialog.setVisible(true);
 		
@@ -197,7 +198,6 @@ public class Checkout implements ActionListener {
 				passDialog.dispose();
 				return true;
 			}
-			s = null;
 			
 			passDialog.setVisible(true);
 			//Fetches password, blanks out array
@@ -209,6 +209,7 @@ public class Checkout implements ActionListener {
 			System.out.println(passDialog);
 			pwd.setText("");
 			Arrays.fill(pass, '0');
+			destroyAndCreate();
 		}
 		return false;
 	}
@@ -257,6 +258,12 @@ public class Checkout implements ActionListener {
 		cc.setValidMonth(getChosenMonth());
 		cc.setValidYear(getChosenYear());
 		cc.setCardType(selectedCard());
+	}
+	
+	private void destroyAndCreate() {
+		passDialog.dispose();
+        passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd).createDialog(frame, "Lösenord krävs");
 	}
 	
 	//Fills the fields containing information about the costumers 
