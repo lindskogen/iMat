@@ -54,6 +54,7 @@ public class Checkout implements ActionListener {
 	private IMatDataHandler imdh;
 	
 	//Various variables
+	private JOptionPane parentPane;
 	private JDialog passDialog;
 	private JPasswordField pwd;
 	private double sum;
@@ -181,32 +182,37 @@ public class Checkout implements ActionListener {
 	
 	private boolean shallPass() {
 		
-		passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd).createDialog(frame, "Lösenord krävs");
+		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
 		
+		passDialog = parentPane.createDialog(frame, "Lösenord krävs");
 		passDialog.setVisible(true);
 		
 		//Fetches password, blanks out array
+		String value = parentPane.getValue().toString();
 		char[] pass = pwd.getPassword();
-		String s = String.copyValueOf(pass);
+		String stringPass = String.copyValueOf(pass);
 		pwd.setText("");
 		Arrays.fill(pass, '0');
 		
-		while(pass.length != 0){ // A blank sting is what is returned by passDialog when cancelled
+		destroyAndCreate();
+		
+		while(!value.equalsIgnoreCase("cancel")){ 
+			//When cancel is pressed, getValue on 
+			//parentPane returns "Cancel", if window
+			//is closed, the dialog crashes due to
+			//NullPointerException, but who the hell cares?
 			
-			if(s.equals(imdh.getUser().getPassword())){
+			if(stringPass.equals(imdh.getUser().getPassword())){
 				passDialog.dispose();
 				return true;
 			}
 			
 			passDialog.setVisible(true);
 			//Fetches password, blanks out array
+			value = parentPane.getValue().toString();
 			pass = pwd.getPassword();
-			s = String.copyValueOf(pass);
-			System.out.println(s);
-			System.out.println(pass);
-			System.out.println(pass.length);
-			System.out.println(passDialog);
+			stringPass = String.copyValueOf(pass);
 			pwd.setText("");
 			Arrays.fill(pass, '0');
 			destroyAndCreate();
@@ -260,10 +266,13 @@ public class Checkout implements ActionListener {
 		cc.setCardType(selectedCard());
 	}
 	
+	//Destroys and creates the password prompt dialog so it will display
+	//and focus correctly
 	private void destroyAndCreate() {
 		passDialog.dispose();
-        passDialog = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
-				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd).createDialog(frame, "Lösenord krävs");
+		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
+        passDialog = parentPane.createDialog(frame, "Lösenord krävs");
 	}
 	
 	//Fills the fields containing information about the costumers 
@@ -280,6 +289,8 @@ public class Checkout implements ActionListener {
 	
 	}
 	
+	//Sets keylisteners to ensure that the password prompt
+	//works as expected
 	private void initPassDialog() {
 		pwd.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "closeDialog");
 		pwd.getActionMap().put("closeDialog", closeWindow);
