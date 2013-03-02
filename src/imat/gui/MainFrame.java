@@ -18,6 +18,7 @@ public class MainFrame {
 				try {
 					MainFrame window = new MainFrame();
 					window.frame.setVisible(true);
+					window.frame.pack();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -40,7 +41,10 @@ public class MainFrame {
 		frame.setBounds(50, 50, 900, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		ProductsView productsView = ProductsView.getSharedInstance();
+		NavigatorView navigatorView = new NavigatorView();
+		frame.getContentPane().add(navigatorView, BorderLayout.WEST);
+		
+		ProductsView productsView = navigatorView.getProductsView();
 		frame.getContentPane().add(productsView, BorderLayout.CENTER);
 
 		TabbedView tabbedView = new TabbedView();
