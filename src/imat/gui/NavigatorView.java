@@ -146,6 +146,9 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 
 	}
 
+	public static CustomCategories getCurrentCategory() {
+		return currentCategory;
+	}
 	private class TreeTreeExpansionListener implements TreeExpansionListener {
 		public void treeCollapsed(TreeExpansionEvent arg0) {
 		}
