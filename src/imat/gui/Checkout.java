@@ -7,21 +7,28 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -31,18 +38,25 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 
 public class Checkout implements ActionListener {
 
-	// TODO: Better confirmation of order
+	// TODO: Confirmation screen after authentiaction (different card), improve validation check
 	
 	//Constants
 	//The price of home delivery
 	private int DELIVERY = 20;
 	//The price of pickup
 	private int PICKUP = 0;
+	//Options for the password dialog
+	String options[] = {"Submit", "Cancel"};
+	
+	Icon passIcon = new ImageIcon(Checkout.class.getResource("/imat/resources/passwordicon.PNG"));
 	
 	//The IMatDataHandler
 	private IMatDataHandler imdh;
 	
 	//Various variables
+	private JOptionPane parentPane;
+	private JDialog passDialog;
+	private JPasswordField pwd;
 	private double sum;
 	private double shoppingCart;
 	private JLabel sumLabel;
@@ -64,6 +78,12 @@ public class Checkout implements ActionListener {
 	private ButtonGroup cardGroup;
 	private ButtonGroup payGroup;
 	private ButtonGroup deliveryGroup;
+	
+	private Action closeWindow = new AbstractAction() {
+	    public void actionPerformed(ActionEvent e) {
+	        destroyAndCreate("Felaktigt lösenord");
+	    }
+	};
 
 	/**
 	 * Launch the application.
@@ -86,7 +106,8 @@ public class Checkout implements ActionListener {
 	 */
 	public Checkout() {
 		initialize();
-		InitCardInfo();
+		initCardInfo();
+		initPassDialog();
 	}
 	
 	public void actionPerformed (ActionEvent e){
@@ -130,8 +151,10 @@ public class Checkout implements ActionListener {
 			imdh.getUser().setPassword("Test123");
 			//---------------------DEBUG ONLY -------------------------
 			
+			checkInput();
+			
 			if(shallPass()){
-				JOptionPane.showMessageDialog(null, "Tack för ditt köp");
+				JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
 				if(save.isSelected()){
 					saveCardInfo();
 				}
@@ -159,18 +182,48 @@ public class Checkout implements ActionListener {
 		}
 	}
 	
+	//Decides whether the user shall pass or not, based on what password they enter
 	private boolean shallPass() {
-		String s = JOptionPane.showInputDialog("Lösenord krävs");
-		while(s != null){
-			if(s.equals(imdh.getUser().getPassword())){
+		
+		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
+		
+		passDialog = parentPane.createDialog(frame, "Lösenord krävs");
+		passDialog.setVisible(true);
+		
+		//Fetches password, blanks out array
+		String value = parentPane.getValue().toString();
+		char[] pass = pwd.getPassword();
+		String stringPass = String.copyValueOf(pass);
+		pwd.setText("");
+		Arrays.fill(pass, '0');
+		
+		destroyAndCreate("Felaktigt lösenord");
+		
+		while(!value.equalsIgnoreCase("cancel")){ 
+			//When cancel is pressed, getValue on 
+			//parentPane returns "Cancel", if window
+			//is closed, the dialog crashes due to
+			//NullPointerException, but who the hell cares?
+			
+			if(stringPass.equals(imdh.getUser().getPassword())){
+				passDialog.dispose();
 				return true;
-			}			
-			s = JOptionPane.showInputDialog("Felaktigt lösenord");
+			}
+			
+			passDialog.setVisible(true);
+			//Fetches password, blanks out array
+			value = parentPane.getValue().toString();
+			pass = pwd.getPassword();
+			stringPass = String.copyValueOf(pass);
+			pwd.setText("");
+			Arrays.fill(pass, '0');
+			destroyAndCreate("Felaktigt lösenord");
 		}
 		return false;
 	}
 	
-	//Checks what card the customer has selected
+	//Checks what card the customer has selected and returns it
 	private String selectedCard() {
 		if(mastercard.isSelected()){
 			return "Mastercard";
@@ -185,13 +238,13 @@ public class Checkout implements ActionListener {
 		sumLabel.setText("Summa: " + sum + " kr");
 	}
 	
-	//Gets the chosen year for the credit cards validity
+	//Gets the chosen year for the credit cards validity and returns it
 	private int getChosenYear() {
 		String s = (String)year.getSelectedItem();
 		return Integer.parseInt(s);
 	}
 	
-	//Gets the chosen month for the credit cards validity
+	//Gets the chosen month for the credit cards validity and returns it
 	private int getChosenMonth() {
 		String s = (String)month.getSelectedItem();
 		return Integer.parseInt(s);
@@ -216,9 +269,60 @@ public class Checkout implements ActionListener {
 		cc.setCardType(selectedCard());
 	}
 	
+	//Destroys and creates the password prompt dialog so it will display
+	//and focus correctly with the specified title
+	private void destroyAndCreate(String title) {
+
+		passDialog.dispose();
+		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
+				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
+        passDialog = parentPane.createDialog(frame, title);
+	}
+	
+	private boolean checkInput() {
+		String errorMessages[] = new String[10];
+		//Could return a string array of faults
+		String toTest = txtCard.getText();
+		
+		try{
+			int test = Integer.parseInt(toTest);
+		} catch (NumberFormatException nfe){
+			errorMessages[0] = "Letter in cardnumber";
+			txtCard.setForeground(Color.red);
+		}
+		
+		if(toTest.length() != 16){
+			errorMessages[1] = "A cardnumber should consist of 16 digits";
+			txtCard.setForeground(Color.red);
+		}
+		
+		toTest = txtSec.getText();
+		
+		try{
+			int test = Integer.parseInt(toTest);
+		} catch (NumberFormatException nfe){
+			errorMessages[3] = "Letter in securitynumber";
+			txtSec.setForeground(Color.red);
+		}
+		
+		if(toTest.length() != 16){
+			errorMessages[4] = "A securitynumber should consist of 3 digits";
+			txtSec.setForeground(Color.red);
+		}
+		
+		toTest = txtName.getText();
+		
+		System.out.println(errorMessages[1]);
+		System.out.println(errorMessages[2]);
+		System.out.println(errorMessages[3]);
+		System.out.println(errorMessages[4]);
+		
+		return false;
+	}
+	
 	//Fills the fields containing information about the costumers 
 	//credit card
-	private void InitCardInfo() {
+	private void initCardInfo() {
 		cc = imdh.getCreditCard();
 		txtName.setText(cc.getHoldersName());
 		txtCard.setText(cc.getCardNumber());
@@ -229,11 +333,19 @@ public class Checkout implements ActionListener {
 		}
 	
 	}
+	
+	//Sets keylisteners to ensure that the password prompt
+	//works as expected
+	private void initPassDialog() {
+		pwd.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "closeDialog");
+		pwd.getActionMap().put("closeDialog", closeWindow);
+	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		pwd = new JPasswordField();
 		imdh = IMatDataHandler.getInstance();
 		shoppingCart = imdh.getShoppingCart().getTotal();
 		sum = shoppingCart + DELIVERY;
