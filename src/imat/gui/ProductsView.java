@@ -218,6 +218,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		} else if (ac.matches("wrap \\d")){
 			listView = ac.equals(LIST_VIEW);
 			productsPanel.setLayout(new MigLayout(ac));
+			setProducts(NavigatorView.getCurrentCategory().getProducts());
 			revalidate();
 		}
 	}
