@@ -42,6 +42,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 	private JXTreeTable history;
 	private JLabel totalSum;
 	
+	private List<String> headers;
+	
 	private ShopModel model;
 	
 	private final ImageIcon LIST_ICN = new ImageIcon(TabbedView.class.getResource("/imat/resources/menuListIcon.PNG"));
@@ -126,16 +128,16 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 		
 		JScrollPane historyScroll = new JScrollPane(lists);
 		listPanel.add(historyScroll, BorderLayout.CENTER);
-	}
-	
-	private TreeTableModel toModel(ListNode l) {
-		ArrayList<String> headers = new ArrayList<String>();
+		
+		headers = new ArrayList<String>(5);
 		headers.add("Namn");
 		headers.add("Antal");
 		headers.add("Pris");
 		headers.add("");
 		headers.add("");
-		
+	}
+	
+	private TreeTableModel toModel(ListNode l) {
 		return new DefaultTreeTableModel(l, headers);
 	}
 	
