@@ -32,6 +32,7 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
+import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -42,6 +43,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	private JXTreeTable lists;
 	private JXTreeTable history;
 	private JLabel totalSum;
+	private JTabbedPane tabbedPane;
 	
 	private List<String> headers;
 	
@@ -60,7 +62,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		setPreferredSize(new Dimension(350, 400));
 		setLayout(new BorderLayout());
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		add(tabbedPane);
 		
 		JPanel basketPanel = new JPanel();
@@ -141,6 +143,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		headers.add("Pris");
 		headers.add("");
 		headers.add("");
+		
+		setLists(model.getLists());
 	}
 	
 	private TreeTableModel toModel(ListNode l) {
@@ -148,32 +152,33 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	}
 	
 	private void setShoppingBasket(ProductList list) {
-		shoppingBasket.setTreeTableModel(toModel(new ListNode(list, model)));
-		formatColumns(shoppingBasket.getColumnModel());
-		shoppingBasket.addMouseListener(new ButtonMouseListener(shoppingBasket));
+		prepareTreeTable(shoppingBasket, new ListNode(list, model));
 		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(list.getPrice()));
-		revalidate();
 	}
 	private void setLists(List<ProductList> list) {
 		ListNode root = new ListNode();
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		lists.setTreeTableModel(toModel(root));
-		formatColumns(lists.getColumnModel());
-		lists.addMouseListener(new ButtonMouseListener(lists));
-		revalidate();
+		prepareTreeTable(lists, root);
 	}
 	private void setHistory(List<ProductList> list) {
 		ListNode root = new ListNode();
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		history.setTreeTableModel(toModel(root));
-		formatColumns(history.getColumnModel());
-		history.addMouseListener(new ButtonMouseListener(history));
+		prepareTreeTable(history, root);
+	}
+	private void prepareTreeTable(JXTreeTable treetable, ListNode rootNode) {
+		treetable.setEditingColumn(0);
+		treetable.setEditingColumn(1);
+		
+		treetable.setTreeTableModel(toModel(rootNode));
+		formatColumns(treetable.getColumnModel());
+		treetable.addMouseListener(new ButtonMouseListener(treetable));
 		revalidate();
 	}
+	
 	private void formatColumns(TableColumnModel m) {
 		m.getColumn(1).setMaxWidth(40);
 		m.getColumn(2).setMaxWidth(120);
@@ -239,9 +244,10 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		}
 
 		@Override
-		public void mouseClicked(MouseEvent e) {
+		public void mouseClicked(MouseEvent e) {			
 			fireEvent(e);
 		}
+		
 		private void fireEvent(MouseEvent e) {
 			int column = table.getColumnModel().getColumnIndexAtX(e.getX());
 			int row = e.getY()/table.getRowHeight(); 
@@ -250,6 +256,12 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 			    Object value = table.getValueAt(row, column);
 			    if (value instanceof JButton) {
 			    	((JButton) value).doClick();
+			    } else if (value instanceof String && e.getClickCount() == 2) {
+			    	if(table instanceof JXTreeTable) {
+			    		JXTreeTable treeTable = (JXTreeTable) table;
+			    		TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
+			    		// TODO: get node somehow?
+			    	}
 			    }
 			}
 		}
@@ -259,12 +271,15 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		switch (evt.getPropertyName()) {
 		case "cart":
 			setShoppingBasket(model.getProductCart());
+			tabbedPane.setSelectedIndex(0);
 			break;
 		case "history":
 			setHistory(model.getHistoryLists());
+			tabbedPane.setSelectedIndex(2);
 			break;
 		case "lists":
 			setLists(model.getLists());
+			tabbedPane.setSelectedIndex(1);
 			break;
 		default:
 			return;
@@ -276,6 +291,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(AC_CART_LIST)) {
 			model.addList(model.getProductCart());
+			tabbedPane.setSelectedIndex(1);
+			revalidate();
 		}
 	}
 }
