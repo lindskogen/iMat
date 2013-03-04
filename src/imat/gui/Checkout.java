@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -64,6 +65,8 @@ public class Checkout implements ActionListener {
 	private ButtonGroup cardGroup;
 	private ButtonGroup payGroup;
 	private ButtonGroup deliveryGroup;
+	
+	private JComponent[] listComponents;
 
 	/**
 	 * Launch the application.
@@ -86,6 +89,7 @@ public class Checkout implements ActionListener {
 	 */
 	public Checkout() {
 		initialize();
+		listComponents = new JComponent[]{ visa, mastercard, txtCard, txtSec, txtName, year, month};
 		InitCardInfo();
 	}
 	
@@ -114,13 +118,10 @@ public class Checkout implements ActionListener {
 			cardPanel.setBackground(new Color(238,238,238));
 			visa.setBackground(new Color(238,238,238));
 			mastercard.setBackground(new Color(238,238,238));
-			visa.setEnabled(true);
-			mastercard.setEnabled(true);
-			txtCard.setEnabled(true);
-			txtSec.setEnabled(true);
-			txtName.setEnabled(true);
-			year.setEnabled(true);
-			month.setEnabled(true);
+			for (JComponent jc : listComponents) {
+				jc.setEnabled(true);
+			}
+			
 		} else if (e.getActionCommand().equals("finish")){
 			//If the customer wishes to finish his purchase,
 			//store data (and shutdown, for now)
@@ -149,13 +150,9 @@ public class Checkout implements ActionListener {
 			cardPanel.setBackground(Color.LIGHT_GRAY);
 			visa.setBackground(Color.LIGHT_GRAY);
 			mastercard.setBackground(Color.LIGHT_GRAY);
-			visa.setEnabled(false);
-			mastercard.setEnabled(false);
-			txtCard.setEnabled(false);
-			txtSec.setEnabled(false);
-			txtName.setEnabled(false);
-			year.setEnabled(false);
-			month.setEnabled(false);
+			for (JComponent jc : listComponents) {
+				jc.setEnabled(false);
+			}
 		}
 	}
 	
