@@ -5,6 +5,7 @@ import imat.backend.CustomCategories;
 import imat.backend.CustomProductLists;
 import imat.backend.ShopModel;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -39,11 +40,13 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 
 public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
+
 	private JTree tree;
 	private static ProductsView view;
 	private JLabel searchLabel;
 	private JTextField searchField;
 	private static CustomCategories currentCategory;
+	private JLabel favouriteLabel;
 
 	private ShopModel model;
 	private final String AC_SEARCH = "search";
@@ -74,6 +77,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		}
 
 		tree = new JTree(root);
+		tree.setOpaque(false);
 		tree.setModel(new DefaultTreeModel(root));
 		tree.setPreferredSize(new Dimension(247, 20));
 		tree.setMaximumSize(new Dimension(1000, 1000));
@@ -94,7 +98,6 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		tcr.setClosedIcon(null);
 		tcr.setBackgroundNonSelectionColor(this.getBackground());
 		tcr.setFont(new Font("SansSerif", Font.BOLD, 16));
-		tcr.setPreferredSize(new Dimension(1000, 20));
 
 		searchLabel = new JLabel("Hitta mat");
 
@@ -104,49 +107,39 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		searchField.setActionCommand(AC_SEARCH);
 		searchField.addActionListener(this);
 		searchField.addKeyListener(this);
-
+		
+		favouriteLabel = new JLabel("Favoriter");
+		favouriteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		favouriteLabel.setOpaque(true);
+		favouriteLabel.addMouseListener(new FavouriteLabelMouseListener());
+		favouriteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																tree,
-																GroupLayout.DEFAULT_SIZE,
-																290,
-																Short.MAX_VALUE)
-														.addGroup(
-																groupLayout
-																		.createParallelGroup(
-																				Alignment.LEADING,
-																				false)
-																		.addComponent(
-																				searchField,
-																				GroupLayout.DEFAULT_SIZE,
-																				221,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				searchLabel)))
-										.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(searchLabel)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(searchField, GroupLayout.PREFERRED_SIZE,
-								30, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 519,
-								Short.MAX_VALUE).addContainerGap()));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+							.addComponent(searchLabel))
+						.addComponent(favouriteLabel))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(searchLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(searchField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(favouriteLabel)
+					.addGap(18)
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+					.addContainerGap())
+		);
 		setLayout(groupLayout);
 		DefaultTreeModel tmp = (DefaultTreeModel) tree.getModel();
 		tmp.reload();
@@ -200,6 +193,21 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			if (path != null) {
 				tree.setSelectionPath(path);
 			}
+		}
+	}
+	private class FavouriteLabelMouseListener extends MouseAdapter {
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			tree.setSelectionPath(null);
+			favouriteLabel.setBackground(new Color(184, 207, 229));
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			favouriteLabel.setBackground(new Color(238, 238, 238));
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			view.setProducts(IMatDataHandler.getInstance().favorites());
 		}
 	}
 

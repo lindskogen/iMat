@@ -171,6 +171,8 @@ public class ProductsView extends JPanel implements ActionListener {
 												GroupLayout.PREFERRED_SIZE))
 						.addContainerGap(15, Short.MAX_VALUE)));
 		buttonPanel.setLayout(gl_buttonPanel);
+		scrollPanel.remove(featuredPanel);
+		this.revalidate();
 
 	}
 

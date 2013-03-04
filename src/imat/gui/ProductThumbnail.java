@@ -67,6 +67,7 @@ public class ProductThumbnail extends JPanel implements ActionListener, Transfer
 
 	private static NumberFormat format = NumberFormat
 			.getCurrencyInstance(Locale.forLanguageTag("sv-SE"));
+	private JButton favButton;
 
 	/**
 	 * Create the panel.
@@ -110,81 +111,48 @@ public class ProductThumbnail extends JPanel implements ActionListener, Transfer
 
 		priceLabel = new JLabel("Desc");
 		priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		
+		favButton = new JButton("Fav");
 		GroupLayout gl_panel = new GroupLayout(panel);
-		gl_panel.setHorizontalGroup(gl_panel
-				.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.LEADING)
-												.addComponent(titleLabel)
-												.addGroup(
-														gl_panel.createSequentialGroup()
-																.addComponent(
-																		qSpinner,
-																		GroupLayout.PREFERRED_SIZE,
-																		48,
-																		GroupLayout.PREFERRED_SIZE)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED)
-																.addComponent(
-																		suffixLabel)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED)
-																.addComponent(
-																		sumLabel,
-																		GroupLayout.DEFAULT_SIZE,
-																		108,
-																		Short.MAX_VALUE)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED)
-																.addComponent(
-																		buyButton,
-																		GroupLayout.PREFERRED_SIZE,
-																		GroupLayout.DEFAULT_SIZE,
-																		GroupLayout.PREFERRED_SIZE))
-												.addComponent(priceLabel))
-								.addContainerGap()));
-		gl_panel.setVerticalGroup(gl_panel
-				.createParallelGroup(Alignment.TRAILING)
-				.addGroup(
-						gl_panel.createSequentialGroup()
-								.addContainerGap()
-								.addGroup(
-										gl_panel.createParallelGroup(
-												Alignment.TRAILING)
-												.addComponent(
-														buyButton,
-														GroupLayout.PREFERRED_SIZE,
-														GroupLayout.DEFAULT_SIZE,
-														GroupLayout.PREFERRED_SIZE)
-												.addGroup(
-														gl_panel.createSequentialGroup()
-																.addComponent(
-																		titleLabel)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED)
-																.addComponent(
-																		priceLabel)
-																.addPreferredGap(
-																		ComponentPlacement.RELATED,
-																		37,
-																		Short.MAX_VALUE)
-																.addGroup(
-																		gl_panel.createParallelGroup(
-																				Alignment.BASELINE)
-																				.addComponent(
-																						qSpinner,
-																						GroupLayout.PREFERRED_SIZE,
-																						GroupLayout.DEFAULT_SIZE,
-																						GroupLayout.PREFERRED_SIZE)
-																				.addComponent(
-																						suffixLabel)
-																				.addComponent(
-																						sumLabel))))
-								.addContainerGap()));
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addComponent(titleLabel)
+							.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+							.addComponent(favButton))
+						.addGroup(gl_panel.createSequentialGroup()
+							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(suffixLabel)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(sumLabel, GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(priceLabel))
+					.addContainerGap())
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(titleLabel)
+								.addComponent(favButton))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(priceLabel)
+							.addPreferredGap(ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(suffixLabel)
+								.addComponent(sumLabel))))
+					.addContainerGap())
+		);
 		panel.setLayout(gl_panel);
 
 		panel_1 = new JPanel();

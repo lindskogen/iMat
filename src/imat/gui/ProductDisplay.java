@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -44,8 +45,11 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	private JLabel priceLabel;
 	private JPanel panel_1;
 	private JLabel imageLabel;
-	
+
 	private ActionListener listener;
+	private JButton favButton;
+
+	private PropertyChangeSupport ps;
 
 	private static NumberFormat format = NumberFormat
 			.getCurrencyInstance(Locale.forLanguageTag("sv-SE"));
@@ -53,7 +57,8 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	/**
 	 * Create the panel.
 	 */
-	public ProductDisplay(Product p, boolean featured, boolean list, ActionListener al) {
+	public ProductDisplay(Product p, boolean featured, boolean list,
+			ActionListener al) {
 		setBackground(Color.WHITE);
 		listener = al;
 		product = p;
@@ -92,6 +97,10 @@ public class ProductDisplay extends JPanel implements ActionListener {
 
 			suffixLabel = new JLabel("st");
 			suffixLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
+
+			favButton = new JButton("Fav");
+			favButton.addActionListener(new FavButtonListener());
+			favButton.setFont(new Font("Dialog", Font.BOLD, 10));
 			gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel
 					.createParallelGroup(Alignment.LEADING)
@@ -109,6 +118,10 @@ public class ProductDisplay extends JPanel implements ActionListener {
 													Alignment.TRAILING)
 													.addGroup(
 															gl_panel.createSequentialGroup()
+																	.addComponent(
+																			favButton)
+																	.addPreferredGap(
+																			ComponentPlacement.RELATED)
 																	.addComponent(
 																			qSpinner,
 																			GroupLayout.PREFERRED_SIZE,
@@ -151,6 +164,11 @@ public class ProductDisplay extends JPanel implements ActionListener {
 																			qSpinner,
 																			GroupLayout.PREFERRED_SIZE,
 																			GroupLayout.DEFAULT_SIZE,
+																			GroupLayout.PREFERRED_SIZE)
+																	.addComponent(
+																			favButton,
+																			GroupLayout.PREFERRED_SIZE,
+																			13,
 																			GroupLayout.PREFERRED_SIZE))
 													.addComponent(
 															buyButton,
@@ -181,7 +199,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			buyButton.setMinimumSize(new Dimension(60, 30));
 			buyButton.setPreferredSize(new Dimension(60, 30));
 			buyButton.setOpaque(false);
-			buyButton.setIcon(new ImageIcon(ProductDisplay.class
+			buyButton.setIcon(new ImageIcon(ProductThumbnail.class
 					.getResource("/imat/resources/buyButton60x30.PNG")));
 			buyButton.setFont(new Font("SansSerif", Font.BOLD, 12));
 
@@ -190,6 +208,9 @@ public class ProductDisplay extends JPanel implements ActionListener {
 
 			priceLabel = new JLabel("Desc");
 			priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
+
+			favButton = new JButton("Fav");
+			favButton.addActionListener(new FavButtonListener());
 			gl_panel = new GroupLayout(panel);
 			gl_panel.setHorizontalGroup(gl_panel
 					.createParallelGroup(Alignment.LEADING)
@@ -199,7 +220,16 @@ public class ProductDisplay extends JPanel implements ActionListener {
 									.addGroup(
 											gl_panel.createParallelGroup(
 													Alignment.LEADING)
-													.addComponent(titleLabel)
+													.addGroup(
+															gl_panel.createSequentialGroup()
+																	.addComponent(
+																			titleLabel)
+																	.addPreferredGap(
+																			ComponentPlacement.RELATED,
+																			28,
+																			Short.MAX_VALUE)
+																	.addComponent(
+																			favButton))
 													.addGroup(
 															gl_panel.createSequentialGroup()
 																	.addComponent(
@@ -216,7 +246,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 																	.addComponent(
 																			sumLabel,
 																			GroupLayout.DEFAULT_SIZE,
-																			108,
+																			110,
 																			Short.MAX_VALUE)
 																	.addPreferredGap(
 																			ComponentPlacement.RELATED)
@@ -242,8 +272,13 @@ public class ProductDisplay extends JPanel implements ActionListener {
 															GroupLayout.PREFERRED_SIZE)
 													.addGroup(
 															gl_panel.createSequentialGroup()
-																	.addComponent(
-																			titleLabel)
+																	.addGroup(
+																			gl_panel.createParallelGroup(
+																					Alignment.BASELINE)
+																					.addComponent(
+																							titleLabel)
+																					.addComponent(
+																							favButton))
 																	.addPreferredGap(
 																			ComponentPlacement.RELATED)
 																	.addComponent(
@@ -337,5 +372,14 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			evt.setSource(getItem());
 			listener.actionPerformed(evt);
 		}
+	}
+
+	private class FavButtonListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			IDH.addFavorite(product);
+		}
+
 	}
 }
