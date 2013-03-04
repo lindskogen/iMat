@@ -4,8 +4,20 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
@@ -22,6 +34,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -30,7 +43,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-public class ProductThumbnail extends JPanel implements ActionListener {
+public class ProductThumbnail extends JPanel implements ActionListener, Transferable, DragSourceListener, DragGestureListener {
 	private static final IMatDataHandler IDH = IMatDataHandler.getInstance();
 	SpinnerModel stModel = new SpinnerNumberModel(new Integer(1),
 			new Integer(1), null, new Integer(1));
@@ -46,7 +59,10 @@ public class ProductThumbnail extends JPanel implements ActionListener {
 	private JLabel priceLabel;
 	private JPanel panel_1;
 	private JLabel imageLabel;
-
+	
+	private DragSource source;
+	private TransferHandler handler;
+	
 	private PropertyChangeSupport ps;
 
 	private static NumberFormat format = NumberFormat
@@ -200,6 +216,20 @@ public class ProductThumbnail extends JPanel implements ActionListener {
 			suffixLabel.setText("st");
 		}
 		updateSum();
+		
+		//handler = new DragHandler();
+		//setTransferHandler(handler);
+		
+		source = new DragSource();
+		source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
+		addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ProductThumbnail pt = (ProductThumbnail) e.getSource();
+				TransferHandler handle = pt.getTransferHandler();
+				handle.exportAsDrag(pt, e, TransferHandler.COPY);
+			}
+		});
 	}
 
 	public ShoppingItem getItem() {
@@ -208,17 +238,19 @@ public class ProductThumbnail extends JPanel implements ActionListener {
 
 	private double getAmount() {
 		Object q = qSpinner.getValue();
-		double newSum = product.getPrice();
 		if (q instanceof Double) {
-			newSum = newSum * (double) q;
+			return (double) q;
 		} else {
-			newSum = newSum * (int) q;
+			return (int) q;
 		}
-		return newSum;
+	}
+	
+	private double getTotal() {
+		return getAmount()*product.getPrice();
 	}
 
 	public void updateSum() {
-		sumLabel.setText(format.format(getAmount()));
+		sumLabel.setText(format.format(getTotal()));
 	}
 
 	private class QSpinnerChangeListener implements ChangeListener {
@@ -235,4 +267,31 @@ public class ProductThumbnail extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent evt) {
 		ps.firePropertyChange("buy", null, getItem());
 	}
+
+	@Override
+	public Object getTransferData(DataFlavor flavor) {
+		return this;
+	}
+
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		return null;
+	}
+
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return true;
+	}
+
+	@Override
+	public void dragGestureRecognized(DragGestureEvent dge) {
+		source.startDrag(dge, DragSource.DefaultCopyDrop, this, this);
+		System.out.println(getItem().getProduct().getName() + " " + getItem().getAmount());
+	}
+
+	public void dragDropEnd(DragSourceDropEvent dsde) {}
+	public void dragEnter(DragSourceDragEvent dsde) {}
+	public void dragExit(DragSourceEvent dse) {}
+	public void dragOver(DragSourceDragEvent dsde) {}
+	public void dropActionChanged(DragSourceDragEvent dsde) {}
 }

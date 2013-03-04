@@ -1,16 +1,26 @@
 package imat.gui;
 
+import imat.backend.ListNode;
+import imat.backend.ProductList;
+import imat.backend.ShopModel;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -22,23 +32,25 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
-import javax.swing.JLabel;
-import javax.swing.Box;
 
-public class TabbedView extends JPanel {
+public class TabbedView extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 1L;
 	private JXTreeTable shoppingBasket;
 	private JXTreeTable lists;
 	private JXTreeTable history;
 	private JLabel totalSum;
 	
+	private ShopModel model;
+	
 	private final ImageIcon LIST_ICN = new ImageIcon(TabbedView.class.getResource("/imat/resources/menuListIcon.PNG"));
 	
 	/**
 	 * Create the panel.
 	 */
-	public TabbedView() {
+	public TabbedView(ShopModel model) {
+		this.model = model;
 		setPreferredSize(new Dimension(350, 400));
 		setLayout(new BorderLayout());
 		
@@ -115,21 +127,44 @@ public class TabbedView extends JPanel {
 		JScrollPane historyScroll = new JScrollPane(lists);
 		listPanel.add(historyScroll, BorderLayout.CENTER);
 	}
-	public void setShoppingBasket(TreeTableModel model, double sum) {
-		shoppingBasket.setTreeTableModel(model);
+	
+	private TreeTableModel toModel(ListNode l) {
+		ArrayList<String> headers = new ArrayList<String>();
+		headers.add("Namn");
+		headers.add("Antal");
+		headers.add("Pris");
+		headers.add("");
+		headers.add("");
+		
+		return new DefaultTreeTableModel(l, headers);
+	}
+	
+	private void setShoppingBasket(ProductList list) {
+		shoppingBasket.setTreeTableModel(toModel(new ListNode(list, model)));
 		formatColumns(shoppingBasket.getColumnModel());
 		shoppingBasket.addMouseListener(new ButtonMouseListener(shoppingBasket));
-		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(sum));
+		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(list.getPrice()));
+		revalidate();
 	}
-	public void setLists(TreeTableModel model) {
-		lists.setTreeTableModel(model);
+	private void setLists(List<ProductList> list) {
+		ListNode root = new ListNode();
+		for (ProductList p : list) {
+			root.add(new ListNode(p, model));
+		}
+		lists.setTreeTableModel(toModel(root));
 		formatColumns(lists.getColumnModel());
 		lists.addMouseListener(new ButtonMouseListener(lists));
+		revalidate();
 	}
-	public void setHistory(TreeTableModel model) {
-		history.setTreeTableModel(model);
+	private void setHistory(List<ProductList> list) {
+		ListNode root = new ListNode();
+		for (ProductList p : list) {
+			root.add(new ListNode(p, model));
+		}
+		history.setTreeTableModel(toModel(root));
 		formatColumns(history.getColumnModel());
 		history.addMouseListener(new ButtonMouseListener(history));
+		revalidate();
 	}
 	private void formatColumns(TableColumnModel m) {
 		m.getColumn(1).setMaxWidth(40);
@@ -146,6 +181,7 @@ public class TabbedView extends JPanel {
 			m.getColumn(4).setCellRenderer(renderer);
 		}
 	}
+	
 	private static class NumberFormatter extends DefaultTableCellRenderer {
 		private Format formatter;
 		
@@ -210,5 +246,22 @@ public class TabbedView extends JPanel {
 			    }
 			}
 		}
+	}
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		switch (evt.getPropertyName()) {
+		case "cart":
+			setShoppingBasket(model.getProductCart());
+			break;
+		case "history":
+			setHistory(model.getHistoryLists());
+			break;
+		case "lists":
+			setLists(model.getLists());
+			break;
+		default:
+			return;
+		}
+		revalidate();
 	}
 }

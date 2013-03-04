@@ -2,8 +2,6 @@ package imat.backend;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +13,7 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 public class ListNode extends AbstractMutableTreeTableNode implements ActionListener {
 	
 	private ProductList list;
+	private ShopModel model;
 	
 	private final String ADD = "cart";
 	private final String DEL = "delete";
@@ -26,17 +25,22 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 		super();
 	}
 	
-	public ListNode(ProductList theList) {
+	public ListNode(ProductList theList, ShopModel m) {
 		this();
 		list = theList;
+		this.model = m;
 		for (ShoppingItem s : list) {
-			add(new ProductNode(s));
+			add(new ProductNode(s, model));
 		}
 	}
 	
 	@Override
 	public int getColumnCount() {
 		return 5;
+	}
+	
+	public ProductList getList() {
+		return list;
 	}
 
 	@Override
@@ -69,8 +73,10 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 	public void actionPerformed(ActionEvent event) {
 		if (event.getActionCommand().equals(ADD)) {
 			System.out.println("ADD: " + list.getName());
+			model.addToCart(getList());
 		} else if (event.getActionCommand().equals(DEL)) {
 			System.out.println("DEL: " + list.getName());
+			model.delete(getList());
 		}
 	}
 }

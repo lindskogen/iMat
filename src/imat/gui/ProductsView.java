@@ -1,5 +1,7 @@
 package imat.gui;
 
+import imat.backend.ShopModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,13 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.MatteBorder;
 
 import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
-import se.chalmers.ait.dat215.project.ProductCategory;
-import javax.swing.border.MatteBorder;
+import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class ProductsView extends JPanel implements ActionListener {
 
@@ -34,20 +35,25 @@ public class ProductsView extends JPanel implements ActionListener {
 	private JPanel productsPanel;
 	private JLabel lblDuHarTidigare;
 	private JPanel featuredThumb;
-
-	private final String TIDIGARE = "Du har tidigare köpt: ";
-	private final String RESULTAT = "Sökresultat för ";
-	private boolean listView;
 	private JPanel buttonPanel;
 	private JButton thumbViewButton;
 	private JButton listViewButton;
 	private JPanel centerPanel;
+	
+	private final String TIDIGARE = "Du har tidigare köpt: ";
+	private final String RESULTAT = "Sökresultat för ";
+	private final String LIST_VIEW = "wrap 1";
+	private final String THUMB_VIEW = "wrap 2";
+	private boolean listView;
+	
+	private ShopModel model; 
 
 	/**
 	 * Create the panel.
 	 */
-	public ProductsView() {
-		setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.DARK_GRAY));
+	public ProductsView(ShopModel model) {
+		this.model = model;
+		setBorder(new MatteBorder(1, 1, 1, 1, Color.DARK_GRAY));
 		setBackground(Color.LIGHT_GRAY);
 		listView = false;
 		scrollPane = new JScrollPane();
@@ -111,7 +117,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		productsPanel = new JPanel();
 		centerPanel.add(productsPanel);
 		productsPanel.setBackground(Color.LIGHT_GRAY);
-		productsPanel.setLayout(new MigLayout("wrap 2"));
+		productsPanel.setLayout(new MigLayout(THUMB_VIEW));
 		add(scrollPane);
 
 		buttonPanel = new JPanel();
@@ -123,12 +129,14 @@ public class ProductsView extends JPanel implements ActionListener {
 		thumbViewButton.setIcon(new ImageIcon(ProductsView.class
 				.getResource("/imat/resources/expandedview.PNG")));
 		thumbViewButton.addActionListener(this);
+		thumbViewButton.setActionCommand(THUMB_VIEW);
 
 		listViewButton = new JButton("");
 		listViewButton.setPreferredSize(new Dimension(24, 24));
 		listViewButton.setIcon(new ImageIcon(ProductsView.class
 				.getResource("/imat/resources/listview.PNG")));
 		listViewButton.addActionListener(this);
+		listViewButton.setActionCommand(LIST_VIEW);
 		GroupLayout gl_buttonPanel = new GroupLayout(buttonPanel);
 		gl_buttonPanel.setHorizontalGroup(gl_buttonPanel.createParallelGroup(
 				Alignment.TRAILING).addGroup(
@@ -183,27 +191,32 @@ public class ProductsView extends JPanel implements ActionListener {
 		for (Product p : products) {
 			if (IDH.isFavorite(p) && !hasFavorite) {
 				featuredThumb.removeAll();
-				featuredThumb.add(new ProductDisplay(p, true, false));
+				featuredThumb.add(new ProductDisplay(p, true, false, this));
 				hasFavorite = true;
 			}
 			if (listView) {
-				productsPanel.setLayout(new MigLayout("wrap 1"));
+				productsPanel.setLayout(new MigLayout(LIST_VIEW));
 			} else {
-				productsPanel.setLayout(new MigLayout("wrap 2"));
+				productsPanel.setLayout(new MigLayout(THUMB_VIEW));
 			}
-			productsPanel.add(new ProductDisplay(p, false, listView));
+			// TODO: Johan broke this... :)
+			productsPanel.add(new ProductDisplay(p, false, listView, this));
 		}
 		revalidate();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		JButton button = (JButton) e.getSource();
-		if (button.equals(thumbViewButton)) {
-			listView = false;
-		} else {
-			listView = true;
+		String ac = e.getActionCommand();
+		if (ac.equals("buy")) {
+			Object src = e.getSource();
+			if (src instanceof ShoppingItem) {
+				model.addToCart((ShoppingItem) src);
+			}
+		} else if (ac.matches("wrap \\d")){
+			listView = ac.equals(LIST_VIEW);
+			productsPanel.setLayout(new MigLayout(ac));
+			revalidate();
 		}
-		this.setProducts(NavigatorView.getLastClicked().getProducts());
 	}
 }

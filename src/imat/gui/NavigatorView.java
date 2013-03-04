@@ -3,13 +3,20 @@ package imat.gui;
 import imat.backend.CategoryNode;
 import imat.backend.CustomCategories;
 import imat.backend.CustomProductLists;
+import imat.backend.ShopModel;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -26,20 +33,28 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-public class NavigatorView extends JPanel {
+import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.Product;
+
+public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener {
 	private JTree tree;
 	private static ProductsView view;
 	private JLabel searchLabel;
 	private JTextField searchField;
 	private static CustomCategories currentCategory;
 
+	private ShopModel model;
+	
 	/**
 	 * Create the panel.
 	 */
-	public NavigatorView() {
+	public NavigatorView(ShopModel model) {
+		this.model = model;
+		this.model.addPropertyChangeListeter(this);
+		
 		CustomProductLists.generateCustomLists();
-		setPreferredSize(new Dimension(249, 600));
-		view = new ProductsView();
+		setPreferredSize(new Dimension(250, 600));
+		view = new ProductsView(this.model);
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
 		for (CustomCategories c : CustomCategories.values()) {
 			if (c.isMain()) {
@@ -83,6 +98,8 @@ public class NavigatorView extends JPanel {
 		searchField = new JTextField();
 		searchField.setFont(new Font("SansSerif", Font.ITALIC, 12));
 		searchField.setColumns(10);
+		searchField.setActionCommand("search");
+		searchField.addActionListener(this);
 
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout
@@ -182,11 +199,41 @@ public class NavigatorView extends JPanel {
 		}
 	}
 
-	public static CustomCategories getLastClicked() {
-		return currentCategory;
-	}
-
 	public ProductsView getProductsView() {
 		return view;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("search")) {
+			Object o = e.getSource();
+			String searchString = "";
+			if (o instanceof JTextField) {
+				searchString = ((JTextField) o).getText();
+			} else if (o instanceof SuggestionLabel) {
+				searchString = ((SuggestionLabel) o).getText();
+			}
+			List<Product> res = IMatDataHandler.getInstance().findProducts(searchString);
+			if (res.size() == 0) {
+				model.fuzzySearch(searchString);
+			} else {
+				getProductsView().setProducts(res, searchString);
+			}
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals("fuzzySearch")) {
+			Object oList = evt.getNewValue();
+			if (oList instanceof List<?>) {
+				List<SuggestionLabel> suggestions= new ArrayList<SuggestionLabel>();
+				for (String s : (List<String>) oList) {
+					suggestions.add(new SuggestionLabel(s, this));
+				}
+				// TODO: Show notification panel!
+				// notify(suggestions);
+			}
+		}
 	}
 }

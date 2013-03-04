@@ -3,29 +3,28 @@ package imat.backend;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
+import org.jdesktop.swingx.treetable.TreeTableNode;
 
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class ProductNode extends AbstractMutableTreeTableNode implements ActionListener {
 	
 	private ShoppingItem item;
+	private ShopModel model;
 	
-	private final String ADD = "cart";
 	private final String DEL = "delete";
 	
-	private final ImageIcon BTN_BUY = new ImageIcon(ListNode.class.getResource("/imat/resources/buyButton60x30.PNG"));
 	private final ImageIcon BTN_DEL = new ImageIcon(ListNode.class.getResource("/imat/resources/delete.PNG"));
 	
-	public ProductNode(ShoppingItem s) {
+	public ProductNode(ShoppingItem s, ShopModel m) {
 		super();
 		item = s;
+		this.model = m;
 	}
 	
 	@Override
@@ -60,10 +59,13 @@ public class ProductNode extends AbstractMutableTreeTableNode implements ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(ADD)) {
-			System.out.println("ADD: " + item.getProduct().getName());
-		} else if (event.getActionCommand().equals(DEL)) {
+		if (event.getActionCommand().equals(DEL)) {
 			System.out.println("DEL: " + item.getProduct().getName());
+			TreeTableNode ttn = getParent();
+			if (ttn instanceof ListNode) {
+				ListNode parent = (ListNode) getParent();
+				model.delete(parent.getList(), item.getProduct());
+			}
 		}		
 	}
 }

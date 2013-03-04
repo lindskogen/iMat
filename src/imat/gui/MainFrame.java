@@ -1,13 +1,16 @@
 package imat.gui;
 
+import imat.backend.ShopModel;
+
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
 
 public class MainFrame {
 
 	private JFrame frame;
+	private ShopModel model;
 
 	/**
 	 * Launch the application.
@@ -37,17 +40,22 @@ public class MainFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("iMat - Grupp 1");
 		frame.setBounds(50, 50, 900, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		model = new ShopModel();
+		
+		NavigatorView navigatorView = new NavigatorView(model);
+		ProductsView productsView = navigatorView.getProductsView();
+		TabbedView tabbedView = new TabbedView(model);
+		
 
-		NavigatorView navigatorView = new NavigatorView();
+	
 		frame.getContentPane().add(navigatorView, BorderLayout.WEST);
 		
-		ProductsView productsView = navigatorView.getProductsView();
 		frame.getContentPane().add(productsView, BorderLayout.CENTER);
 
-		TabbedView tabbedView = new TabbedView();
 		frame.getContentPane().add(tabbedView, BorderLayout.EAST);
 	}
 

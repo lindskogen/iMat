@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.util.Locale;
 
@@ -46,8 +44,8 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	private JLabel priceLabel;
 	private JPanel panel_1;
 	private JLabel imageLabel;
-
-	private PropertyChangeSupport ps;
+	
+	private ActionListener listener;
 
 	private static NumberFormat format = NumberFormat
 			.getCurrencyInstance(Locale.forLanguageTag("sv-SE"));
@@ -55,11 +53,9 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	/**
 	 * Create the panel.
 	 */
-	public ProductDisplay(Product p, boolean featured, boolean list) {
+	public ProductDisplay(Product p, boolean featured, boolean list, ActionListener al) {
 		setBackground(Color.WHITE);
-
-		ps = new PropertyChangeSupport(this);
-
+		listener = al;
 		product = p;
 		setBorder(new LineBorder(Color.LIGHT_GRAY));
 		setLayout(new BorderLayout(0, 0));
@@ -80,6 +76,8 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			buyButton.setIcon(new ImageIcon(ProductStripe.class
 					.getResource("/imat/resources/buyButtonMini.PNG")));
 			buyButton.setFont(new Font("SansSerif", Font.BOLD, 12));
+			buyButton.setActionCommand("buy");
+			buyButton.addActionListener(this);
 
 			priceLabel = new JLabel("Desc");
 			priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -333,12 +331,11 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		}
 	}
 
-	public void addListener(PropertyChangeListener listener) {
-		ps.addPropertyChangeListener(listener);
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent evt) {
-		ps.firePropertyChange("buy", null, getItem());
+		if (evt.getActionCommand().equals("buy")) {
+			evt.setSource(getItem());
+			listener.actionPerformed(evt);
+		}
 	}
 }
