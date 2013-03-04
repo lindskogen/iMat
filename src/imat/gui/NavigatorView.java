@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -36,7 +38,7 @@ import javax.swing.tree.TreePath;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 
-public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener {
+public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
 	private JTree tree;
 	private static ProductsView view;
 	private JLabel searchLabel;
@@ -44,6 +46,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private static CustomCategories currentCategory;
 
 	private ShopModel model;
+	private final String AC_SEARCH = "search";
 	
 	/**
 	 * Create the panel.
@@ -98,8 +101,9 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		searchField = new JTextField();
 		searchField.setFont(new Font("SansSerif", Font.ITALIC, 12));
 		searchField.setColumns(10);
-		searchField.setActionCommand("search");
+		searchField.setActionCommand(AC_SEARCH);
 		searchField.addActionListener(this);
+		searchField.addKeyListener(this);
 
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout
@@ -205,7 +209,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("search")) {
+		if (e.getActionCommand().equals(AC_SEARCH)) {
 			Object o = e.getSource();
 			String searchString = "";
 			if (o instanceof JTextField) {
@@ -236,4 +240,19 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			}
 		}
 	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {}
+
+	@Override
+	public void keyReleased(KeyEvent evt) {
+		for(ActionListener a: searchField.getActionListeners()) {
+		    a.actionPerformed(new ActionEvent(searchField, ActionEvent.ACTION_PERFORMED, AC_SEARCH) {
+		    	
+		    });
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {}
 }
