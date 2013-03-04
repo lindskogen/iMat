@@ -25,22 +25,31 @@ import se.chalmers.ait.dat215.project.ShoppingCart;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
 public class ShopModel {
-	private static List<ProductList> userLists = new LinkedList<ProductList>();
-	private static List<ProductList> historyLists = new LinkedList<ProductList>();
-	private static ProductList cart = new ProductList("Cart");
-	private static IMatDataHandler imat = IMatDataHandler.getInstance();
+	private List<ProductList> userLists = new LinkedList<ProductList>();
+	private List<ProductList> historyLists = new LinkedList<ProductList>();
+	private ProductList cart = new ProductList("Cart");
+	private IMatDataHandler imat = IMatDataHandler.getInstance();
 	private ShoppingCart sCart;
+	
+	private static ShopModel instance;
 
 	private PropertyChangeSupport pcs;
 	
-	public ShopModel() {
+	public static ShopModel getInstance() {
+		if (instance == null) {
+			instance = new ShopModel();
+		}
+		return instance;
+	}
+	
+	private ShopModel() {
 		pcs = new PropertyChangeSupport(this);
 		sCart = imat.getShoppingCart();
-		readList("/lists.txt", userLists);
-		readList("/history.txt", historyLists);
+		readList("lists.txt", userLists);
+		readList("history.txt", historyLists);
 	}
 	private boolean readList(String path, List<ProductList> target) {
-		File listFile = new File(imat.imatDirectory() + path);
+		File listFile = new File(imat.imatDirectory() + "/" + path);
 		if (listFile.exists()) {
 			try {
 				FileInputStream in = new FileInputStream(listFile);
@@ -63,27 +72,25 @@ public class ShopModel {
 		return false;
 	}
 	
-	public static void saveLists() {
-		saveList("/lists.txt", userLists);
-		saveList("/history.txt", historyLists);
+	public void saveLists() {
+		saveList("lists.txt", userLists);
+		saveList("history.txt", historyLists);
 	}
 	
-	private static void saveList(String path, List<ProductList> lists) {
-		File listFile = new File(imat.imatDirectory() + path);
-		if (listFile.exists()) {
-			try {
-				FileOutputStream out = new FileOutputStream(listFile);
-				Writer writer = new OutputStreamWriter(out);
-				for (ProductList pList : lists) {
-					writer.write(pList.stringify() + "\n");
-				}
-				writer.close();
-				out.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+	private void saveList(String path, List<ProductList> lists) {
+		File listFile = new File(imat.imatDirectory() + "/" + path);
+		try {
+			FileOutputStream out = new FileOutputStream(listFile);
+			Writer writer = new OutputStreamWriter(out);
+			for (ProductList pList : lists) {
+				writer.write(pList.stringify() + "\n");
 			}
+			writer.close();
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -138,15 +145,24 @@ public class ShopModel {
 	public void removePropertyChangeListeter(PropertyChangeListener pcl) {
 		pcs.removePropertyChangeListener(pcl);
 	}
-	public void delete(ProductList pList, Product product) {
-		for (ShoppingItem item : pList) {
-			if (item.getProduct().equals(product)) {				
-				pList.remove(item);
-			}
+	public void delete(ProductList pList, ShoppingItem item) {				
+		pList.remove(item);
+		
+		if (pList == cart) {			
+			pcs.firePropertyChange("cart", null, getProductCart());
+		} else {			
+			pcs.firePropertyChange("lists", null, getLists());
 		}
 	}
 	public void delete(ProductList pList) {
-		cart.remove(pList);
+		userLists.remove(pList);
+		pcs.firePropertyChange("lists", null, getLists());
+	}
+	public void addList(ProductList pList) {
+		ProductList tempList = pList.clone();
+		tempList.setName("unnamed");
+		userLists.add(tempList);
+		pcs.firePropertyChange("lists", null, getLists());
 	}
 
 	public List<ProductList> getHistoryLists() {

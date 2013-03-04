@@ -17,7 +17,7 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
  * @author Johan
  *
  */
-public class ProductList implements Iterable<ShoppingItem> {
+public class ProductList implements Iterable<ShoppingItem>, Cloneable {
 	private List<ShoppingItem> list;
     private String name;
     
@@ -111,7 +111,12 @@ public class ProductList implements Iterable<ShoppingItem> {
      * @param o the item to be removed
      */
     public void remove(Object o) {
-        list.remove(o);
+    	ShoppingItem removeItem = (ShoppingItem) o;
+    	for (ShoppingItem item : list) {
+    		if (item.getProduct().equals(removeItem.getProduct())) {
+    			list.remove(item);    			
+    		}
+    	}
     }
     
     /**
@@ -127,12 +132,35 @@ public class ProductList implements Iterable<ShoppingItem> {
         return sb.toString();
     }
     
+    public void setName(String newName) {
+    	if (newName != null) {
+    		name = newName;    		
+    	}
+    }
+    
     /**
      * Returns the size of the list.
      * @return the amount of items in the list
      */
 	public int size() {
 		return list.size();
+	}
+	
+	@Override
+	public ProductList clone() {
+		ProductList nList;
+		try {
+			nList = (ProductList)super.clone();
+			nList.setName(getName());
+			nList.list = new LinkedList<ShoppingItem>();
+			for (ShoppingItem s : this) {
+				nList.add(new ShoppingItem(s.getProduct(), s.getAmount()));				
+			}
+			return nList;
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Override

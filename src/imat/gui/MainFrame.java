@@ -7,6 +7,8 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import se.chalmers.ait.dat215.project.IMatDataHandler;
+
 public class MainFrame {
 
 	private JFrame frame;
@@ -16,6 +18,13 @@ public class MainFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+		    public void run() {
+				System.out.println("SHUTDOWN EMINENT");
+				IMatDataHandler.getInstance().shutDown();
+				ShopModel.getInstance().saveLists();
+		    }
+		}));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -44,7 +53,7 @@ public class MainFrame {
 		frame.setBounds(50, 50, 900, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		model = new ShopModel();
+		model = ShopModel.getInstance();
 		
 		NavigatorView navigatorView = new NavigatorView(model);
 		ProductsView productsView = navigatorView.getProductsView();

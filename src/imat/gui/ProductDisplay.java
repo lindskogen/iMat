@@ -75,14 +75,11 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			titleLabel = new JLabel("Label");
 			titleLabel.setFont(new Font("SansSerif", Font.BOLD, 12));
 
-			buyButton = new JButton("");
+			buyButton = new JButton(new ImageIcon(ProductStripe.class
+					.getResource("/imat/resources/buyButtonMini.PNG")));
 			buyButton.setPreferredSize(new Dimension(40, 20));
 			buyButton.setOpaque(false);
-			buyButton.setIcon(new ImageIcon(ProductStripe.class
-					.getResource("/imat/resources/buyButtonMini.PNG")));
 			buyButton.setFont(new Font("SansSerif", Font.BOLD, 12));
-			buyButton.setActionCommand("buy");
-			buyButton.addActionListener(this);
 
 			priceLabel = new JLabel("Desc");
 			priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
@@ -194,13 +191,12 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			suffixLabel = new JLabel("st");
 			suffixLabel.setFont(new Font("SansSerif", Font.PLAIN, 12));
 
-			buyButton = new JButton("");
+			buyButton = new JButton(new ImageIcon(ProductDisplay.class
+					.getResource("/imat/resources/buyButton60x30.PNG")));
 			buyButton.setMaximumSize(new Dimension(60, 30));
 			buyButton.setMinimumSize(new Dimension(60, 30));
 			buyButton.setPreferredSize(new Dimension(60, 30));
 			buyButton.setOpaque(false);
-			buyButton.setIcon(new ImageIcon(ProductThumbnail.class
-					.getResource("/imat/resources/buyButton60x30.PNG")));
 			buyButton.setFont(new Font("SansSerif", Font.BOLD, 12));
 
 			sumLabel = new JLabel("Sum");
@@ -316,6 +312,12 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		titleLabel.setText(p.getName());
 		priceLabel.setText(format.format(p.getPrice())
 				+ p.getUnit().substring(2));
+		
+		
+		// Add actions for the buy button
+		buyButton.setActionCommand("buy");
+		buyButton.addActionListener(this);
+		
 
 		if (list) {
 			imageLabel.setIcon(IDH.getImageIcon(p, new Dimension(67, 50)));
@@ -347,17 +349,15 @@ public class ProductDisplay extends JPanel implements ActionListener {
 
 	private double getAmount() {
 		Object q = qSpinner.getValue();
-		double newSum = product.getPrice();
-		if (q instanceof Double) {
-			newSum = newSum * (double) q;
-		} else {
-			newSum = newSum * (int) q;
-		}
-		return newSum;
+		return (q instanceof Double)?(double)q:(int)q;
 	}
-
+	
+	private double getTotal() {
+		return getAmount()*product.getPrice();
+	}
+	
 	public void updateSum() {
-		sumLabel.setText(format.format(getAmount()));
+		sumLabel.setText(format.format(getTotal()));
 	}
 
 	private class QSpinnerChangeListener implements ChangeListener {

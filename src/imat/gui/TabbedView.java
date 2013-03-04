@@ -7,6 +7,8 @@ import imat.backend.ShopModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -35,8 +37,7 @@ import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
-public class TabbedView extends JPanel implements PropertyChangeListener {
-	private static final long serialVersionUID = 1L;
+public class TabbedView extends JPanel implements PropertyChangeListener, ActionListener {
 	private JXTreeTable shoppingBasket;
 	private JXTreeTable lists;
 	private JXTreeTable history;
@@ -48,11 +49,14 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 	
 	private final ImageIcon LIST_ICN = new ImageIcon(TabbedView.class.getResource("/imat/resources/menuListIcon.PNG"));
 	
+	private final String AC_CART_LIST = "cartToList";
+	
 	/**
 	 * Create the panel.
 	 */
 	public TabbedView(ShopModel model) {
 		this.model = model;
+		model.addPropertyChangeListeter(this);
 		setPreferredSize(new Dimension(350, 400));
 		setLayout(new BorderLayout());
 		
@@ -80,6 +84,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 		
 		JButton createListBtn = new JButton("Skapa Lista");
 		panel.add(createListBtn);
+		createListBtn.addActionListener(this);
+		createListBtn.setActionCommand(AC_CART_LIST);
 		
 		JButton toCheckoutBtn = new JButton("Till Kassan");
 		panel.add(toCheckoutBtn);
@@ -89,7 +95,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 		panel_1.add(panel_2, BorderLayout.EAST);
 		panel_2.setLayout(new BorderLayout(0, 0));
 		
-		totalSum = new JLabel("Summa: XX,00 kr");
+		totalSum = new JLabel("Summa: 00,00 kr");
 		totalSum.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panel_2.add(totalSum);
 		
@@ -243,8 +249,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 			if (row < table.getRowCount() && row >= 0 && column < table.getColumnCount() && column >= 0) {
 			    Object value = table.getValueAt(row, column);
 			    if (value instanceof JButton) {
-			    	JButton btn = (JButton) value;
-			    	btn.doClick();
+			    	((JButton) value).doClick();
 			    }
 			}
 		}
@@ -265,5 +270,12 @@ public class TabbedView extends JPanel implements PropertyChangeListener {
 			return;
 		}
 		revalidate();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals(AC_CART_LIST)) {
+			model.addList(model.getProductCart());
+		}
 	}
 }
