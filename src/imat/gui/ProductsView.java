@@ -52,6 +52,7 @@ public class ProductsView extends JPanel implements ActionListener {
 	private ShopModel model; 
 	private JLabel sortLabel;
 	private JComboBox comboBox_1;
+	private JLabel label;
 
 	/**
 	 * Create the panel.
@@ -126,6 +127,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		add(scrollPane);
 
 		buttonPanel = new JPanel();
+		buttonPanel.setPreferredSize(new Dimension(10, 70));
 		buttonPanel.setBackground(Color.LIGHT_GRAY);
 		add(buttonPanel, BorderLayout.NORTH);
 
@@ -147,19 +149,26 @@ public class ProductsView extends JPanel implements ActionListener {
 		
 		comboBox_1 = new JComboBox();
 		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Namn", "Pris"}));
+		
+		label = new JLabel("");
 		GroupLayout gl_buttonPanel = new GroupLayout(buttonPanel);
 		gl_buttonPanel.setHorizontalGroup(
 			gl_buttonPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_buttonPanel.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(sortLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 631, Short.MAX_VALUE)
-					.addComponent(thumbViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(listViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(6))
+					.addGroup(gl_buttonPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_buttonPanel.createSequentialGroup()
+							.addComponent(sortLabel)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 633, Short.MAX_VALUE)
+							.addComponent(thumbViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(listViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(6))
+						.addGroup(gl_buttonPanel.createSequentialGroup()
+							.addComponent(label)
+							.addContainerGap(784, Short.MAX_VALUE))))
 		);
 		gl_buttonPanel.setVerticalGroup(
 			gl_buttonPanel.createParallelGroup(Alignment.LEADING)
@@ -171,7 +180,9 @@ public class ProductsView extends JPanel implements ActionListener {
 							.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addComponent(thumbViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(listViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(15, Short.MAX_VALUE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(label)
+					.addContainerGap(13, Short.MAX_VALUE))
 		);
 		buttonPanel.setLayout(gl_buttonPanel);
 		scrollPanel.remove(featuredPanel);

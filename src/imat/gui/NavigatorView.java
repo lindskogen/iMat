@@ -134,6 +134,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		separator = new JSeparator();
 
 		btnInstllningar = new JButton("");
+		btnInstllningar.addActionListener(new BtnInstllningarActionListener());
 		btnInstllningar.setPreferredSize(new Dimension(32, 32));
 		btnInstllningar.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/settingsIcon.png")));
 
@@ -252,6 +253,12 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			favouriteLabel.setForeground(Color.black);
 			favouriteLabel.setBorder(BorderFactory.createLineBorder(tcr
 					.getBorderSelectionColor()));
+		}
+	}
+	private class BtnInstllningarActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			Settings.main(null);
+			
 		}
 	}
 
