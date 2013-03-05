@@ -39,7 +39,7 @@ import javax.swing.border.LineBorder;
 import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 
-public class Checkout implements ActionListener {
+public class Checkout extends JPanel implements ActionListener {
 
 	// TODO: Confirmation screen after authentication (different card), improve validation check
 	
@@ -65,7 +65,6 @@ public class Checkout implements ActionListener {
 	private JLabel sumLabel;
 	private JLabel deliveryLabel;
 	private JCheckBox save;
-	private JFrame frame;
 	private JTextField txtCard;
 	private JTextField txtSec;
 	private JPanel cardPanel;
@@ -88,22 +87,6 @@ public class Checkout implements ActionListener {
 	        destroyAndCreate("Felaktigt lösenord");
 	    }
 	};
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Checkout window = new Checkout();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -155,7 +138,7 @@ public class Checkout implements ActionListener {
 			
 			if(checkInput()){ //If input is valid continues with authentication			
 				if(shallPass()){ //If properly authenticated, finalises purchase
-					JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
+					JOptionPane.showMessageDialog(this, "Tack för ditt köp");
 					if(save.isSelected()){
 						saveCardInfo();
 					}
@@ -186,7 +169,7 @@ public class Checkout implements ActionListener {
 		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
 		
-		passDialog = parentPane.createDialog(frame, "Lösenord krävs");
+		passDialog = parentPane.createDialog(this, "Lösenord krävs");
 		passDialog.setVisible(true);
 		
 		//Fetches password, blanks out array
@@ -274,7 +257,7 @@ public class Checkout implements ActionListener {
 		passDialog.dispose();
 		parentPane = new JOptionPane(pwd, JOptionPane.INFORMATION_MESSAGE,
 				JOptionPane.OK_CANCEL_OPTION, passIcon, options, pwd);
-        passDialog = parentPane.createDialog(frame, title);
+        passDialog = parentPane.createDialog(this, title);
 	}
 	
 	//Returns true if and only if input is valid, otherwise false
@@ -308,7 +291,7 @@ public class Checkout implements ActionListener {
 			for(String s : errorList){
 				sb.append(s + "\n");
 			}
-			JOptionPane.showMessageDialog(frame, sb.toString().trim(), 
+			JOptionPane.showMessageDialog(this, sb.toString().trim(), 
 					"Fel i inmatning", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -362,16 +345,12 @@ public class Checkout implements ActionListener {
 		deliveryGroup = new ButtonGroup();
 		cardGroup = new ButtonGroup();
 		
-		frame = new JFrame();
-		frame.setBounds(100, 100, 600, 540);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 600, 540);
 		
-		JPanel checkoutPanel = new JPanel();
-		frame.getContentPane().add(checkoutPanel, BorderLayout.CENTER);
-		checkoutPanel.setLayout(new CardLayout(0, 0));
+		this.setLayout(new CardLayout(0, 0));
 		
 		JPanel panel_1 = new JPanel();
-		checkoutPanel.add(panel_1, "name_4538180736579");
+		this.add(panel_1, "name_4538180736579");
 		
 		JPanel panel = new JPanel();
 		
