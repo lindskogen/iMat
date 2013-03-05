@@ -1,9 +1,7 @@
 package imat.gui;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,7 +22,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -299,13 +296,11 @@ public class Checkout extends JPanel implements ActionListener {
 	
 	//Determines if there is a char in a String or if it 
 	private boolean charInInt(String s) {
-		char[] fuuu = s.toCharArray();
-		try{
-			for(Character test: fuuu){
-				Integer.parseInt(test.toString());
+		char[] stringArray = s.toCharArray();
+		for(Character test : stringArray){
+			if(!Character.isDigit(test)){
+				return true;
 			}
-		} catch(NumberFormatException nfe){
-			return true;
 		}
 		
 		return false;
