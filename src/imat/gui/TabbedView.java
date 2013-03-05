@@ -58,7 +58,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	 */
 	public TabbedView(ShopModel model) {
 		this.model = model;
-		model.addPropertyChangeListeter(this);
+		model.addPropertyChangeListener(this);
 		setPreferredSize(new Dimension(350, 400));
 		setLayout(new BorderLayout());
 		

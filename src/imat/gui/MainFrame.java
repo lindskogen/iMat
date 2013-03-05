@@ -56,15 +56,13 @@ public class MainFrame {
 		model = ShopModel.getInstance();
 		
 		NavigatorView navigatorView = new NavigatorView(model);
-		ProductsView productsView = navigatorView.getProductsView();
+		CenterView centerView = new CenterView(model, navigatorView.getProductsView(), new Checkout());
 		TabbedView tabbedView = new TabbedView(model);
 		
 
 	
 		frame.getContentPane().add(navigatorView, BorderLayout.WEST);
-		
-		frame.getContentPane().add(productsView, BorderLayout.CENTER);
-
+		frame.getContentPane().add(centerView, BorderLayout.CENTER);
 		frame.getContentPane().add(tabbedView, BorderLayout.EAST);
 	}
 

@@ -18,15 +18,15 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.UIManager;
 import javax.swing.event.TreeExpansionEvent;
@@ -36,15 +36,12 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import se.chalmers.ait.dat215.project.IMatDataHandler;
-import se.chalmers.ait.dat215.project.Product;
-import javax.swing.JSeparator;
-import javax.swing.JButton;
-
 import org.jdesktop.swingx.JXTree;
-import org.jdesktop.swingx.JXTree.DelegatingRenderer;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
+
+import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.Product;
 
 public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
 
@@ -59,13 +56,15 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private final String AC_SEARCH = "search";
 	private JSeparator separator;
 	private JButton btnInstllningar;
+	private IMatDataHandler imat;
 	
 	/**
 	 * Create the panel.
 	 */
 	public NavigatorView(ShopModel model) {
+		imat = IMatDataHandler.getInstance();
 		this.model = model;
-		this.model.addPropertyChangeListeter(this);
+		this.model.addPropertyChangeListener(this);
 		
 		CustomProductLists.generateCustomLists();
 		setPreferredSize(new Dimension(250, 600));
@@ -246,21 +245,29 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		long oldValue = System.currentTimeMillis();
 		if (e.getActionCommand().equals(AC_SEARCH)) {
+			model.closeNotification();
 			Object o = e.getSource();
 			String searchString = "";
 			if (o instanceof JTextField) {
 				searchString = ((JTextField) o).getText();
 			} else if (o instanceof SuggestionLabel) {
 				searchString = ((SuggestionLabel) o).getText();
+				searchField.setText(searchString);
 			}
-			List<Product> res = IMatDataHandler.getInstance().findProducts(searchString);
-			if (res.size() == 0) {
-				model.fuzzySearch(searchString);
-			} else {
+			List<Product> res;
+			if (searchString.length() > 1) {
+				res = imat.findProducts(searchString);
+				if (res.size() == 0) {
+					for (String s: model.fuzzySearch(searchString)) {
+						res.addAll(imat.findProducts(s));
+					}
+				}
 				getProductsView().setProducts(res, searchString);
 			}
 		}
+		System.out.println(System.currentTimeMillis() - oldValue);
 	}
 
 	@Override
@@ -268,12 +275,15 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		if (evt.getPropertyName().equals("fuzzySearch")) {
 			Object oList = evt.getNewValue();
 			if (oList instanceof List<?>) {
-				List<SuggestionLabel> suggestions= new ArrayList<SuggestionLabel>();
-				for (String s : (List<String>) oList) {
-					suggestions.add(new SuggestionLabel(s, this));
+				JPanel panel = new JPanel();
+				List<String> sList = (List<String>) oList;
+				panel.add(new JLabel(((sList.size()>0)?"Menade du: ":"Hittade inga resultat.")));
+				if (sList.size() > 0) {
+					for (String s : sList) {
+						panel.add(new SuggestionLabel(s, this));
+					}
 				}
-				// TODO: Show notification panel!
-				// notify(suggestions);
+				model.showNotification(panel);
 			}
 		}
 	}
