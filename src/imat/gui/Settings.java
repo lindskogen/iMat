@@ -1,3 +1,4 @@
+package imat.gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -312,7 +313,7 @@ public class Settings extends JFrame {
 					}
 
 				}else{
-					System.out.println(cardNumberText.getText().length() + " fel längd");
+					System.out.println(cardNumberText.getText().length() + " fel lï¿½ngd");
 					cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
 				}
 				
@@ -330,7 +331,7 @@ public class Settings extends JFrame {
 					}
 
 				}else{
-					System.out.println(CVCText.getText().length() + " fel längd");
+					System.out.println(CVCText.getText().length() + " fel lï¿½ngd");
 					CVC.setText("<html> <font color='red'>CVC*</font></html>");
 					tabbedPane.setSelectedIndex(2);
 				}

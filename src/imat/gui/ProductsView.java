@@ -1,5 +1,6 @@
 package imat.gui;
 
+import imat.backend.CustomCategories;
 import imat.backend.ShopModel;
 
 import java.awt.BorderLayout;
@@ -25,6 +26,8 @@ import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class ProductsView extends JPanel implements ActionListener {
 
@@ -47,6 +50,8 @@ public class ProductsView extends JPanel implements ActionListener {
 	private boolean listView;
 	
 	private ShopModel model; 
+	private JLabel sortLabel;
+	private JComboBox comboBox_1;
 
 	/**
 	 * Create the panel.
@@ -63,11 +68,11 @@ public class ProductsView extends JPanel implements ActionListener {
 		scrollPane.getVerticalScrollBar().setUnitIncrement(10);
 
 		scrollPanel = new JPanel();
-		scrollPanel.setBackground(Color.LIGHT_GRAY);
+		scrollPanel.setBackground(Color.GRAY);
 		scrollPane.setViewportView(scrollPanel);
 
 		featuredPanel = new JPanel();
-		featuredPanel.setBackground(Color.LIGHT_GRAY);
+		featuredPanel.setBackground(Color.GRAY);
 
 		lblDuHarTidigare = new JLabel();
 		setTitle(TIDIGARE);
@@ -75,7 +80,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 16));
 
 		featuredThumb = new JPanel();
-		featuredThumb.setBackground(Color.LIGHT_GRAY);
+		featuredThumb.setBackground(Color.GRAY);
 		featuredThumb.setPreferredSize(new Dimension(600, 126));
 		GroupLayout gl_featuredPanel = new GroupLayout(featuredPanel);
 		gl_featuredPanel
@@ -112,7 +117,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		scrollPanel.add(featuredPanel, BorderLayout.NORTH);
 
 		centerPanel = new JPanel();
-		centerPanel.setBackground(Color.LIGHT_GRAY);
+		centerPanel.setBackground(Color.GRAY);
 		scrollPanel.add(centerPanel, BorderLayout.CENTER);
 		productsPanel = new JPanel();
 		centerPanel.add(productsPanel);
@@ -137,39 +142,37 @@ public class ProductsView extends JPanel implements ActionListener {
 				.getResource("/imat/resources/listview.PNG")));
 		listViewButton.addActionListener(this);
 		listViewButton.setActionCommand(LIST_VIEW);
+		
+		sortLabel = new JLabel("Sortera på:");
+		
+		comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Namn", "Pris"}));
 		GroupLayout gl_buttonPanel = new GroupLayout(buttonPanel);
-		gl_buttonPanel.setHorizontalGroup(gl_buttonPanel.createParallelGroup(
-				Alignment.TRAILING).addGroup(
-				gl_buttonPanel
-						.createSequentialGroup()
-						.addContainerGap(798, Short.MAX_VALUE)
-						.addComponent(thumbViewButton,
-								GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(listViewButton,
-								GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE).addGap(6)));
-		gl_buttonPanel.setVerticalGroup(gl_buttonPanel.createParallelGroup(
-				Alignment.TRAILING).addGroup(
-				Alignment.LEADING,
-				gl_buttonPanel
-						.createSequentialGroup()
-						.addGap(6)
-						.addGroup(
-								gl_buttonPanel
-										.createParallelGroup(Alignment.LEADING)
-										.addComponent(thumbViewButton,
-												GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE)
-										.addComponent(listViewButton,
-												GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE,
-												GroupLayout.PREFERRED_SIZE))
-						.addContainerGap(15, Short.MAX_VALUE)));
+		gl_buttonPanel.setHorizontalGroup(
+			gl_buttonPanel.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_buttonPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(sortLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 631, Short.MAX_VALUE)
+					.addComponent(thumbViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(listViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(6))
+		);
+		gl_buttonPanel.setVerticalGroup(
+			gl_buttonPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_buttonPanel.createSequentialGroup()
+					.addGap(6)
+					.addGroup(gl_buttonPanel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_buttonPanel.createParallelGroup(Alignment.BASELINE)
+							.addComponent(sortLabel)
+							.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(thumbViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(listViewButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(15, Short.MAX_VALUE))
+		);
 		buttonPanel.setLayout(gl_buttonPanel);
 		scrollPanel.remove(featuredPanel);
 		this.revalidate();
@@ -201,7 +204,6 @@ public class ProductsView extends JPanel implements ActionListener {
 			} else {
 				productsPanel.setLayout(new MigLayout(THUMB_VIEW));
 			}
-			// TODO: Johan broke this... :)
 			productsPanel.add(new ProductDisplay(p, false, listView, this));
 		}
 		revalidate();
@@ -220,6 +222,12 @@ public class ProductsView extends JPanel implements ActionListener {
 			productsPanel.setLayout(new MigLayout(ac));
 			setProducts(NavigatorView.getCurrentCategory().getProducts());
 			revalidate();
+		} else if(ac.equals("fav")) {
+			if(NavigatorView.getCurrentCategory() == CustomCategories.FAVORITES) {
+				setProducts(IDH.favorites());
+				revalidate();
+			}
+			
 		}
 	}
 }

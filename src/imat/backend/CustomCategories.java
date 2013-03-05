@@ -32,7 +32,10 @@ public enum CustomCategories {
 	SNACKS("Snacks", IMatDataHandler.getInstance().getProducts(ProductCategory.NUTS_AND_SEEDS), false, false),
 	FRUIT("Stenfrukter", IMatDataHandler.getInstance().getProducts(ProductCategory.FRUIT), false, false),
 	SWEET("Sötsaker", IMatDataHandler.getInstance().getProducts(ProductCategory.SWEET), false, false),
-	HOT_DRINKS("Varma drycker", IMatDataHandler.getInstance().getProducts(ProductCategory.HOT_DRINKS), false, false);
+	HOT_DRINKS("Varma drycker", IMatDataHandler.getInstance().getProducts(ProductCategory.HOT_DRINKS), false, false),
+	
+	FAVORITES("Favoriter", IMatDataHandler.getInstance().favorites(), false, false);
+
 	
 	
 	private String titel;

@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -39,11 +40,13 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
+import javax.swing.ImageIcon;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 
 public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
+
 
 	private JXTree tree;
 	private static ProductsView view;
@@ -65,7 +68,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		imat = IMatDataHandler.getInstance();
 		this.model = model;
 		this.model.addPropertyChangeListener(this);
-		
+
 		CustomProductLists.generateCustomLists();
 		setPreferredSize(new Dimension(250, 600));
 		view = new ProductsView(this.model);
@@ -85,6 +88,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		}
 
 		tree = new JXTree(root);
+		tree.setSelectionForeground(Color.BLACK);
 		tree.setOpaque(false);
 		tree.setRolloverEnabled(true);
 		tree.setModel(new DefaultTreeModel(root));
@@ -99,15 +103,16 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		tree.setRootVisible(false);
 		tree.setToggleClickCount(1);
 		tree.putClientProperty("JTree.lineStyle", "None");
-		tree.addHighlighter(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, 
-			      null, Color.GREEN));
+		tree.addHighlighter(new ColorHighlighter(
+				HighlightPredicate.ROLLOVER_ROW, null, new Color(106, 90, 205)));
 		tree.setCellRenderer(new DefaultTreeCellRenderer());
 		DefaultTreeCellRenderer tcr = (DefaultTreeCellRenderer) tree
 				.getWrappedCellRenderer();
 		tcr.setLeafIcon(null);
 		tcr.setOpenIcon(null);
 		tcr.setClosedIcon(null);
-		tcr.setBackgroundNonSelectionColor(UIManager.getColor("Panel.background"));
+		tcr.setBackgroundNonSelectionColor(UIManager
+				.getColor("Panel.background"));
 
 		searchLabel = new JLabel("Hitta mat");
 		searchLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
@@ -118,37 +123,33 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		searchField.setActionCommand(AC_SEARCH);
 		searchField.addActionListener(this);
 		searchField.addKeyListener(this);
-		
+
 		favouriteLabel = new JLabel("Favoriter");
-		favouriteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		favouriteLabel
+				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		favouriteLabel.setOpaque(true);
 		favouriteLabel.addMouseListener(new FavouriteLabelMouseListener());
 		favouriteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-		
+
 		separator = new JSeparator();
-		
-		btnInstllningar = new JButton("Inställningar");
-		
+
+		btnInstllningar = new JButton("");
+		btnInstllningar.setPreferredSize(new Dimension(32, 32));
+		btnInstllningar.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/settingsIcon.png")));
+
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addGroup(Alignment.LEADING, groupLayout.createParallelGroup(Alignment.LEADING, false)
-									.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-									.addComponent(searchLabel))
-								.addComponent(favouriteLabel, Alignment.LEADING)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(btnInstllningar))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(tree, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-								.addComponent(separator, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))))
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+							.addComponent(searchLabel))
+						.addComponent(favouriteLabel)
+						.addComponent(tree, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+						.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -161,11 +162,11 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 					.addGap(18)
 					.addComponent(favouriteLabel)
 					.addGap(18)
-					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
 					.addGap(8)
 					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
-					.addComponent(btnInstllningar)
+					.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 		setLayout(groupLayout);
@@ -192,6 +193,8 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private class TreeMouseListener extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
+			favouriteLabel.setBackground(null);
+			favouriteLabel.setBorder(null);
 			TreePath path = tree.getPathForLocation(e.getX(), e.getY());
 			if (path != null) {
 				CategoryNode node = (CategoryNode) tree
@@ -216,33 +219,46 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private class TreeMouseMotionListener extends MouseMotionAdapter {
 		@Override
 		public void mouseMoved(MouseEvent e) {
-//			TreePath path = (TreePath) tree.getPathForLocation(e.getX(),
-//					e.getY());
-//			if (path != null) {
-//				tree.setSelectionPath(path);
-//			}
+			// TreePath path = (TreePath) tree.getPathForLocation(e.getX(),
+			// e.getY());
+			// if (path != null) {
+			// tree.setSelectionPath(path);
+			// }
 		}
 	}
+
 	private class FavouriteLabelMouseListener extends MouseAdapter {
+
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			tree.setSelectionPath(null);
-			favouriteLabel.setBackground(new Color(184, 207, 229));
+
+			favouriteLabel.setForeground(new Color(106, 90, 205));
+
 		}
+
 		@Override
 		public void mouseExited(MouseEvent e) {
-			favouriteLabel.setBackground(new Color(238, 238, 238));
+			favouriteLabel.setForeground(Color.black);
 		}
+
 		@Override
 		public void mousePressed(MouseEvent e) {
+			tree.setSelectionPath(null);
+			currentCategory = CustomCategories.FAVORITES;
 			view.setProducts(IMatDataHandler.getInstance().favorites());
+			DefaultTreeCellRenderer tcr = (DefaultTreeCellRenderer) tree
+					.getWrappedCellRenderer();
+			favouriteLabel.setBackground(tcr.getBackgroundSelectionColor());
+			favouriteLabel.setForeground(Color.black);
+			favouriteLabel.setBorder(BorderFactory.createLineBorder(tcr
+					.getBorderSelectionColor()));
 		}
 	}
 
 	public ProductsView getProductsView() {
 		return view;
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		long oldValue = System.currentTimeMillis();
@@ -289,21 +305,29 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {}
+	public void keyPressed(KeyEvent arg0) {
+	}
 
 	@Override
 	public void keyReleased(KeyEvent evt) {
-		for(ActionListener a: searchField.getActionListeners()) {
-		    a.actionPerformed(new ActionEvent(searchField, ActionEvent.ACTION_PERFORMED, AC_SEARCH) {
-		    	
-		    });
+		for (ActionListener a : searchField.getActionListeners()) {
+			a.actionPerformed(new ActionEvent(searchField,
+					ActionEvent.ACTION_PERFORMED, AC_SEARCH) {
+
+			});
 		}
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {}
+	public void keyTyped(KeyEvent arg0) {
+	}
 
 	public static CustomCategories getCurrentCategory() {
 		return currentCategory;
+	}
+
+	public static void setCurrentCategory(CustomCategories category) {
+		currentCategory = category;
+		
 	}
 }
