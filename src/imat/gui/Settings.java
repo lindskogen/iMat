@@ -22,6 +22,10 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
+import java.awt.Insets;
+import java.awt.Cursor;
 
 
 public class Settings extends JFrame {
@@ -60,7 +64,7 @@ public class Settings extends JFrame {
 		setTitle("Inst\u00E4llningar");
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 335, 420);
+		setBounds(100, 100, 328, 420);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -69,7 +73,7 @@ public class Settings extends JFrame {
 		
 		JButton saveChanges = new JButton("Spara \u00E4ndringar");
 		
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
@@ -87,8 +91,81 @@ public class Settings extends JFrame {
 		);
 		
 		JPanel general = new JPanel();
-		tabbedPane.addTab("Allm\u00E4nt", null, general, null);
-		general.setLayout(new GridLayout(7, 0, 0, 0));
+		tabbedPane.addTab("Tema", null, general, null);
+		general.setLayout(new MigLayout("", "[][][][]", "[46px][46px][][]"));
+		
+		JButton grayButton = new JButton("");
+		grayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		grayButton.setMargin(new Insets(0, 0, 0, 0));
+		grayButton.setIcon(new ImageIcon("/imat/resources/themes/gray.PNG"));
+		general.add(grayButton, "cell 0 0,alignx center");
+		
+		JButton blueButton = new JButton("");
+		blueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		blueButton.setIcon(new ImageIcon("/imat/resources/themes/darkBlue.PNG"));
+		blueButton.setMargin(new Insets(0, 0, 0, 0));
+		general.add(blueButton, "cell 1 0");
+		
+		JButton lGreenButton = new JButton("");
+		lGreenButton.setMargin(new Insets(0, 0, 0, 0));
+		lGreenButton.setIcon(new ImageIcon("/imat/resources/themes/lightGreen.PNG"));
+		lGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		general.add(lGreenButton, "cell 2 0");
+		
+		JButton dGreenButton = new JButton("");
+		dGreenButton.setIcon(new ImageIcon("/imat/resources/themes/darkGreen.PNG"));
+		dGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		dGreenButton.setMargin(new Insets(0, 0, 0, 0));
+		general.add(dGreenButton, "cell 3 0");
+		
+		JLabel lblGr = new JLabel("Gr\u00E5");
+		lblGr.setVerticalAlignment(SwingConstants.TOP);
+		general.add(lblGr, "cell 0 1,alignx center,aligny top");
+		
+		JLabel lblBl = new JLabel("Bl\u00E5");
+		general.add(lblBl, "cell 1 1,alignx center,aligny top");
+		
+		JLabel lblLjusgrn = new JLabel("Ljusgr\u00F6n");
+		general.add(lblLjusgrn, "cell 2 1,alignx center,aligny top");
+		
+		JLabel lblMrkgrn = new JLabel("M\u00F6rkgr\u00F6n");
+		general.add(lblMrkgrn, "cell 3 1,alignx center,aligny top");
+		
+		JButton goldButton = new JButton("");
+		goldButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		goldButton.setMargin(new Insets(0, 0, 0, 0));
+		goldButton.setIcon(new ImageIcon("/imat/resources/themes/gold.PNG"));
+		general.add(goldButton, "cell 0 2");
+		
+		JButton redButton = new JButton("");
+		redButton.setIcon(new ImageIcon("/imat/resources/themes/red.PNG"));
+		redButton.setMargin(new Insets(0, 0, 0, 0));
+		general.add(redButton, "cell 1 2");
+		
+		JButton violetButton = new JButton("");
+		violetButton.setIcon(new ImageIcon("/imat/resources/themes/violet.PNG"));
+		violetButton.setMargin(new Insets(0, 0, 0, 0));
+		violetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		violetButton.setActionCommand("");
+		general.add(violetButton, "cell 2 2");
+		
+		JButton blackButton = new JButton("");
+		blackButton.setMargin(new Insets(0, 0, 0, 0));
+		blackButton.setIcon(new ImageIcon("/imat/resources/themes/black.PNG"));
+		blackButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		general.add(blackButton, "cell 3 2");
+		
+		JLabel lblGild = new JLabel("Guld");
+		general.add(lblGild, "cell 0 3,alignx center,aligny top");
+		
+		JLabel lblRd = new JLabel("R\u00F6d");
+		general.add(lblRd, "cell 1 3,alignx center,aligny top");
+		
+		JLabel lblLila = new JLabel("Lila");
+		general.add(lblLila, "cell 2 3,alignx center,aligny top");
+		
+		JLabel lblSvart = new JLabel("Svart");
+		general.add(lblSvart, "cell 3 3,alignx center,aligny top");
 		
 		JPanel personal = new JPanel();
 		tabbedPane.addTab("Personuppgifter", null, personal, null);
@@ -218,11 +295,6 @@ public class Settings extends JFrame {
 		textField.setColumns(10);
 		contentPane.setLayout(gl_contentPane);
 		
-		
-		//TODO
-		//Read from iMat DB
-		
-		//Listener for the save button.
 		saveChanges.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 				//card number check
@@ -230,15 +302,17 @@ public class Settings extends JFrame {
 					if(cardNumberCheck(cardNumberText.getText())){
 						//Passed
 						//just digits, reset text color.
-						cardNbr.setText("Kortnummer");	
+						cardNbr.setText("Kortnummer");
+						tabbedPane.setSelectedIndex(2);
 					}else{
 						//Failed.
 						//other characters in string
 						cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
+						tabbedPane.setSelectedIndex(2);
 					}
 
 				}else{
-					System.out.println(cardNumberText.getText().length() + "fel längd");
+					System.out.println(cardNumberText.getText().length() + " fel längd");
 					cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
 				}
 				
@@ -252,14 +326,14 @@ public class Settings extends JFrame {
 					}else{
 						System.out.println("ej digit");
 						CVC.setText("<html> <font color='red'>CVC*</font></html>");
+						tabbedPane.setSelectedIndex(2);
 					}
 
 				}else{
-					System.out.println(CVCText.getText().length() + "fel längd");
+					System.out.println(CVCText.getText().length() + " fel längd");
 					CVC.setText("<html> <font color='red'>CVC*</font></html>");
+					tabbedPane.setSelectedIndex(2);
 				}
-				
-				
 				//TODO
 				//Save state to DB
 				
