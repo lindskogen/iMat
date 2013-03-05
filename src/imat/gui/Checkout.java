@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -20,8 +22,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -39,7 +41,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 
 public class Checkout implements ActionListener {
 
-	// TODO: Confirmation screen after authentiaction (different card), improve validation check
+	// TODO: Confirmation screen after authentication (different card), improve validation check
 	
 	//Constants
 	//The price of home delivery
@@ -151,19 +153,19 @@ public class Checkout implements ActionListener {
 			imdh.getUser().setPassword("Test123");
 			//---------------------DEBUG ONLY -------------------------
 			
-			checkInput();
-			
-			if(shallPass()){
-				JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
-				if(save.isSelected()){
-					saveCardInfo();
+			if(checkInput()){ //If input is valid continues with authentication			
+				if(shallPass()){ //If properly authenticated, finalises purchase
+					JOptionPane.showMessageDialog(frame, "Tack för ditt köp");
+					if(save.isSelected()){
+						saveCardInfo();
+					}
+					imdh.placeOrder();
+					
+					//---------------------DEBUG ONLY -------------------------
+					imdh.shutDown();
+					System.exit(1);
+					//---------------------DEBUG ONLY -------------------------
 				}
-				imdh.placeOrder();
-				
-				//---------------------DEBUG ONLY -------------------------
-				imdh.shutDown();
-				System.exit(1);
-				//---------------------DEBUG ONLY -------------------------
 			}
 		} else {
 			//If any other way of paying is chosen but credit card,
@@ -275,43 +277,53 @@ public class Checkout implements ActionListener {
         passDialog = parentPane.createDialog(frame, title);
 	}
 	
+	//Returns true if and only if input is valid, otherwise false
 	private boolean checkInput() {
-		String errorMessages[] = new String[10];
-		//Could return a string array of faults
-		String toTest = txtCard.getText();
+		List<String> errorList = new LinkedList<String>();
 		
-		try{
-			int test = Integer.parseInt(toTest);
-		} catch (NumberFormatException nfe){
-			errorMessages[0] = "Letter in cardnumber";
+		String toTest = txtCard.getText().trim();
+		if(charInInt(toTest)){
+			errorList.add("Letter in cardnumber");
+			txtCard.setForeground(Color.red);
+		}
+		if(toTest.length() != 16){
+			errorList.add("A cardnumber should consist of 16 digits");
 			txtCard.setForeground(Color.red);
 		}
 		
-		if(toTest.length() != 16){
-			errorMessages[1] = "A cardnumber should consist of 16 digits";
+		toTest = txtSec.getText().trim();
+		if(charInInt(toTest)){
+			errorList.add("Letter in verification code");
 			txtCard.setForeground(Color.red);
 		}
+		if(toTest.length() != 3){
+			errorList.add("A verification code should consist of 3 digits");
+			txtSec.setForeground(Color.red);
+		}
 		
-		toTest = txtSec.getText();
-		
+		if(errorList.isEmpty()){
+			return true;
+		} else{
+			StringBuilder sb = new StringBuilder();
+			for(String s : errorList){
+				sb.append(s + "\n");
+			}
+			JOptionPane.showMessageDialog(frame, sb.toString().trim(), 
+					"Fel i inmatning", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
+	}
+	
+	//Determines if there is a char in a String or if it 
+	private boolean charInInt(String s) {
+		char[] fuuu = s.toCharArray();
 		try{
-			int test = Integer.parseInt(toTest);
-		} catch (NumberFormatException nfe){
-			errorMessages[3] = "Letter in securitynumber";
-			txtSec.setForeground(Color.red);
+			for(Character test: fuuu){
+				Integer.parseInt(test.toString());
+			}
+		} catch(NumberFormatException nfe){
+			return true;
 		}
-		
-		if(toTest.length() != 16){
-			errorMessages[4] = "A securitynumber should consist of 3 digits";
-			txtSec.setForeground(Color.red);
-		}
-		
-		toTest = txtName.getText();
-		
-		System.out.println(errorMessages[1]);
-		System.out.println(errorMessages[2]);
-		System.out.println(errorMessages[3]);
-		System.out.println(errorMessages[4]);
 		
 		return false;
 	}
