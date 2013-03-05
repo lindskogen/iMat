@@ -218,6 +218,11 @@ public class Settings extends JFrame {
 		textField.setColumns(10);
 		contentPane.setLayout(gl_contentPane);
 		
+		
+		//TODO
+		//Read from iMat DB
+		
+		//Listener for the save button.
 		saveChanges.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 				//card number check
@@ -253,6 +258,8 @@ public class Settings extends JFrame {
 					System.out.println(CVCText.getText().length() + "fel längd");
 					CVC.setText("<html> <font color='red'>CVC*</font></html>");
 				}
+				
+				
 				//TODO
 				//Save state to DB
 				
