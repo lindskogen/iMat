@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JComponent;
+
 import org.apache.commons.lang3.StringUtils;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
@@ -94,7 +96,8 @@ public class ShopModel {
 		}
 	}
 	
-	public void fuzzySearch(String str) {
+	public List<String> fuzzySearch(String str) {
+		long oldValue = System.currentTimeMillis();
 		Map<String, Integer> keywords = new HashMap<String,Integer>();
 		int lowest = -1;
 		for (Product p : imat.getProducts()) {
@@ -112,7 +115,9 @@ public class ShopModel {
 				res.add(s);
 			}
 		}
+		System.out.println(System.currentTimeMillis() - oldValue);
 		pcs.firePropertyChange("fuzzySearch", null, res);
+		return res;
 	}
 	
 	public ShoppingCart getShoppingCart() {
@@ -138,11 +143,11 @@ public class ShopModel {
 		pcs.firePropertyChange("cart", null, cart);
 	}
 	
-	public void addPropertyChangeListeter(PropertyChangeListener pcl) {
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
 		pcs.addPropertyChangeListener(pcl);
 	}
 	
-	public void removePropertyChangeListeter(PropertyChangeListener pcl) {
+	public void removePropertyChangeListener(PropertyChangeListener pcl) {
 		pcs.removePropertyChangeListener(pcl);
 	}
 	public void delete(ProductList pList, ShoppingItem item) {				
@@ -171,5 +176,13 @@ public class ShopModel {
 
 	public List<ProductList> getLists() {
 		return userLists;
+	}
+
+	public void showNotification(JComponent component) {
+		pcs.firePropertyChange("notify", null, component);
+	}
+
+	public void closeNotification() {
+		pcs.firePropertyChange("unNotify", null, null);
 	}
 }
