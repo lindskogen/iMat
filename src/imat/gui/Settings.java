@@ -56,7 +56,7 @@ public class Settings extends JFrame {
 	 * Create the frame.
 	 */
 	public Settings() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Coffer\\git\\iMat\\src\\imat\\resources\\settingsIcon.png"));
+		setIconImage(Toolkit.getDefaultToolkit().getImage("/imat/resources/settingsIcon.png"));
 		setTitle("Inst\u00E4llningar");
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
