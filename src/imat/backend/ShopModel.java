@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -29,6 +31,7 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 public class ShopModel {
 	private List<ProductList> userLists = new LinkedList<ProductList>();
 	private List<ProductList> historyLists = new LinkedList<ProductList>();
+	private ProductList undoList;
 	private ProductList cart = new ProductList("Cart");
 	private IMatDataHandler imat = IMatDataHandler.getInstance();
 	private ShoppingCart sCart;
@@ -159,7 +162,16 @@ public class ShopModel {
 			pcs.firePropertyChange("lists", null, getLists());
 		}
 	}
+	public void undoDeleteList() {
+		if (undoList != null) {
+			userLists.add(undoList);
+			undoList = null;
+			pcs.firePropertyChange("lists", null, getLists());
+		}
+	}
+
 	public void delete(ProductList pList) {
+		undoList = pList;
 		userLists.remove(pList);
 		pcs.firePropertyChange("lists", null, getLists());
 	}

@@ -45,6 +45,7 @@ public class CenterView extends JPanel implements ActionListener, PropertyChange
 
 		ntfyPanel = new JPanel();
 		ntfyPanel.setLayout(new BorderLayout());
+		ntfyPanel.setBackground(Color.YELLOW);
 		add(ntfyPanel, BorderLayout.NORTH);
 		ntfyPanel.setPreferredSize(NTFY_CLOSED);
 
@@ -59,6 +60,7 @@ public class CenterView extends JPanel implements ActionListener, PropertyChange
 		closeBtn.setContentAreaFilled(false);
 		closeBtn.addActionListener(this);
 		ntfyPanel.add(closeBtn, BorderLayout.EAST);
+		content.setOpaque(false);
 		ntfyPanel.add(content, BorderLayout.CENTER);
 		ntfyPanel.setPreferredSize(NTFY_OPEN);
 		revalidate();

@@ -276,7 +276,6 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			Object oList = evt.getNewValue();
 			if (oList instanceof List<?>) {
 				JPanel panel = new JPanel();
-				panel.setBackground(Color.YELLOW);
 				List<String> sList = (List<String>) oList;
 				panel.add(new JLabel(((sList.size()>0)?"Menade du: ":"Hittade inga resultat.")));
 				if (sList.size() > 0) {
