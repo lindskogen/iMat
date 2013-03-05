@@ -1,10 +1,13 @@
 package imat.backend;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 import org.jdesktop.swingx.treetable.AbstractMutableTreeTableNode;
 
@@ -15,8 +18,9 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 	private ProductList list;
 	private ShopModel model;
 	
-	private final String ADD = "cart";
-	private final String DEL = "delete";
+	private final String AC_ADD = "cart";
+	private final String AC_DEL = "delete";
+	private final String AC_UNDO = "undo";
 	
 	private final ImageIcon BTN_BUY = new ImageIcon(ListNode.class.getResource("/imat/resources/buyButtonMini.PNG"));
 	private final ImageIcon BTN_DEL = new ImageIcon(ListNode.class.getResource("/imat/resources/delete.PNG"));
@@ -57,12 +61,12 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 			return list.getPrice();
 		case 3:
 			JButton toCart = new JButton(BTN_BUY);
-			toCart.setActionCommand(ADD);
+			toCart.setActionCommand(AC_ADD);
 			toCart.addActionListener(this);
 			return toCart;
 		case 4:
 			JButton delete = new JButton(BTN_DEL);
-			delete.setActionCommand(DEL);
+			delete.setActionCommand(AC_DEL);
 			delete.addActionListener(this);
 			return delete;
 		}
@@ -71,12 +75,27 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(ADD)) {
+		switch (event.getActionCommand()) {
+		case AC_ADD:
 			System.out.println("ADD: " + list.getName());
 			model.addToCart(getList());
-		} else if (event.getActionCommand().equals(DEL)) {
+			break;
+		case AC_DEL:
 			System.out.println("DEL: " + list.getName());
 			model.delete(getList());
+			JPanel panel = new JPanel();
+			panel.add(new JLabel("Du raderade \"" + getList().getName() + "\"!"));
+			JButton btn = new JButton("Ångra");
+			btn.setBackground(Color.YELLOW);
+			btn.addActionListener(this);
+			btn.setActionCommand(AC_UNDO);
+			panel.add(btn);
+			model.showNotification(panel);
+			break;
+		case AC_UNDO:
+			model.undoDeleteList();
+			model.closeNotification();
+			break;
 		}
 	}
 }

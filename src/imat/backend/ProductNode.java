@@ -17,7 +17,7 @@ public class ProductNode extends AbstractMutableTreeTableNode implements ActionL
 	private ShoppingItem item;
 	private ShopModel model;
 	
-	private final String DEL = "delete";
+	private final String AC_DEL = "delete";
 	
 	private final ImageIcon BTN_DEL = new ImageIcon(ListNode.class.getResource("/imat/resources/delete.PNG"));
 	
@@ -50,7 +50,7 @@ public class ProductNode extends AbstractMutableTreeTableNode implements ActionL
 			return new JButton();
 		case 4:
 			JButton delete = new JButton(BTN_DEL);
-			delete.setActionCommand(DEL);
+			delete.setActionCommand(AC_DEL);
 			delete.addActionListener(this);
 			return delete;
 		}
@@ -59,7 +59,7 @@ public class ProductNode extends AbstractMutableTreeTableNode implements ActionL
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getActionCommand().equals(DEL)) {
+		if (event.getActionCommand().equals(AC_DEL)) {
 			System.out.println("DEL: " + item.getProduct().getName());
 			TreeTableNode ttn = getParent();
 			if (ttn instanceof ListNode) {

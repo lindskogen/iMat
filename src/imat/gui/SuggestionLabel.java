@@ -1,6 +1,7 @@
 package imat.gui;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.util.Hashtable;
@@ -20,6 +21,7 @@ public class SuggestionLabel extends JButton {
 		setFont(getFont().deriveFont(map));
 		setActionCommand("search");
 		addActionListener(listener);
+		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	}
 	
 }
