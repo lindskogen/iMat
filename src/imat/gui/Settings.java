@@ -60,11 +60,12 @@ public class Settings extends JFrame {
 	 * Create the frame.
 	 */
 	public Settings() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage("/imat/resources/settingsIcon.png"));
+		setResizable(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Settings.class.getResource("/imat/resources/settingsIcon.png")));
 		setTitle("Inst\u00E4llningar");
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 328, 420);
+		setBounds(100, 100, 338, 420);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -97,23 +98,23 @@ public class Settings extends JFrame {
 		JButton grayButton = new JButton("");
 		grayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		grayButton.setMargin(new Insets(0, 0, 0, 0));
-		grayButton.setIcon(new ImageIcon("/imat/resources/themes/gray.PNG"));
+		grayButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/gray.PNG")));
 		general.add(grayButton, "cell 0 0,alignx center");
 		
 		JButton blueButton = new JButton("");
 		blueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		blueButton.setIcon(new ImageIcon("/imat/resources/themes/darkBlue.PNG"));
+		blueButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/darkBlue.PNG")));
 		blueButton.setMargin(new Insets(0, 0, 0, 0));
 		general.add(blueButton, "cell 1 0");
 		
 		JButton lGreenButton = new JButton("");
 		lGreenButton.setMargin(new Insets(0, 0, 0, 0));
-		lGreenButton.setIcon(new ImageIcon("/imat/resources/themes/lightGreen.PNG"));
+		lGreenButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/lightGreen.PNG")));
 		lGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		general.add(lGreenButton, "cell 2 0");
 		
 		JButton dGreenButton = new JButton("");
-		dGreenButton.setIcon(new ImageIcon("/imat/resources/themes/darkGreen.PNG"));
+		dGreenButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/darkGreen.PNG")));
 		dGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		dGreenButton.setMargin(new Insets(0, 0, 0, 0));
 		general.add(dGreenButton, "cell 3 0");
@@ -134,16 +135,16 @@ public class Settings extends JFrame {
 		JButton goldButton = new JButton("");
 		goldButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		goldButton.setMargin(new Insets(0, 0, 0, 0));
-		goldButton.setIcon(new ImageIcon("/imat/resources/themes/gold.PNG"));
+		goldButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/gold.PNG")));
 		general.add(goldButton, "cell 0 2");
 		
 		JButton redButton = new JButton("");
-		redButton.setIcon(new ImageIcon("/imat/resources/themes/red.PNG"));
+		redButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/red.PNG")));
 		redButton.setMargin(new Insets(0, 0, 0, 0));
 		general.add(redButton, "cell 1 2");
 		
 		JButton violetButton = new JButton("");
-		violetButton.setIcon(new ImageIcon("/imat/resources/themes/violet.PNG"));
+		violetButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/violet.PNG")));
 		violetButton.setMargin(new Insets(0, 0, 0, 0));
 		violetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		violetButton.setActionCommand("");
@@ -151,7 +152,7 @@ public class Settings extends JFrame {
 		
 		JButton blackButton = new JButton("");
 		blackButton.setMargin(new Insets(0, 0, 0, 0));
-		blackButton.setIcon(new ImageIcon("/imat/resources/themes/black.PNG"));
+		blackButton.setIcon(new ImageIcon(Settings.class.getResource("/imat/resources/themes/black.PNG")));
 		blackButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		general.add(blackButton, "cell 3 2");
 		
@@ -262,7 +263,8 @@ public class Settings extends JFrame {
 		cardNbrPanel.setAlignmentY(0.0f);
 		cardNbrPanel.setAlignmentX(0.0f);
 		payment.add(cardNbrPanel);
-		cardNbrPanel.setLayout(new MigLayout("", "[150.00,left][50.00]", "[][]"));
+		cardNbrPanel.setLayout(new MigLayout("", "[150.00,left][56.00]", "[][]"));
+		
 		
 		final JLabel cardNbr = new JLabel("Kortnummer");
 		cardNbrPanel.add(cardNbr, "cell 0 0");
