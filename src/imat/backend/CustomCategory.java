@@ -6,7 +6,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ProductCategory;
 
-public enum CustomCategories {
+public enum CustomCategory {
 
 	BAKE("Baka", CustomProductLists.getProductList("Baka"), false, false),
 	POD("Baljväxter", IMatDataHandler.getInstance().getProducts(ProductCategory.POD), false, false),
@@ -42,7 +42,8 @@ public enum CustomCategories {
 	private List<Product> products;
 	private boolean isParent, isMain;
 
-	CustomCategories(String titel, List<Product> products, boolean isParent, boolean isMain) {
+	CustomCategory(String titel, List<Product> products, boolean isParent,
+			boolean isMain) {
 		this.titel = titel;
 		this.products = products;
 		this.isParent = isParent;
@@ -52,28 +53,29 @@ public enum CustomCategories {
 	public String getTitle() {
 		return titel;
 	}
-	
+
 	public List<Product> getProducts() {
 		return products;
 	}
-	
+
 	public boolean isParent() {
 		return isParent;
 	}
-	
+
 	public boolean isMain() {
 		return isMain;
 	}
 
-	public static CustomCategories[] getSubCategories(CustomCategories p) {
+	public static CustomCategory[] getSubCategories(CustomCategory p) {
 		switch (p) {
 		case DRINKS:
-			return new CustomCategories[] { COLD_DRINKS, HOT_DRINKS };
+			return new CustomCategory[] { COLD_DRINKS, HOT_DRINKS };
 		case GREEN:
-			return new CustomCategories[] { POD, BERRYS, CITRUS_FRUIT,
+			return new CustomCategory[] { POD, BERRYS, CITRUS_FRUIT,
 					EXOTIC_FRUIT, VEGETABLE_FRUIT, CABBAGE, MELONS, FRUIT };
 		case PANTRY:
-			return new CustomCategories[] {BAKE, SPICES, SNACKS, POTATOES, RICE, SWEET};
+			return new CustomCategory[] { BAKE, SPICES, SNACKS, POTATOES, RICE,
+					SWEET };
 		}
 		throw new IllegalArgumentException();
 	}

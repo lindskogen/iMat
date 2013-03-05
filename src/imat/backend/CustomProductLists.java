@@ -1,6 +1,7 @@
 package imat.backend;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
@@ -22,6 +23,10 @@ public class CustomProductLists {
 		spices = IDH.getProducts(ProductCategory.HERB);
 		spices.add(IDH.getProduct(94));
 		rice = IDH.findProducts("ris");
+		Collections.sort(potatoes, new ProductNameSort());
+		Collections.sort(bake, new ProductNameSort());
+		Collections.sort(spices, new ProductNameSort());
+		Collections.sort(rice, new ProductNameSort());
 	}
 
 	public static List<Product> getProductList(String s) {

@@ -1,7 +1,7 @@
 package imat.gui;
 
 import imat.backend.CategoryNode;
-import imat.backend.CustomCategories;
+import imat.backend.CustomCategory;
 import imat.backend.CustomProductLists;
 import imat.backend.ShopModel;
 
@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,19 +41,18 @@ import javax.swing.tree.TreePath;
 import org.jdesktop.swingx.JXTree;
 import org.jdesktop.swingx.decorator.ColorHighlighter;
 import org.jdesktop.swingx.decorator.HighlightPredicate;
-import javax.swing.ImageIcon;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 
-public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
-
+public class NavigatorView extends JPanel implements ActionListener,
+		PropertyChangeListener, KeyListener {
 
 	private JXTree tree;
 	private static ProductsView view;
 	private JLabel searchLabel;
 	private JTextField searchField;
-	private static CustomCategories currentCategory;
+	private static CustomCategory currentCategory;
 	private JLabel favouriteLabel;
 
 	private ShopModel model;
@@ -60,7 +60,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private JSeparator separator;
 	private JButton btnInstllningar;
 	private IMatDataHandler imat;
-	
+
 	/**
 	 * Create the panel.
 	 */
@@ -73,12 +73,11 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		setPreferredSize(new Dimension(250, 600));
 		view = new ProductsView(this.model);
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
-		for (CustomCategories c : CustomCategories.values()) {
+		for (CustomCategory c : CustomCategory.values()) {
 			if (c.isMain()) {
 				CategoryNode tmp = new CategoryNode(c);
 				if (c.isParent()) {
-					for (CustomCategories t : CustomCategories
-							.getSubCategories(c)) {
+					for (CustomCategory t : CustomCategory.getSubCategories(c)) {
 						tmp.add(new CategoryNode(t));
 					}
 				}
@@ -94,7 +93,6 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		tree.setModel(new DefaultTreeModel(root));
 		tree.setPreferredSize(new Dimension(247, 20));
 		tree.setMaximumSize(new Dimension(1000, 1000));
-		tree.addMouseMotionListener(new TreeMouseMotionListener());
 		tree.addMouseListener(new TreeMouseListener());
 		tree.addTreeExpansionListener(new TreeTreeExpansionListener());
 		tree.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -136,40 +134,75 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		btnInstllningar = new JButton("");
 		btnInstllningar.addActionListener(new BtnInstllningarActionListener());
 		btnInstllningar.setPreferredSize(new Dimension(32, 32));
-		btnInstllningar.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/settingsIcon.png")));
+		btnInstllningar.setIcon(new ImageIcon(NavigatorView.class
+				.getResource("/imat/resources/settingsIcon.png")));
 
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-							.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
-							.addComponent(searchLabel))
+		groupLayout
+				.setHorizontalGroup(groupLayout
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								groupLayout
+										.createSequentialGroup()
+										.addContainerGap()
+										.addGroup(
+												groupLayout
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addGroup(
+																groupLayout
+																		.createParallelGroup(
+																				Alignment.LEADING,
+																				false)
+																		.addComponent(
+																				searchField,
+																				GroupLayout.DEFAULT_SIZE,
+																				221,
+																				Short.MAX_VALUE)
+																		.addComponent(
+																				searchLabel))
+														.addComponent(
+																favouriteLabel)
+														.addComponent(
+																tree,
+																Alignment.TRAILING,
+																GroupLayout.DEFAULT_SIZE,
+																226,
+																Short.MAX_VALUE)
+														.addComponent(
+																separator,
+																GroupLayout.DEFAULT_SIZE,
+																226,
+																Short.MAX_VALUE)
+														.addComponent(
+																btnInstllningar,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE))
+										.addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				groupLayout
+						.createSequentialGroup()
+						.addContainerGap()
+						.addComponent(searchLabel)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(searchField, GroupLayout.PREFERRED_SIZE,
+								30, GroupLayout.PREFERRED_SIZE)
+						.addGap(18)
 						.addComponent(favouriteLabel)
-						.addComponent(tree, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-						.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(searchLabel)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(searchField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(favouriteLabel)
-					.addGap(18)
-					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
-					.addGap(8)
-					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
-					.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
-		);
+						.addGap(18)
+						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 402,
+								Short.MAX_VALUE)
+						.addGap(8)
+						.addComponent(separator, GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(18)
+						.addComponent(btnInstllningar,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addContainerGap()));
 		setLayout(groupLayout);
 		DefaultTreeModel tmp = (DefaultTreeModel) tree.getModel();
 		tmp.reload();
@@ -217,17 +250,6 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		}
 	}
 
-	private class TreeMouseMotionListener extends MouseMotionAdapter {
-		@Override
-		public void mouseMoved(MouseEvent e) {
-			// TreePath path = (TreePath) tree.getPathForLocation(e.getX(),
-			// e.getY());
-			// if (path != null) {
-			// tree.setSelectionPath(path);
-			// }
-		}
-	}
-
 	private class FavouriteLabelMouseListener extends MouseAdapter {
 
 		@Override
@@ -245,7 +267,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		@Override
 		public void mousePressed(MouseEvent e) {
 			tree.setSelectionPath(null);
-			currentCategory = CustomCategories.FAVORITES;
+			currentCategory = CustomCategory.FAVORITES;
 			view.setProducts(IMatDataHandler.getInstance().favorites());
 			DefaultTreeCellRenderer tcr = (DefaultTreeCellRenderer) tree
 					.getWrappedCellRenderer();
@@ -255,10 +277,11 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 					.getBorderSelectionColor()));
 		}
 	}
+
 	private class BtnInstllningarActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Settings.main(null);
-			
+
 		}
 	}
 
@@ -283,7 +306,7 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			if (searchString.length() > 1) {
 				res = imat.findProducts(searchString);
 				if (res.size() == 0) {
-					for (String s: model.fuzzySearch(searchString)) {
+					for (String s : model.fuzzySearch(searchString)) {
 						res.addAll(imat.findProducts(s));
 					}
 				}
@@ -300,7 +323,8 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 			if (oList instanceof List<?>) {
 				JPanel panel = new JPanel();
 				List<String> sList = (List<String>) oList;
-				panel.add(new JLabel(((sList.size()>0)?"Menade du: ":"Hittade inga resultat.")));
+				panel.add(new JLabel(((sList.size() > 0) ? "Menade du: "
+						: "Hittade inga resultat.")));
 				if (sList.size() > 0) {
 					for (String s : sList) {
 						panel.add(new SuggestionLabel(s, this));
@@ -329,12 +353,12 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	public void keyTyped(KeyEvent arg0) {
 	}
 
-	public static CustomCategories getCurrentCategory() {
+	public static CustomCategory getCurrentCategory() {
 		return currentCategory;
 	}
 
-	public static void setCurrentCategory(CustomCategories category) {
+	public static void setCurrentCategory(CustomCategory category) {
 		currentCategory = category;
-		
+
 	}
 }
