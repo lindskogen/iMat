@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -66,10 +67,10 @@ public class Checkout implements ActionListener {
 	private JTextField txtCard;
 	private JTextField txtSec;
 	private JPanel cardPanel;
-	private JComboBox delivery;
-	private JComboBox pickup;
-	private JComboBox year;
-	private JComboBox month;
+	private JComboBox<String> delivery;
+	private JComboBox<String> pickup;
+	private JComboBox<String> year;
+	private JComboBox<String> month;
 	private JTextField txtName;
 	private JRadioButton visa;
 	private JRadioButton mastercard;
@@ -78,6 +79,7 @@ public class Checkout implements ActionListener {
 	private ButtonGroup cardGroup;
 	private ButtonGroup payGroup;
 	private ButtonGroup deliveryGroup;
+	private JComponent[] listComponents;
 	
 	private Action closeWindow = new AbstractAction() {
 	    public void actionPerformed(ActionEvent e) {
@@ -108,6 +110,7 @@ public class Checkout implements ActionListener {
 		initialize();
 		initCardInfo();
 		initPassDialog();
+		listComponents = new JComponent[]{ visa, mastercard, txtCard, txtSec, txtName, year, month};
 	}
 	
 	public void actionPerformed (ActionEvent e){
@@ -135,13 +138,10 @@ public class Checkout implements ActionListener {
 			cardPanel.setBackground(new Color(238,238,238));
 			visa.setBackground(new Color(238,238,238));
 			mastercard.setBackground(new Color(238,238,238));
-			visa.setEnabled(true);
-			mastercard.setEnabled(true);
-			txtCard.setEnabled(true);
-			txtSec.setEnabled(true);
-			txtName.setEnabled(true);
-			year.setEnabled(true);
-			month.setEnabled(true);
+			for (JComponent jc : listComponents) {
+				jc.setEnabled(true);
+			}
+			
 		} else if (e.getActionCommand().equals("finish")){
 			//If the customer wishes to finish his purchase,
 			//store data (and shutdown, for now)
@@ -172,13 +172,9 @@ public class Checkout implements ActionListener {
 			cardPanel.setBackground(Color.LIGHT_GRAY);
 			visa.setBackground(Color.LIGHT_GRAY);
 			mastercard.setBackground(Color.LIGHT_GRAY);
-			visa.setEnabled(false);
-			mastercard.setEnabled(false);
-			txtCard.setEnabled(false);
-			txtSec.setEnabled(false);
-			txtName.setEnabled(false);
-			year.setEnabled(false);
-			month.setEnabled(false);
+			for (JComponent jc : listComponents) {
+				jc.setEnabled(false);
+			}
 		}
 	}
 	
@@ -503,13 +499,13 @@ public class Checkout implements ActionListener {
 		
 		JLabel lblKorttyp = new JLabel("Korttyp");
 		
-		JComboBox comboMonth = new JComboBox();
+		JComboBox<String> comboMonth = new JComboBox<String>();
 		month = comboMonth;
-		comboMonth.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+		comboMonth.setModel(new DefaultComboBoxModel<String>(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
 		
-		JComboBox comboYear = new JComboBox();
+		JComboBox<String> comboYear = new JComboBox<String>();
 		year = comboYear;
-		comboYear.setModel(new DefaultComboBoxModel(new String[] {"13", "14", "15", "16", "17", "18", "19", "20", "21"}));
+		comboYear.setModel(new DefaultComboBoxModel<String>(new String[] {"13", "14", "15", "16", "17", "18", "19", "20", "21"}));
 		GroupLayout gl_panel_4 = new GroupLayout(panel_4);
 		gl_panel_4.setHorizontalGroup(
 			gl_panel_4.createParallelGroup(Alignment.LEADING)
@@ -577,8 +573,8 @@ public class Checkout implements ActionListener {
 		JRadioButton rdbtnHemleveransKr = new JRadioButton("Hemleverans");
 		rdbtnHemleveransKr.setSelected(true);
 		
-		JComboBox deliveryBox = new JComboBox();
-		deliveryBox.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
+		JComboBox<String> deliveryBox = new JComboBox<String>();
+		deliveryBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
 		
 		JRadioButton rdbtnHmtaIButik = new JRadioButton("Hämta i butik");
 		
@@ -590,9 +586,9 @@ public class Checkout implements ActionListener {
 		rdbtnHmtaIButik.addActionListener(this);
 		rdbtnHmtaIButik.setActionCommand("pickup");
 		
-		JComboBox pickupBox = new JComboBox();
+		JComboBox<String> pickupBox = new JComboBox<String>();
 		pickupBox.setEnabled(false);
-		pickupBox.setModel(new DefaultComboBoxModel(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
+		pickupBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Måndag em", "Tisdag fm", "Tisdag em", "Onsdag fm", "Onsdag em"}));
 		
 		delivery = deliveryBox;
 		pickup = pickupBox;

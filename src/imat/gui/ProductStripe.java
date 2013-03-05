@@ -50,6 +50,7 @@ public class ProductStripe extends JPanel implements ActionListener {
 	private JLabel sumLabel;
 	private JSpinner qSpinner;
 	private JLabel suffixLabel;
+	private JButton favButton;
 
 	/**
 	 * Create the panel.
@@ -91,6 +92,9 @@ public class ProductStripe extends JPanel implements ActionListener {
 		
 		suffixLabel = new JLabel("st");
 		suffixLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
+		
+		favButton = new JButton("Fav");
+		favButton.setFont(new Font("Dialog", Font.BOLD, 10));
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -102,6 +106,8 @@ public class ProductStripe extends JPanel implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_panel.createSequentialGroup()
+							.addComponent(favButton)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
 							.addGap(3)
 							.addComponent(suffixLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
@@ -118,7 +124,8 @@ public class ProductStripe extends JPanel implements ActionListener {
 						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 							.addComponent(titleLabel)
 							.addComponent(suffixLabel)
-							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(favButton, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE))
 						.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)

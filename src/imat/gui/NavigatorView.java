@@ -5,6 +5,7 @@ import imat.backend.CustomCategories;
 import imat.backend.CustomProductLists;
 import imat.backend.ShopModel;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -37,16 +38,27 @@ import javax.swing.tree.TreePath;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
+import javax.swing.JSeparator;
+import javax.swing.JButton;
+
+import org.jdesktop.swingx.JXTree;
+import org.jdesktop.swingx.JXTree.DelegatingRenderer;
+import org.jdesktop.swingx.decorator.ColorHighlighter;
+import org.jdesktop.swingx.decorator.HighlightPredicate;
 
 public class NavigatorView extends JPanel implements ActionListener, PropertyChangeListener, KeyListener {
-	private JTree tree;
+
+	private JXTree tree;
 	private static ProductsView view;
 	private JLabel searchLabel;
 	private JTextField searchField;
 	private static CustomCategories currentCategory;
+	private JLabel favouriteLabel;
 
 	private ShopModel model;
 	private final String AC_SEARCH = "search";
+	private JSeparator separator;
+	private JButton btnInstllningar;
 	
 	/**
 	 * Create the panel.
@@ -73,30 +85,33 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 
 		}
 
-		tree = new JTree(root);
+		tree = new JXTree(root);
+		tree.setOpaque(false);
+		tree.setRolloverEnabled(true);
 		tree.setModel(new DefaultTreeModel(root));
 		tree.setPreferredSize(new Dimension(247, 20));
 		tree.setMaximumSize(new Dimension(1000, 1000));
 		tree.addMouseMotionListener(new TreeMouseMotionListener());
-		tree.setBackground(UIManager.getColor("Panel.background"));
 		tree.addMouseListener(new TreeMouseListener());
 		tree.addTreeExpansionListener(new TreeTreeExpansionListener());
-		tree.setFont(new Font("SansSerif", Font.BOLD, 12));
+		tree.setFont(new Font("SansSerif", Font.BOLD, 18));
 		tree.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		tree.setRootVisible(false);
 		tree.setToggleClickCount(1);
 		tree.putClientProperty("JTree.lineStyle", "None");
+		tree.addHighlighter(new ColorHighlighter(HighlightPredicate.ROLLOVER_ROW, 
+			      null, Color.GREEN));
+		tree.setCellRenderer(new DefaultTreeCellRenderer());
 		DefaultTreeCellRenderer tcr = (DefaultTreeCellRenderer) tree
-				.getCellRenderer();
+				.getWrappedCellRenderer();
 		tcr.setLeafIcon(null);
 		tcr.setOpenIcon(null);
 		tcr.setClosedIcon(null);
-		tcr.setBackgroundNonSelectionColor(this.getBackground());
-		tcr.setFont(new Font("SansSerif", Font.BOLD, 16));
-		tcr.setPreferredSize(new Dimension(1000, 20));
+		tcr.setBackgroundNonSelectionColor(UIManager.getColor("Panel.background"));
 
 		searchLabel = new JLabel("Hitta mat");
+		searchLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
 
 		searchField = new JTextField();
 		searchField.setFont(new Font("SansSerif", Font.ITALIC, 12));
@@ -104,49 +119,56 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 		searchField.setActionCommand(AC_SEARCH);
 		searchField.addActionListener(this);
 		searchField.addKeyListener(this);
-
+		
+		favouriteLabel = new JLabel("Favoriter");
+		favouriteLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		favouriteLabel.setOpaque(true);
+		favouriteLabel.addMouseListener(new FavouriteLabelMouseListener());
+		favouriteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		
+		separator = new JSeparator();
+		
+		btnInstllningar = new JButton("Inställningar");
+		
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																tree,
-																GroupLayout.DEFAULT_SIZE,
-																290,
-																Short.MAX_VALUE)
-														.addGroup(
-																groupLayout
-																		.createParallelGroup(
-																				Alignment.LEADING,
-																				false)
-																		.addComponent(
-																				searchField,
-																				GroupLayout.DEFAULT_SIZE,
-																				221,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				searchLabel)))
-										.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(searchLabel)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(searchField, GroupLayout.PREFERRED_SIZE,
-								30, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 519,
-								Short.MAX_VALUE).addContainerGap()));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addGroup(Alignment.LEADING, groupLayout.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+									.addComponent(searchLabel))
+								.addComponent(favouriteLabel, Alignment.LEADING)))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addComponent(btnInstllningar))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(tree, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+								.addComponent(separator, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(searchLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(searchField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(favouriteLabel)
+					.addGap(18)
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+					.addGap(8)
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(btnInstllningar)
+					.addContainerGap())
+		);
 		setLayout(groupLayout);
 		DefaultTreeModel tmp = (DefaultTreeModel) tree.getModel();
 		tmp.reload();
@@ -195,11 +217,26 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 	private class TreeMouseMotionListener extends MouseMotionAdapter {
 		@Override
 		public void mouseMoved(MouseEvent e) {
-			TreePath path = (TreePath) tree.getPathForLocation(e.getX(),
-					e.getY());
-			if (path != null) {
-				tree.setSelectionPath(path);
-			}
+//			TreePath path = (TreePath) tree.getPathForLocation(e.getX(),
+//					e.getY());
+//			if (path != null) {
+//				tree.setSelectionPath(path);
+//			}
+		}
+	}
+	private class FavouriteLabelMouseListener extends MouseAdapter {
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			tree.setSelectionPath(null);
+			favouriteLabel.setBackground(new Color(184, 207, 229));
+		}
+		@Override
+		public void mouseExited(MouseEvent e) {
+			favouriteLabel.setBackground(new Color(238, 238, 238));
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {
+			view.setProducts(IMatDataHandler.getInstance().favorites());
 		}
 	}
 
@@ -255,4 +292,8 @@ public class NavigatorView extends JPanel implements ActionListener, PropertyCha
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
+
+	public static CustomCategories getCurrentCategory() {
+		return currentCategory;
+	}
 }
