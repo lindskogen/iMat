@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,8 +52,10 @@ public class ShopModel {
 		sCart = imat.getShoppingCart();
 		readList("lists.txt", userLists);
 		historyLists = new LinkedList<ProductList>();
-		for (Order o : imat.getOrders()) {
-			ProductList pl = new ProductList(o.getItems());
+		List<Order> orders = imat.getOrders();
+		Collections.sort(orders, new OrderSorter());
+		for (Order o : orders) {
+			ProductList pl = new ProductList(o.getItems(), o);
 			pl.setName("Ordernr: " + o.getOrderNumber());
 			historyLists.add(pl);
 		}
@@ -183,6 +187,9 @@ public class ShopModel {
 			undoList = pList;
 			pcs.firePropertyChange("lists", null, getLists());
 		} else if (historyLists.remove(pList)) {
+			if (imat.getOrders().remove(pList.getOrder())) {
+				System.out.println("Order deleted!");
+			}
 			pcs.firePropertyChange("history", null, getHistoryLists());
 		} else {
 			System.err.println("Tried to delete list: " + pList.getName());
@@ -218,5 +225,11 @@ public class ShopModel {
 			pcs.firePropertyChange("cart", null, getProductCart());
 		}
 		pcs.firePropertyChange("switch", null, destination);
+	}
+	private class OrderSorter implements Comparator<Order> {
+		@Override
+		public int compare(Order o1, Order o2) {
+			return o2.getOrderNumber() - o1.getOrderNumber();
+		}
 	}
 }

@@ -52,7 +52,6 @@ public class MainFrame {
 	 */
 	public MainFrame() {
 		initialize();
-		
 	}
 
 	/**

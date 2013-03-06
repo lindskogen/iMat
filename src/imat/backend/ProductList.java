@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
@@ -20,11 +21,12 @@ import se.chalmers.ait.dat215.project.ShoppingItem;
 public class ProductList implements Iterable<ShoppingItem>, Cloneable {
 	private List<ShoppingItem> list;
     private String name;
+	private Order order;
     
     private static ShoppingItemSorter ps = new ShoppingItemSorter();
     
     /**
-     * Creates a list with the name "Namnlös".
+     * Creates a list with the name "unnamed".
      */
     public ProductList() {
 	this("unnamed");
@@ -32,9 +34,14 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
     
     public ProductList(List<ShoppingItem> items) {
 	this();
-	for (ShoppingItem item : items) {
-		list.add(item);
-	}
+		for (ShoppingItem item : items) {
+			list.add(item);
+		}
+    }
+
+    public ProductList(List<ShoppingItem> items, Order o) {
+	this(items);
+		this.order = o;
     }
 
     /**
@@ -68,6 +75,9 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
         }
         sc.close();
         return pl;
+    }
+    public Order getOrder() {
+	return order;
     }
     
     private static ShoppingItem fromString(String s) {
