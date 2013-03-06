@@ -137,11 +137,6 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 			//If the customer wishes to finish his purchase,
 			//store data (and shutdown, for now)
 			
-			//---------------------DEBUG ONLY -------------------------
-			//System.out.println("The password is now Test123");
-			//imdh.getUser().setPassword("Test123");
-			//---------------------DEBUG ONLY -------------------------
-			
 			if(checkInput()){ //If input is valid continues with authentication			
 				if(shallPass()){ //If properly authenticated, finalises purchase
 					JOptionPane.showMessageDialog(this, "Tack för ditt köp");
@@ -149,11 +144,6 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 						saveCardInfo();
 					}
 					imdh.placeOrder();
-					
-					//---------------------DEBUG ONLY -------------------------
-					imdh.shutDown();
-					System.exit(1);
-					//---------------------DEBUG ONLY -------------------------
 				}
 			}
 		} else {
