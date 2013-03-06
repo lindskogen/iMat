@@ -57,7 +57,7 @@ public class MainFrame {
 	 */
 	public MainFrame() {
 		initialize();
-		
+		IMatDataHandler.getInstance().reset();
 	}
 
 	/**
