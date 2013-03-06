@@ -218,17 +218,17 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	//Amends the displayed sum with the specified value
 	private void amendSum (double d) {
 		sum += d;
-		sumLabel.setText("Summa: " + format.format(sum) + " kr");
+		sumLabel.setText("Summa: " + format.format(sum));
 	}
 	
 	private void setSum(double d) {
 		sum = d;
-		sumLabel.setText("Summa: " + format.format(sum) + " kr");
+		sumLabel.setText("Summa: " + format.format(sum));
 	}
 	
 	private void setCart(double d){
 		shoppingCart = d;
-		cartLabel.setText("Varukorg: " + format.format(shoppingCart) + " kr");
+		cartLabel.setText("Varukorg: " + format.format(shoppingCart));
 	}
 	
 	//Gets the chosen year for the credit cards validity and returns it
@@ -603,14 +603,14 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		JLabel label_2 = new JLabel("");
 		label_2.setIcon(new ImageIcon(Checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
 		
-		JLabel lblSumma = new JLabel("Summa: " + format.format(sum) + " kr");
+		JLabel lblSumma = new JLabel("Summa: " + format.format(sum));
 		sumLabel = lblSumma;
 		lblSumma.setFont(new Font("Dialog", Font.BOLD, 16));
 		
-		JLabel lblLeveransKr = new JLabel("Leverans: " + format.format(DELIVERY) + " kr");
+		JLabel lblLeveransKr = new JLabel("Leverans: " + format.format(DELIVERY));
 		deliveryLabel = lblLeveransKr;
 		
-		JLabel lblVarukorgKr = new JLabel("Varukorg: " + format.format(shoppingCart) + " kr");
+		JLabel lblVarukorgKr = new JLabel("Varukorg: " + format.format(shoppingCart));
 		cartLabel = lblVarukorgKr;
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
