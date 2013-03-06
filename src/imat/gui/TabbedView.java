@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -23,20 +22,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.jdesktop.swingx.JXTreeTable;
-import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
-import org.jdesktop.swingx.treetable.TreeTableModel;
-
 public class TabbedView extends JPanel implements PropertyChangeListener, ActionListener {
-	private JXTreeTable shoppingBasket;
-	private JXTreeTable lists;
-	private JXTreeTable history;
+	private IMatTreeTable shoppingBasket;
+	private IMatTreeTable lists;
+	private IMatTreeTable history;
 	private JLabel totalSum;
 	private JTabbedPane tabbedPane;
 	private JButton createListBtn;
 	private JButton toCheckoutBtn;
-	
-	private List<String> headers;
 	
 	private ShopModel model;
 	
@@ -121,22 +114,11 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		JScrollPane historyScroll = new JScrollPane(lists);
 		listPanel.add(historyScroll, BorderLayout.CENTER);
 		
-		headers = new ArrayList<String>(5);
-		headers.add("Namn");
-		headers.add("Antal");
-		headers.add("Pris");
-		headers.add("");
-		headers.add("");
-		
 		setLists(model.getLists());
 	}
 	
-	private TreeTableModel toModel(ListNode l) {
-		return new DefaultTreeTableModel(l, headers);
-	}
-	
 	private void setShoppingBasket(ProductList list) {
-		shoppingBasket.setTreeTableModel(toModel(new ListNode(list, model)));
+		shoppingBasket.setTreeTableModel(new ListNode(list, model));
 		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(list.getPrice()));
 	}
 	private void setLists(List<ProductList> list) {
@@ -144,14 +126,14 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		lists.setTreeTableModel(toModel(root));
+		lists.setTreeTableModel(root);
 	}
 	private void setHistory(List<ProductList> list) {
 		ListNode root = new ListNode();
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		history.setTreeTableModel(toModel(root));
+		history.setTreeTableModel(root);
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {

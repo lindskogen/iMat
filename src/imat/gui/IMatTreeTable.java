@@ -1,5 +1,7 @@
 package imat.gui;
 
+import imat.backend.ListNode;
+
 import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -15,6 +17,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
@@ -30,10 +34,16 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
+import org.jdesktop.swingx.treetable.TreeTableModel;
 
 public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 
 	private DropTarget dt;
+	
+	private boolean initiated;
+	
+	private static List<String> headers;
 
 	public IMatTreeTable(boolean canDrop) {
 		super();
@@ -45,7 +55,37 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 		if (canDrop) {
 			dt = new DropTarget(this, this);
 		}
+		addMouseListener(new ButtonMouseListener(this));
+		
+		if (headers == null) {
+			headers = new ArrayList<String>(5);
+			headers.add("Namn");
+			headers.add("Antal");
+			headers.add("Pris");
+			headers.add("");
+			headers.add("");
+		}
+	}
 
+	public void dragEnter(DropTargetDragEvent arg0) {}
+	public void dragExit(DropTargetEvent arg0) {}
+	public void dragOver(DropTargetDragEvent arg0) {}
+	public void dropActionChanged(DropTargetDragEvent arg0) {}
+
+	private TreeTableModel toModel(ListNode l) {
+		return new DefaultTreeTableModel(l, headers);
+	}
+	
+	public void setTreeTableModel(ListNode node) {
+		super.setTreeTableModel(toModel(node));
+		if (!initiated) {
+			afterInit();
+			super.setTreeTableModel(toModel(node));
+			initiated = true;
+		}
+	}
+	
+	private void afterInit() {
 		setEditingColumn(0);
 		//setEditingColumn(1);
 		TableColumnModel m = getColumnModel();
@@ -63,14 +103,8 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 		if (m.getColumn(4) != null) {
 			m.getColumn(4).setCellRenderer(renderer);
 		}
-		addMouseListener(new ButtonMouseListener(this));
 	}
-
-	public void dragEnter(DropTargetDragEvent arg0) {}
-	public void dragExit(DropTargetEvent arg0) {}
-	public void dragOver(DropTargetDragEvent arg0) {}
-	public void dropActionChanged(DropTargetDragEvent arg0) {}
-
+	
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		Transferable tr = dtde.getTransferable();
@@ -136,6 +170,7 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 				Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			JButton button = (JButton) value;
 			button.setBorderPainted(false);
+			button.setOpaque(false);
 			if (isSelected) {
 				button.setForeground(table.getSelectionForeground());
 				button.setBackground(table.getSelectionBackground());
