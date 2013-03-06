@@ -33,6 +33,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	private JXTreeTable history;
 	private JLabel totalSum;
 	private JTabbedPane tabbedPane;
+	private JButton createListBtn;
+	private JButton toCheckoutBtn;
 	
 	private List<String> headers;
 	
@@ -70,12 +72,12 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		JPanel panel = new JPanel();
 		panel_1.add(panel, BorderLayout.SOUTH);
 		
-		JButton createListBtn = new JButton("Skapa Lista");
+		createListBtn = new JButton("Skapa Lista");
 		panel.add(createListBtn);
 		createListBtn.addActionListener(this);
 		createListBtn.setActionCommand(AC_CART_LIST);
 		
-		JButton toCheckoutBtn = new JButton("Till Kassan");
+		toCheckoutBtn = new JButton("Till Kassan");
 		toCheckoutBtn.addActionListener(this);
 		toCheckoutBtn.setActionCommand(AC_CHECKOUT);
 		panel.add(toCheckoutBtn);
@@ -155,7 +157,11 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case "cart":
-			setShoppingBasket(model.getProductCart());
+			ProductList pl = model.getProductCart();
+			boolean itemsInCart = pl.size() > 0;
+			createListBtn.setEnabled(itemsInCart);
+			toCheckoutBtn.setEnabled(itemsInCart);
+			setShoppingBasket(pl);
 			tabbedPane.setSelectedIndex(0);
 			break;
 		case "history":
