@@ -161,7 +161,8 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 				Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			JButton button = (JButton) value;
 			button.setBorderPainted(false);
-			//button.setOpaque(false);
+//			button.setOpaque(false);
+			button.setContentAreaFilled(false);
 			if (isSelected) {
 				button.setForeground(table.getSelectionForeground());
 				button.setBackground(table.getSelectionBackground());

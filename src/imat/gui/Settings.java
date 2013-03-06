@@ -267,7 +267,7 @@ public class Settings extends JFrame {
 		cardNumberText.setPreferredSize(new Dimension(6, 16));
 		cardNumberText.setColumns(10);
 
-		CVCText = new JTextField(card.getVerificationCode());
+		CVCText = new JTextField(card.getVerificationCode() + "");
 		CVCText.setColumns(3);
 
 		JPanel cardOwnerPanel = new JPanel();
@@ -675,6 +675,8 @@ public class Settings extends JFrame {
 					if (cardNumberCheck(CVCNoSpace)) {
 						CVC.setText("CVC");
 						cardCVCError = false;
+						card.setVerificationCode(Integer.parseInt(CVCText
+								.getText()));
 						System.out.println("OK");
 					} else {
 						System.out.println("ej digit");
@@ -705,10 +707,11 @@ public class Settings extends JFrame {
 				card.setHoldersName(textField.getText());
 				card.setValidYear((int) yearBox.getSelectedItem());
 				card.setValidMonth((int) monthBox.getSelectedItem());
-			if(!IMatDataHandler.getInstance().isCustomerComplete()) {
-				tabbedPane.setSelectedIndex(0);
-				
-			}else if (IMatDataHandler.getInstance().isCustomerComplete() && !cardNbrError && !cardCVCError ) {
+				if (!IMatDataHandler.getInstance().isCustomerComplete()) {
+					tabbedPane.setSelectedIndex(0);
+
+				} else if (IMatDataHandler.getInstance().isCustomerComplete()
+						&& !cardNbrError && !cardCVCError) {
 					dispose();
 				}
 
