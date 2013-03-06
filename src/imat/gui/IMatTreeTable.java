@@ -1,6 +1,7 @@
 package imat.gui;
 
 import imat.backend.ListNode;
+import imat.backend.ProductList;
 
 import java.awt.Component;
 import java.awt.datatransfer.DataFlavor;
@@ -41,22 +42,15 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 
 	private DropTarget dt;
 	
-	private boolean initiated;
-	
 	private static List<String> headers;
+	private final static ImageIcon ICN_LIST = new ImageIcon(IMatTreeTable.class.getResource("/imat/resources/menuListIcon.PNG"));
 
-	public IMatTreeTable(boolean canDrop) {
+	public IMatTreeTable(ListNode root, boolean canDrop) {
 		super();
-		ImageIcon listIcon = new ImageIcon(TabbedView.class.getResource("/imat/resources/menuListIcon.PNG"));
-		setClosedIcon(listIcon);
-		setOpenIcon(listIcon);
-		setLeafIcon(null);
 
 		if (canDrop) {
 			dt = new DropTarget(this, this);
 		}
-		addMouseListener(new ButtonMouseListener(this));
-		
 		if (headers == null) {
 			headers = new ArrayList<String>(5);
 			headers.add("Namn");
@@ -65,6 +59,7 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 			headers.add("");
 			headers.add("");
 		}
+		setTreeTableModel(root);
 	}
 
 	public void dragEnter(DropTargetDragEvent arg0) {}
@@ -76,18 +71,13 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 		return new DefaultTreeTableModel(l, headers);
 	}
 	
-	public void setTreeTableModel(ListNode node) {
-		super.setTreeTableModel(toModel(node));
-		if (!initiated) {
-			afterInit();
-			super.setTreeTableModel(toModel(node));
-			initiated = true;
-		}
-	}
-	
-	private void afterInit() {
-		setEditingColumn(0);
-		//setEditingColumn(1);
+	public void setTreeTableModel(ListNode root) {
+		super.setTreeTableModel(toModel(root));
+
+		setClosedIcon(ICN_LIST);
+		setOpenIcon(ICN_LIST);
+		setLeafIcon(null);
+
 		TableColumnModel m = getColumnModel();
 
 		m.getColumn(1).setMaxWidth(40);
@@ -103,6 +93,7 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 		if (m.getColumn(4) != null) {
 			m.getColumn(4).setCellRenderer(renderer);
 		}
+		addMouseListener(new ButtonMouseListener(this));
 	}
 	
 	@Override
@@ -170,7 +161,7 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 				Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			JButton button = (JButton) value;
 			button.setBorderPainted(false);
-			button.setOpaque(false);
+			//button.setOpaque(false);
 			if (isSelected) {
 				button.setForeground(table.getSelectionForeground());
 				button.setBackground(table.getSelectionBackground());
@@ -202,11 +193,11 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 			    if (value instanceof JButton) {
 				((JButton) value).doClick();
 			    } else if (value instanceof String && e.getClickCount() == 2) {
-				if(table instanceof JXTreeTable) {
-					JXTreeTable treeTable = (JXTreeTable) table;
-					TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
-					// TODO: get node somehow?
-				}
+					if(table instanceof JXTreeTable) {
+						JXTreeTable treeTable = (JXTreeTable) table;
+						TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
+						// TODO: get node somehow?
+					}
 			    }
 			}
 		}

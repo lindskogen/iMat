@@ -34,8 +34,10 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	private ShopModel model;
 	
 	private final String AC_CART_LIST = "cartToList";
-	
 	private final String AC_CHECKOUT = "switchCheckout";
+	private final String AC_ADD = "cart";
+	private final String AC_DEL = "delete";
+	private final String AC_UNDO = "undo";
 
 	/**
 	 * Create the panel.
@@ -53,7 +55,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		tabbedPane.addTab("Varukorg", null, basketPanel, null);
 		basketPanel.setLayout(new BorderLayout());
 		
-		shoppingBasket = new IMatTreeTable(true);
+		shoppingBasket = new IMatTreeTable(new ListNode(model.getProductCart(), model), true);
 		
 		JScrollPane basketScroll = new JScrollPane(shoppingBasket);
 		basketPanel.add(basketScroll, BorderLayout.CENTER);
@@ -96,54 +98,54 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		verticalStrut_1.setPreferredSize(new Dimension(0, 5));
 		panel_2.add(verticalStrut_1, BorderLayout.SOUTH);
 		
+		lists = new IMatTreeTable(toListNode(model.getLists()), true);
+		
 		JPanel listPanel = new JPanel();
-		tabbedPane.addTab("Listor", null, listPanel, null);
-		listPanel.setLayout(new BorderLayout());
-		
-		lists = new IMatTreeTable(true);
-		
 		JScrollPane listScroll = new JScrollPane(lists);
+		listPanel.setLayout(new BorderLayout());
 		listPanel.add(listScroll, BorderLayout.CENTER);
+		tabbedPane.addTab("Listor", null, listPanel, null);
 		
+		history = new IMatTreeTable(toListNode(model.getHistoryLists()), false);
 		JPanel historyPanel = new JPanel();
-		tabbedPane.addTab("Historik", null, historyPanel, null);
+		JScrollPane historyScroll = new JScrollPane(history);
 		historyPanel.setLayout(new BorderLayout());
+		historyPanel.add(historyScroll, BorderLayout.NORTH);
+		tabbedPane.addTab("Historik", null, historyPanel, null);
 		
-		history = new IMatTreeTable(false);
-		
-		JScrollPane historyScroll = new JScrollPane(lists);
-		listPanel.add(historyScroll, BorderLayout.CENTER);
-		
+		setShoppingBasket(model.getProductCart());
 		setLists(model.getLists());
+		setHistory(model.getHistoryLists());
+		revalidate();
 	}
 	
 	private void setShoppingBasket(ProductList list) {
+		boolean itemsInCart = list.size() > 0;
+		createListBtn.setEnabled(itemsInCart);
+		toCheckoutBtn.setEnabled(itemsInCart);
 		shoppingBasket.setTreeTableModel(new ListNode(list, model));
 		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(list.getPrice()));
 	}
 	private void setLists(List<ProductList> list) {
-		ListNode root = new ListNode();
-		for (ProductList p : list) {
-			root.add(new ListNode(p, model));
-		}
-		lists.setTreeTableModel(root);
+		lists.setTreeTableModel(toListNode(list));
 	}
-	private void setHistory(List<ProductList> list) {
+
+	private ListNode toListNode(List<ProductList> list) {
 		ListNode root = new ListNode();
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		history.setTreeTableModel(root);
+		return root;
+	}
+
+	private void setHistory(List<ProductList> list) {
+		history.setTreeTableModel(toListNode(list));
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
 		case "cart":
-			ProductList pl = model.getProductCart();
-			boolean itemsInCart = pl.size() > 0;
-			createListBtn.setEnabled(itemsInCart);
-			toCheckoutBtn.setEnabled(itemsInCart);
-			setShoppingBasket(pl);
+			setShoppingBasket(model.getProductCart());
 			tabbedPane.setSelectedIndex(0);
 			break;
 		case "history":
