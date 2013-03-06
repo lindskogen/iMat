@@ -53,7 +53,6 @@ public class ShopModel {
 		for (Order o : imat.getOrders()) {
 			ProductList pl = new ProductList(o.getItems());
 			pl.setName("Ordernr: " + o.getOrderNumber());
-			System.out.println(o.getOrderNumber());
 			historyLists.add(pl);
 		}
 	}
@@ -180,13 +179,20 @@ public class ShopModel {
 	}
 
 	public void delete(ProductList pList) {
-		undoList = pList;
-		userLists.remove(pList);
-		pcs.firePropertyChange("lists", null, getLists());
+		if (userLists.remove(pList)) {
+			undoList = pList;
+			pcs.firePropertyChange("lists", null, getLists());
+		} else if (historyLists.remove(pList)) {
+			pcs.firePropertyChange("history", null, getHistoryLists());
+		} else {
+			System.err.println("Tried to delete list: " + pList.getName());
+		}
 	}
 	public void addList(ProductList pList) {
 		ProductList tempList = pList.clone();
-		tempList.setName("Lista " + (userLists.size() + 1) );
+		if (tempList.getName().equals("unnamed")) {
+			tempList.setName("Lista " + (userLists.size() + 1) );
+		}
 		userLists.add(tempList);
 		pcs.firePropertyChange("lists", null, getLists());
 	}
@@ -208,6 +214,9 @@ public class ShopModel {
 	}
 
 	public void switchCenter(String destination) {
+		if (destination.equals("switchProducts")) {
+			pcs.firePropertyChange("cart", null, getProductCart());
+		}
 		pcs.firePropertyChange("switch", null, destination);
 	}
 }

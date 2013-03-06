@@ -18,6 +18,7 @@ import java.util.Locale;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -111,7 +112,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		JPanel historyPanel = new JPanel();
 		JScrollPane historyScroll = new JScrollPane(history);
 		historyPanel.setLayout(new BorderLayout());
-		historyPanel.add(historyScroll, BorderLayout.NORTH);
+		historyPanel.add(historyScroll, BorderLayout.CENTER);
 		tabbedPane.addTab("Historik", null, historyPanel, null);
 		
 		setShoppingBasket(model.getProductCart());
@@ -166,7 +167,9 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals(AC_CART_LIST)) {
-			model.addList(model.getProductCart());
+			ProductList list = model.getProductCart();
+			list.setName(JOptionPane.showInputDialog("Ange ett namn för listan:"));
+			model.addList(list);
 			tabbedPane.setSelectedIndex(1);
 			revalidate();
 		} else if (e.getActionCommand().equals(AC_CHECKOUT)) {
