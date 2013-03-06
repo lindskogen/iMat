@@ -65,6 +65,7 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	private double sum;
 	private double shoppingCart;
 	private JLabel sumLabel;
+	private JLabel cartLabel;
 	private JLabel deliveryLabel;
 	private JCheckBox save;
 	private JTextField txtCard;
@@ -227,6 +228,11 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	private void setSum(int i) {
 		sum = i;
 		sumLabel.setText("Summa: " + sum + " kr");
+	}
+	
+	private void setCart(int i){
+		shoppingCart = i;
+		cartLabel.setText("Varukorg: " + shoppingCart + " kr");
 	}
 	
 	//Gets the chosen year for the credit cards validity and returns it
@@ -606,6 +612,7 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		deliveryLabel = lblLeveransKr;
 		
 		JLabel lblVarukorgKr = new JLabel("Varukorg: " + shoppingCart + " kr");
+		cartLabel = lblVarukorgKr;
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
 		gl_panel_2.setHorizontalGroup(
@@ -682,6 +689,7 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("cart")) {
+			setCart((int)model.getShoppingCart().getTotal());
 			setSum((int)model.getShoppingCart().getTotal());
 			amendSum(DELIVERY);
 		}
