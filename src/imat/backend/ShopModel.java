@@ -179,9 +179,14 @@ public class ShopModel {
 	}
 
 	public void delete(ProductList pList) {
-		undoList = pList;
-		userLists.remove(pList);
-		pcs.firePropertyChange("lists", null, getLists());
+		if (userLists.remove(pList)) {
+			undoList = pList;
+			pcs.firePropertyChange("lists", null, getLists());
+		} else if (historyLists.remove(pList)) {
+			pcs.firePropertyChange("history", null, getHistoryLists());
+		} else {
+			System.err.println("Tried to delete list: " + pList.getName());
+		}
 	}
 	public void addList(ProductList pList) {
 		ProductList tempList = pList.clone();
@@ -209,6 +214,9 @@ public class ShopModel {
 	}
 
 	public void switchCenter(String destination) {
+		if (destination.equals("switchProducts")) {
+			pcs.firePropertyChange("cart", null, getProductCart());
+		}
 		pcs.firePropertyChange("switch", null, destination);
 	}
 }

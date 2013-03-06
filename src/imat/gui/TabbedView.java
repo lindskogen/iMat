@@ -112,7 +112,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		JPanel historyPanel = new JPanel();
 		JScrollPane historyScroll = new JScrollPane(history);
 		historyPanel.setLayout(new BorderLayout());
-		historyPanel.add(historyScroll, BorderLayout.NORTH);
+		historyPanel.add(historyScroll, BorderLayout.CENTER);
 		tabbedPane.addTab("Historik", null, historyPanel, null);
 		
 		setShoppingBasket(model.getProductCart());

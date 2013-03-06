@@ -77,12 +77,15 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 	public void actionPerformed(ActionEvent event) {
 		switch (event.getActionCommand()) {
 		case AC_ADD:
-			System.out.println("ADD: " + list.getName());
+			System.out.println("ADD: " + getList().getName());
 			model.addToCart(getList());
 			break;
 		case AC_DEL:
-			System.out.println("DEL: " + list.getName());
+			System.out.println("DEL: " + getList().getName());
 			model.delete(getList());
+			if (list.getName().matches("Ordernr: \\d+")) {
+				break;
+			}
 			JPanel panel = new JPanel();
 			panel.add(new JLabel("Du raderade \"" + getList().getName() + "\"!"));
 			JButton btn = new JButton("Ångra");
