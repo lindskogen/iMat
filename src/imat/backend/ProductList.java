@@ -27,11 +27,11 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
      * Creates a list with the name "Namnlös".
      */
     public ProductList() {
-    	this("Namnlös");
+	this("unnamed");
     }
     
     public ProductList(List<ShoppingItem> items) {
-	this("Namnlös");
+	this();
 	for (ShoppingItem item : items) {
 		list.add(item);
 	}
@@ -158,7 +158,6 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
 		ProductList nList;
 		try {
 			nList = (ProductList)super.clone();
-			nList.setName(getName());
 			nList.list = new LinkedList<ShoppingItem>();
 			for (ShoppingItem s : this) {
 				nList.add(new ShoppingItem(s.getProduct(), s.getAmount()));				

@@ -53,7 +53,6 @@ public class ShopModel {
 		for (Order o : imat.getOrders()) {
 			ProductList pl = new ProductList(o.getItems());
 			pl.setName("Ordernr: " + o.getOrderNumber());
-			System.out.println(o.getOrderNumber());
 			historyLists.add(pl);
 		}
 	}
@@ -186,7 +185,9 @@ public class ShopModel {
 	}
 	public void addList(ProductList pList) {
 		ProductList tempList = pList.clone();
-		tempList.setName("Lista " + (userLists.size() + 1) );
+		if (tempList.getName().equals("unnamed")) {
+			tempList.setName("Lista " + (userLists.size() + 1) );
+		}
 		userLists.add(tempList);
 		pcs.firePropertyChange("lists", null, getLists());
 	}
