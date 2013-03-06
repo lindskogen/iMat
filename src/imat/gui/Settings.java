@@ -54,6 +54,8 @@ public class Settings extends JFrame {
 	private Customer customer = IMatDataHandler.getInstance().getCustomer();
 	private CreditCard card = IMatDataHandler.getInstance().getCreditCard();
 	private JComboBox monthBox, yearBox;
+	private boolean cardNbrError;
+	private boolean cardCVCError;
 
 	/**
 	 * Launch the application.
@@ -649,18 +651,21 @@ public class Settings extends JFrame {
 						// Passed
 						// just digits, reset text color.
 						cardNbr.setText("Kortnummer");
-						tabbedPane.setSelectedIndex(2);
+						card.setCardNumber(cardNumberText.getText());
+						cardNbrError = false;
 					} else {
 						// Failed.
 						// other characters in string
 						cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
-						tabbedPane.setSelectedIndex(2);
+						tabbedPane.setSelectedIndex(1);
+						cardNbrError = true;
 
 					}
 				} else {
 					System.out.println(cardNumberText.getText().length()
 							+ " fel längd");
 					cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
+					cardNbrError = true;
 				}
 
 				// CVC check
@@ -669,17 +674,20 @@ public class Settings extends JFrame {
 				if (CVCNoSpace.length() == 3) {
 					if (cardNumberCheck(CVCNoSpace)) {
 						CVC.setText("CVC");
+						cardCVCError = false;
 						System.out.println("OK");
 					} else {
 						System.out.println("ej digit");
 						CVC.setText("<html> <font color='red'>CVC*</font></html>");
-						tabbedPane.setSelectedIndex(2);
+						cardCVCError = true;
+						tabbedPane.setSelectedIndex(1);
 					}
 				} else {
 					System.out.println(CVCText.getText().length()
 							+ " fel längd");
 					CVC.setText("<html> <font color='red'>CVC*</font></html>");
-					tabbedPane.setSelectedIndex(2);
+					tabbedPane.setSelectedIndex(1);
+					cardCVCError = true;
 				}
 				customer.setFirstName(nameText.getText());
 				customer.setLastName(textField_1.getText());
@@ -689,7 +697,6 @@ public class Settings extends JFrame {
 				customer.setEmail(emailTextField.getText());
 				customer.setPhoneNumber(homeNbrTextField.getText());
 				customer.setPhoneNumber(cellPhoneTextField.getText());
-				card.setCardNumber(cardNumberText.getText());
 				if (rdbtnMastercard.isSelected()) {
 					card.setCardType(rdbtnMastercard.getText());
 				} else {
@@ -698,8 +705,10 @@ public class Settings extends JFrame {
 				card.setHoldersName(textField.getText());
 				card.setValidYear((int) yearBox.getSelectedItem());
 				card.setValidMonth((int) monthBox.getSelectedItem());
-				card.setVerificationCode(Integer.parseInt(CVCText.getText()));
-				if (IMatDataHandler.getInstance().isCustomerComplete()) {
+			if(!IMatDataHandler.getInstance().isCustomerComplete()) {
+				tabbedPane.setSelectedIndex(0);
+				
+			}else if (IMatDataHandler.getInstance().isCustomerComplete() && !cardNbrError && !cardCVCError ) {
 					dispose();
 				}
 
