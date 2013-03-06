@@ -9,9 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -39,7 +41,6 @@ import javax.swing.border.LineBorder;
 
 import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
-import se.chalmers.ait.dat215.project.ShoppingCart;
 
 public class Checkout extends JPanel implements ActionListener, PropertyChangeListener {
 
@@ -84,13 +85,17 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	private ButtonGroup payGroup;
 	private ButtonGroup deliveryGroup;
 	private JComponent[] listComponents;
+	private ShopModel model;
+	
+	private static NumberFormat format = NumberFormat
+			.getCurrencyInstance(Locale.forLanguageTag("sv-SE"));
 	
 	private Action closeWindow = new AbstractAction() {
 	    public void actionPerformed(ActionEvent e) {
 	        destroyAndCreate("Felaktigt lösenord");
 	    }
 	};
-	private ShopModel model;
+	
 
 	/**
 	 * Create the application.
@@ -212,17 +217,17 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	//Amends the displayed sum with the specified value
 	private void amendSum (double d) {
 		sum += d;
-		sumLabel.setText("Summa: " + sum + " kr");
+		sumLabel.setText("Summa: " + format.format(sum) + " kr");
 	}
 	
 	private void setSum(double d) {
 		sum = d;
-		sumLabel.setText("Summa: " + sum + " kr");
+		sumLabel.setText("Summa: " + format.format(sum) + " kr");
 	}
 	
 	private void setCart(double d){
 		shoppingCart = d;
-		cartLabel.setText("Varukorg: " + shoppingCart + " kr");
+		cartLabel.setText("Varukorg: " + format.format(shoppingCart) + " kr");
 	}
 	
 	//Gets the chosen year for the credit cards validity and returns it
@@ -594,14 +599,14 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		JLabel label_2 = new JLabel("");
 		label_2.setIcon(new ImageIcon(Checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
 		
-		JLabel lblSumma = new JLabel("Summa: " + sum + " kr");
+		JLabel lblSumma = new JLabel("Summa: " + format.format(sum) + " kr");
 		sumLabel = lblSumma;
 		lblSumma.setFont(new Font("Dialog", Font.BOLD, 16));
 		
-		JLabel lblLeveransKr = new JLabel("Leverans: " + DELIVERY + " kr");
+		JLabel lblLeveransKr = new JLabel("Leverans: " + format.format(DELIVERY) + " kr");
 		deliveryLabel = lblLeveransKr;
 		
-		JLabel lblVarukorgKr = new JLabel("Varukorg: " + shoppingCart + " kr");
+		JLabel lblVarukorgKr = new JLabel("Varukorg: " + format.format(shoppingCart) + " kr");
 		cartLabel = lblVarukorgKr;
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
