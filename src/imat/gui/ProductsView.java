@@ -47,6 +47,7 @@ public class ProductsView extends JPanel implements ActionListener {
 	private final String[] FILTER_CHOICES = new String[] { "Namn", "Pris" };
 
 	private final String TIDIGARE = "Du har tidigare köpt: ";
+	private final String BLABAR = "Det är blåbärssäsong!";
 	private final String RESULTAT = "Sökresultat för ";
 	private final String LIST_VIEW = "wrap 1";
 	private final String THUMB_VIEW = "wrap 2";
@@ -79,7 +80,7 @@ public class ProductsView extends JPanel implements ActionListener {
 		featuredPanel.setBackground(Color.GRAY);
 
 		lblDuHarTidigare = new JLabel();
-		setTitle(TIDIGARE);
+		setTitle(BLABAR);
 		setLayout(new BorderLayout(0, 0));
 		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 16));
 
@@ -240,7 +241,7 @@ public class ProductsView extends JPanel implements ActionListener {
 										.addComponent(label)
 										.addContainerGap(13, Short.MAX_VALUE)));
 		buttonPanel.setLayout(gl_buttonPanel);
-		scrollPanel.remove(featuredPanel);
+//		scrollPanel.remove(featuredPanel);
 		this.revalidate();
 
 	}
@@ -259,10 +260,12 @@ public class ProductsView extends JPanel implements ActionListener {
 	public void setProducts(List<Product> products) {
 		productsPanel.removeAll();
 		boolean hasFavorite = false;
+		featuredThumb.removeAll();
+		featuredThumb.add(new ProductDisplay(IDH.getProduct(16), true, false, this));
 		for (Product p : products) {
 			if (IDH.isFavorite(p) && !hasFavorite) {
-				featuredThumb.removeAll();
-				featuredThumb.add(new ProductDisplay(p, true, false, this));
+//				featuredThumb.removeAll();
+//				featuredThumb.add(new ProductDisplay(IDH.getProduct(16), true, false, this));
 				hasFavorite = true;
 			}
 			if (listView) {

@@ -276,6 +276,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			imageLabel.setIcon(IDH.getImageIcon(p, new Dimension(67, 50)));
 		} else {
 			if (featured) {
+				this.setPreferredSize(new Dimension(300, 10));
 				titleLabel.setFont(new Font("SansSerif", Font.BOLD, 27));
 				priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
 				imageLabel
@@ -294,6 +295,8 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			suffixLabel.setText("st");
 		}
 		favButton.setVisible(false);
+		favButton.setContentAreaFilled(false);
+		favButton.setBorderPainted(false);
 		updateSum();
 	}
 
@@ -322,7 +325,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	private class ThisMouseListener extends MouseAdapter {
 		@Override
 		public void mouseEntered(MouseEvent e) {
-			panel.setBackground(Color.CYAN);
+			panel.setBackground(new Color(230, 230, 230));
 			favButton.setVisible(true);
 		}
 		
