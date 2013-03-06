@@ -220,18 +220,18 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	}
 	
 	//Amends the displayed sum with the specified value
-	private void amendSum (int i) {
-		sum += i;
+	private void amendSum (double d) {
+		sum += d;
 		sumLabel.setText("Summa: " + sum + " kr");
 	}
 	
-	private void setSum(int i) {
-		sum = i;
+	private void setSum(double d) {
+		sum = d;
 		sumLabel.setText("Summa: " + sum + " kr");
 	}
 	
-	private void setCart(int i){
-		shoppingCart = i;
+	private void setCart(double d){
+		shoppingCart = d;
 		cartLabel.setText("Varukorg: " + shoppingCart + " kr");
 	}
 	
@@ -689,8 +689,8 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("cart")) {
-			setCart((int)model.getShoppingCart().getTotal());
-			setSum((int)model.getShoppingCart().getTotal());
+			setCart(model.getShoppingCart().getTotal());
+			setSum(model.getShoppingCart().getTotal());
 			amendSum(DELIVERY);
 		}
 	}
