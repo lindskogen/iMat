@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
@@ -358,7 +359,7 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		cardGroup = new ButtonGroup();
 		
 		this.setBounds(100, 100, 600, 540);
-		
+		this.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		this.setLayout(new CardLayout(0, 0));
 		
 		JPanel panel_1 = new JPanel();
