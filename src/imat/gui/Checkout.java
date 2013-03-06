@@ -38,7 +38,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 
 public class Checkout extends JPanel implements ActionListener {
 
-	// TODO: Confirmation screen after authentication (different card), improve validation check
+	// TODO: Confirmation screen after authentication (different card)
 	
 	//Constants
 	//The price of home delivery
