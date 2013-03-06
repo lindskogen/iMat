@@ -83,9 +83,6 @@ public class MainFrame {
 	
 	//If this is the first run, user will be prompted to create a user
 	private void createUser() {
-		//---------------DEBUG ONLY-----------------------
-		IMatDataHandler.getInstance().resetFirstRun();
-		//---------------DEBUG ONLY-----------------------
 		
 		if(IMatDataHandler.getInstance().isFirstRun()){
 			
