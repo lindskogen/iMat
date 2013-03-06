@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import org.apache.commons.lang3.StringUtils;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.Order;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingCart;
 import se.chalmers.ait.dat215.project.ShoppingItem;
@@ -48,7 +49,13 @@ public class ShopModel {
 		pcs = new PropertyChangeSupport(this);
 		sCart = imat.getShoppingCart();
 		readList("lists.txt", userLists);
-		readList("history.txt", historyLists);
+		historyLists = new LinkedList<ProductList>();
+		for (Order o : imat.getOrders()) {
+			ProductList pl = new ProductList(o.getItems());
+			pl.setName("Ordernr: " + o.getOrderNumber());
+			System.out.println(o.getOrderNumber());
+			historyLists.add(pl);
+		}
 	}
 	private boolean readList(String path, List<ProductList> target) {
 		File listFile = new File(imat.imatDirectory() + "/" + path);
@@ -76,7 +83,6 @@ public class ShopModel {
 	
 	public void saveLists() {
 		saveList("lists.txt", userLists);
-		saveList("history.txt", historyLists);
 	}
 	
 	private void saveList(String path, List<ProductList> lists) {
@@ -157,9 +163,13 @@ public class ShopModel {
 		pcs.removePropertyChangeListener(pcl);
 	}
 	public void delete(ProductList pList, ShoppingItem item) {				
-		pList.remove(item);
-		pcs.firePropertyChange("cart", null, getProductCart());
-		pcs.firePropertyChange("lists", null, getLists());
+		if (userLists.contains(pList)) {
+			pList.remove(item);
+			pcs.firePropertyChange("lists", null, getLists());
+		} else {
+			sCart.removeItem(item);
+			pcs.firePropertyChange("cart", null, getProductCart());
+		}
 	}
 	public void undoDeleteList() {
 		if (undoList != null) {
@@ -176,7 +186,7 @@ public class ShopModel {
 	}
 	public void addList(ProductList pList) {
 		ProductList tempList = pList.clone();
-		tempList.setName("unnamed");
+		tempList.setName("Lista " + (userLists.size() + 1) );
 		userLists.add(tempList);
 		pcs.firePropertyChange("lists", null, getLists());
 	}

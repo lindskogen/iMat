@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -13,10 +14,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
+import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.Customer;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 
@@ -45,7 +49,11 @@ public class Settings extends JFrame {
 	private JTextField emailTextField;
 	private JTextField homeNbrTextField;
 	private JTextField cellPhoneTextField;
+	private JRadioButton rdbtnVisa;
+	private JRadioButton rdbtnMastercard;
 	private Customer customer = IMatDataHandler.getInstance().getCustomer();
+	private CreditCard card = IMatDataHandler.getInstance().getCreditCard();
+	private JComboBox monthBox, yearBox;
 
 	/**
 	 * Launch the application.
@@ -67,13 +75,14 @@ public class Settings extends JFrame {
 	 * Create the frame.
 	 */
 	public Settings() {
+		setPreferredSize(new Dimension(400, 0));
 		setResizable(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
 				Settings.class.getResource("/imat/resources/settingsIcon.png")));
 		setTitle("Inst\u00E4llningar");
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 338, 438);
+		setBounds(100, 100, 400, 438);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -101,132 +110,6 @@ public class Settings extends JFrame {
 								354, GroupLayout.PREFERRED_SIZE)
 						.addPreferredGap(ComponentPlacement.RELATED, 41,
 								Short.MAX_VALUE).addComponent(saveChanges)));
-
-		JPanel general = new JPanel();
-		tabbedPane.addTab("Tema", null, general, null);
-		general.setLayout(new MigLayout("", "[][][][]", "[46px][46px][][]"));
-
-		JButton grayButton = new JButton("");
-		grayButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-
-		grayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		grayButton.setMargin(new Insets(0, 0, 0, 0));
-		grayButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/gray.PNG")));
-		general.add(grayButton, "cell 0 0,alignx center");
-
-		JButton blueButton = new JButton("");
-		blueButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		blueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		blueButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/darkBlue.PNG")));
-		blueButton.setMargin(new Insets(0, 0, 0, 0));
-		general.add(blueButton, "cell 1 0");
-
-		JButton lGreenButton = new JButton("");
-		lGreenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		lGreenButton.setMargin(new Insets(0, 0, 0, 0));
-		lGreenButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/lightGreen.PNG")));
-		lGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		general.add(lGreenButton, "cell 2 0");
-
-		JButton dGreenButton = new JButton("");
-		dGreenButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		dGreenButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/darkGreen.PNG")));
-		dGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		dGreenButton.setMargin(new Insets(0, 0, 0, 0));
-		general.add(dGreenButton, "cell 3 0");
-
-		JLabel lblGr = new JLabel("Gr\u00E5");
-		lblGr.setVerticalAlignment(SwingConstants.TOP);
-		general.add(lblGr, "cell 0 1,alignx center,aligny top");
-
-		JLabel lblBl = new JLabel("Bl\u00E5");
-		general.add(lblBl, "cell 1 1,alignx center,aligny top");
-
-		JLabel lblLjusgrn = new JLabel("Ljusgr\u00F6n");
-		general.add(lblLjusgrn, "cell 2 1,alignx center,aligny top");
-
-		JLabel lblMrkgrn = new JLabel("M\u00F6rkgr\u00F6n");
-		general.add(lblMrkgrn, "cell 3 1,alignx center,aligny top");
-
-		JButton goldButton = new JButton("");
-		goldButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		goldButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		goldButton.setMargin(new Insets(0, 0, 0, 0));
-		goldButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/gold.PNG")));
-		general.add(goldButton, "cell 0 2");
-
-		JButton redButton = new JButton("");
-		redButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		redButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/red.PNG")));
-		redButton.setMargin(new Insets(0, 0, 0, 0));
-		general.add(redButton, "cell 1 2");
-
-		JButton violetButton = new JButton("");
-		violetButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		violetButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/violet.PNG")));
-		violetButton.setMargin(new Insets(0, 0, 0, 0));
-		violetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		violetButton.setActionCommand("");
-		general.add(violetButton, "cell 2 2");
-
-		JButton blackButton = new JButton("");
-		blackButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		blackButton.setMargin(new Insets(0, 0, 0, 0));
-		blackButton.setIcon(new ImageIcon(Settings.class
-				.getResource("/imat/resources/themes/black.PNG")));
-		blackButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		general.add(blackButton, "cell 3 2");
-
-		JLabel lblGild = new JLabel("Guld");
-		general.add(lblGild, "cell 0 3,alignx center,aligny top");
-
-		JLabel lblRd = new JLabel("R\u00F6d");
-		general.add(lblRd, "cell 1 3,alignx center,aligny top");
-
-		JLabel lblLila = new JLabel("Lila");
-		general.add(lblLila, "cell 2 3,alignx center,aligny top");
-
-		JLabel lblSvart = new JLabel("Svart");
-		general.add(lblSvart, "cell 3 3,alignx center,aligny top");
 
 		JPanel personal = new JPanel();
 		tabbedPane.addTab("Personuppgifter", null, personal, null);
@@ -340,34 +223,31 @@ public class Settings extends JFrame {
 
 		JPanel payment = new JPanel();
 		tabbedPane.addTab("Betalningsuppgifter", null, payment, null);
-		payment.setLayout(new GridLayout(7, 0, 0, 0));
 
 		JPanel paymentTitlePanel = new JPanel();
 		paymentTitlePanel.setOpaque(false);
 		paymentTitlePanel.setBackground(Color.RED);
 		paymentTitlePanel.setAlignmentY(0.0f);
 		paymentTitlePanel.setAlignmentX(0.0f);
-		payment.add(paymentTitlePanel);
 		paymentTitlePanel.setLayout(new MigLayout("", "[363.00]", "[]"));
 
 		JLabel lblKortbetalning = new JLabel("Kortbetalning");
 		lblKortbetalning.setFont(new Font("Tahoma", Font.BOLD, 16));
-		paymentTitlePanel.add(lblKortbetalning, "cell 0 0,growx");
+		paymentTitlePanel.add(lblKortbetalning, "cell 0 0,alignx left");
 
 		JPanel visaMasterPanel = new JPanel();
 		visaMasterPanel.setOpaque(false);
 		visaMasterPanel.setBackground(Color.RED);
 		visaMasterPanel.setAlignmentY(0.0f);
 		visaMasterPanel.setAlignmentX(0.0f);
-		payment.add(visaMasterPanel);
 		visaMasterPanel.setLayout(new MigLayout("", "[][]", "[]"));
 
-		JRadioButton rdbtnVisa = new JRadioButton("Visa");
+		rdbtnVisa = new JRadioButton("Visa");
 		buttonGroup.add(rdbtnVisa);
 		rdbtnVisa.setSelected(true);
 		visaMasterPanel.add(rdbtnVisa, "cell 0 0");
 
-		JRadioButton rdbtnMastercard = new JRadioButton("Mastercard");
+		rdbtnMastercard = new JRadioButton("Mastercard");
 		buttonGroup.add(rdbtnMastercard);
 		visaMasterPanel.add(rdbtnMastercard, "cell 1 0");
 
@@ -376,39 +256,388 @@ public class Settings extends JFrame {
 		cardNbrPanel.setBackground(Color.RED);
 		cardNbrPanel.setAlignmentY(0.0f);
 		cardNbrPanel.setAlignmentX(0.0f);
-		payment.add(cardNbrPanel);
-		cardNbrPanel
-				.setLayout(new MigLayout("", "[150.00,left][56.00]", "[][]"));
 
 		final JLabel cardNbr = new JLabel("Kortnummer");
-		cardNbrPanel.add(cardNbr, "cell 0 0");
 
 		final JLabel CVC = new JLabel("CVC");
-		cardNbrPanel.add(CVC, "cell 1 0");
 
-		cardNumberText = new JTextField();
+		cardNumberText = new JTextField(card.getCardNumber());
 		cardNumberText.setPreferredSize(new Dimension(6, 16));
-		cardNbrPanel.add(cardNumberText, "cell 0 1,growx,aligny top");
 		cardNumberText.setColumns(10);
 
-		CVCText = new JTextField();
-		cardNbrPanel.add(CVCText, "cell 1 1,alignx left");
-		CVCText.setColumns(10);
+		CVCText = new JTextField(card.getVerificationCode());
+		CVCText.setColumns(3);
 
 		JPanel cardOwnerPanel = new JPanel();
 		cardOwnerPanel.setOpaque(false);
 		cardOwnerPanel.setBackground(Color.RED);
 		cardOwnerPanel.setAlignmentY(0.0f);
 		cardOwnerPanel.setAlignmentX(0.0f);
-		payment.add(cardOwnerPanel);
 		cardOwnerPanel.setLayout(new MigLayout("", "[210px]", "[][]"));
 
-		JLabel lblNamn = new JLabel("Namn");
+		JLabel lblNamn = new JLabel("Kortinnehavarens namn");
 		cardOwnerPanel.add(lblNamn, "cell 0 0");
 
-		textField = new JTextField();
+		textField = new JTextField(card.getHoldersName());
 		cardOwnerPanel.add(textField, "cell 0 1,growx");
 		textField.setColumns(10);
+		GroupLayout gl_payment = new GroupLayout(payment);
+		gl_payment.setHorizontalGroup(gl_payment
+				.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+						gl_payment
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(paymentTitlePanel,
+										GroupLayout.PREFERRED_SIZE, 321,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(24, Short.MAX_VALUE))
+				.addGroup(
+						gl_payment
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(visaMasterPanel,
+										GroupLayout.PREFERRED_SIZE, 321,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(24, Short.MAX_VALUE))
+				.addGroup(
+						gl_payment
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(cardNbrPanel,
+										GroupLayout.PREFERRED_SIZE, 321,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(24, Short.MAX_VALUE))
+				.addGroup(
+						gl_payment
+								.createSequentialGroup()
+								.addContainerGap()
+								.addComponent(cardOwnerPanel,
+										GroupLayout.PREFERRED_SIZE, 321,
+										GroupLayout.PREFERRED_SIZE)
+								.addContainerGap(24, Short.MAX_VALUE)));
+		gl_payment.setVerticalGroup(gl_payment.createParallelGroup(
+				Alignment.LEADING).addGroup(
+				gl_payment
+						.createSequentialGroup()
+						.addComponent(paymentTitlePanel,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(visaMasterPanel,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
+						.addGap(7)
+						.addComponent(cardNbrPanel, GroupLayout.PREFERRED_SIZE,
+								106, GroupLayout.PREFERRED_SIZE)
+						.addPreferredGap(ComponentPlacement.RELATED)
+						.addComponent(cardOwnerPanel,
+								GroupLayout.PREFERRED_SIZE,
+								GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE).addGap(66)));
+
+		JLabel yearLabel = new JLabel("År");
+
+		JLabel monthLabel = new JLabel("Månad");
+
+		JLabel label = new JLabel("/");
+
+		monthBox = new JComboBox();
+		monthBox.setModel(new DefaultComboBoxModel(new Integer[] { 1, 2, 3, 4,
+				5, 6, 7, 8, 9, 10, 11, 12 }));
+		monthBox.setSelectedItem(card.getValidMonth());
+
+		yearBox = new JComboBox();
+		yearBox.setModel(new DefaultComboBoxModel(new Integer[] { 13, 14, 15,
+				16, 17, 18, 18, 20, 21 }));
+		yearBox.setSelectedItem(card.getValidYear());
+		GroupLayout gl_cardNbrPanel = new GroupLayout(cardNbrPanel);
+		gl_cardNbrPanel
+				.setHorizontalGroup(gl_cardNbrPanel
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								gl_cardNbrPanel
+										.createSequentialGroup()
+										.addGap(6)
+										.addGroup(
+												gl_cardNbrPanel
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addGroup(
+																gl_cardNbrPanel
+																		.createSequentialGroup()
+																		.addComponent(
+																				cardNbr)
+																		.addGap(69)
+																		.addComponent(
+																				CVC))
+														.addGroup(
+																gl_cardNbrPanel
+																		.createSequentialGroup()
+																		.addGroup(
+																				gl_cardNbrPanel
+																						.createParallelGroup(
+																								Alignment.LEADING,
+																								false)
+																						.addComponent(
+																								cardNumberText,
+																								GroupLayout.PREFERRED_SIZE,
+																								150,
+																								GroupLayout.PREFERRED_SIZE)
+																						.addGroup(
+																								gl_cardNbrPanel
+																										.createSequentialGroup()
+																										.addPreferredGap(
+																												ComponentPlacement.RELATED)
+																										.addGroup(
+																												gl_cardNbrPanel
+																														.createParallelGroup(
+																																Alignment.LEADING)
+																														.addComponent(
+																																monthBox,
+																																GroupLayout.PREFERRED_SIZE,
+																																GroupLayout.DEFAULT_SIZE,
+																																GroupLayout.PREFERRED_SIZE)
+																														.addComponent(
+																																monthLabel))
+																										.addPreferredGap(
+																												ComponentPlacement.RELATED)
+																										.addComponent(
+																												label,
+																												GroupLayout.PREFERRED_SIZE,
+																												7,
+																												GroupLayout.PREFERRED_SIZE)
+																										.addGroup(
+																												gl_cardNbrPanel
+																														.createParallelGroup(
+																																Alignment.LEADING)
+																														.addGroup(
+																																gl_cardNbrPanel
+																																		.createSequentialGroup()
+																																		.addPreferredGap(
+																																				ComponentPlacement.RELATED)
+																																		.addComponent(
+																																				yearLabel))
+																														.addGroup(
+																																gl_cardNbrPanel
+																																		.createSequentialGroup()
+																																		.addGap(3)
+																																		.addComponent(
+																																				yearBox,
+																																				GroupLayout.PREFERRED_SIZE,
+																																				GroupLayout.DEFAULT_SIZE,
+																																				GroupLayout.PREFERRED_SIZE)))))
+																		.addPreferredGap(
+																				ComponentPlacement.RELATED,
+																				13,
+																				Short.MAX_VALUE)
+																		.addComponent(
+																				CVCText,
+																				GroupLayout.PREFERRED_SIZE,
+																				GroupLayout.DEFAULT_SIZE,
+																				GroupLayout.PREFERRED_SIZE)
+																		.addPreferredGap(
+																				ComponentPlacement.RELATED)))
+										.addGap(132)));
+		gl_cardNbrPanel
+				.setVerticalGroup(gl_cardNbrPanel
+						.createParallelGroup(Alignment.LEADING)
+						.addGroup(
+								gl_cardNbrPanel
+										.createSequentialGroup()
+										.addGroup(
+												gl_cardNbrPanel
+														.createParallelGroup(
+																Alignment.LEADING)
+														.addGroup(
+																gl_cardNbrPanel
+																		.createSequentialGroup()
+																		.addGap(27)
+																		.addComponent(
+																				CVCText,
+																				GroupLayout.PREFERRED_SIZE,
+																				19,
+																				GroupLayout.PREFERRED_SIZE))
+														.addGroup(
+																gl_cardNbrPanel
+																		.createSequentialGroup()
+																		.addGap(6)
+																		.addGroup(
+																				gl_cardNbrPanel
+																						.createParallelGroup(
+																								Alignment.LEADING)
+																						.addComponent(
+																								cardNbr)
+																						.addComponent(
+																								CVC))
+																		.addPreferredGap(
+																				ComponentPlacement.RELATED)
+																		.addComponent(
+																				cardNumberText,
+																				GroupLayout.PREFERRED_SIZE,
+																				19,
+																				GroupLayout.PREFERRED_SIZE)))
+										.addPreferredGap(
+												ComponentPlacement.UNRELATED)
+										.addGroup(
+												gl_cardNbrPanel
+														.createParallelGroup(
+																Alignment.BASELINE)
+														.addComponent(
+																monthLabel)
+														.addComponent(yearLabel))
+										.addPreferredGap(
+												ComponentPlacement.RELATED)
+										.addGroup(
+												gl_cardNbrPanel
+														.createParallelGroup(
+																Alignment.BASELINE)
+														.addComponent(
+																monthBox,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE)
+														.addComponent(label)
+														.addComponent(
+																yearBox,
+																GroupLayout.PREFERRED_SIZE,
+																GroupLayout.DEFAULT_SIZE,
+																GroupLayout.PREFERRED_SIZE))
+										.addContainerGap()));
+		cardNbrPanel.setLayout(gl_cardNbrPanel);
+		payment.setLayout(gl_payment);
+
+		JPanel general = new JPanel();
+		tabbedPane.addTab("Tema", null, general, null);
+		general.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		JPanel panel_3 = new JPanel();
+		general.add(panel_3);
+		panel_3.setLayout(new MigLayout("", "[][][][]", "[46px][46px][][]"));
+
+		JButton grayButton = new JButton("");
+		panel_3.add(grayButton, "cell 0 0,alignx center");
+		grayButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+
+		grayButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		grayButton.setMargin(new Insets(0, 0, 0, 0));
+		grayButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/gray.PNG")));
+
+		JButton blueButton = new JButton("");
+		panel_3.add(blueButton, "cell 1 0");
+		blueButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		blueButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		blueButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/darkBlue.PNG")));
+		blueButton.setMargin(new Insets(0, 0, 0, 0));
+
+		JButton lGreenButton = new JButton("");
+		panel_3.add(lGreenButton, "cell 2 0");
+		lGreenButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		lGreenButton.setMargin(new Insets(0, 0, 0, 0));
+		lGreenButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/lightGreen.PNG")));
+		lGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		JButton dGreenButton = new JButton("");
+		panel_3.add(dGreenButton, "cell 3 0");
+		dGreenButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		dGreenButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/darkGreen.PNG")));
+		dGreenButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		dGreenButton.setMargin(new Insets(0, 0, 0, 0));
+
+		JLabel lblGr = new JLabel("Gr\u00E5");
+		panel_3.add(lblGr, "cell 0 1,alignx center,aligny top");
+		lblGr.setVerticalAlignment(SwingConstants.TOP);
+
+		JLabel lblBl = new JLabel("Bl\u00E5");
+		panel_3.add(lblBl, "cell 1 1,alignx center,aligny top");
+
+		JLabel lblLjusgrn = new JLabel("Ljusgr\u00F6n");
+		panel_3.add(lblLjusgrn, "cell 2 1,alignx center,aligny top");
+
+		JLabel lblMrkgrn = new JLabel("M\u00F6rkgr\u00F6n");
+		panel_3.add(lblMrkgrn, "cell 3 1,alignx center,aligny top");
+
+		JButton goldButton = new JButton("");
+		panel_3.add(goldButton, "cell 0 2");
+		goldButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		goldButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		goldButton.setMargin(new Insets(0, 0, 0, 0));
+		goldButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/gold.PNG")));
+
+		JButton redButton = new JButton("");
+		panel_3.add(redButton, "cell 1 2");
+		redButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		redButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/red.PNG")));
+		redButton.setMargin(new Insets(0, 0, 0, 0));
+
+		JButton violetButton = new JButton("");
+		panel_3.add(violetButton, "cell 2 2");
+		violetButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		violetButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/violet.PNG")));
+		violetButton.setMargin(new Insets(0, 0, 0, 0));
+		violetButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		violetButton.setActionCommand("");
+
+		JButton blackButton = new JButton("");
+		panel_3.add(blackButton, "cell 3 2");
+		blackButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO
+			}
+		});
+		blackButton.setMargin(new Insets(0, 0, 0, 0));
+		blackButton.setIcon(new ImageIcon(Settings.class
+				.getResource("/imat/resources/themes/black.PNG")));
+		blackButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+		JLabel lblGild = new JLabel("Guld");
+		panel_3.add(lblGild, "cell 0 3,alignx center,aligny top");
+
+		JLabel lblRd = new JLabel("R\u00F6d");
+		panel_3.add(lblRd, "cell 1 3,alignx center,aligny top");
+
+		JLabel lblLila = new JLabel("Lila");
+		panel_3.add(lblLila, "cell 2 3,alignx center,aligny top");
+
+		JLabel lblSvart = new JLabel("Svart");
+		panel_3.add(lblSvart, "cell 3 3,alignx center,aligny top");
 		contentPane.setLayout(gl_contentPane);
 
 		saveChanges.addActionListener(new ActionListener() {
@@ -426,6 +655,7 @@ public class Settings extends JFrame {
 						// other characters in string
 						cardNbr.setText("<html> <font color='red'>Kortnummer*</font></html>");
 						tabbedPane.setSelectedIndex(2);
+
 					}
 				} else {
 					System.out.println(cardNumberText.getText().length()
@@ -451,7 +681,6 @@ public class Settings extends JFrame {
 					CVC.setText("<html> <font color='red'>CVC*</font></html>");
 					tabbedPane.setSelectedIndex(2);
 				}
-				// TODO
 				customer.setFirstName(nameText.getText());
 				customer.setLastName(textField_1.getText());
 				customer.setAddress(addressTextField.getText());
@@ -460,7 +689,19 @@ public class Settings extends JFrame {
 				customer.setEmail(emailTextField.getText());
 				customer.setPhoneNumber(homeNbrTextField.getText());
 				customer.setPhoneNumber(cellPhoneTextField.getText());
-				
+				card.setCardNumber(cardNumberText.getText());
+				if (rdbtnMastercard.isSelected()) {
+					card.setCardType(rdbtnMastercard.getText());
+				} else {
+					card.setCardType(rdbtnVisa.getText());
+				}
+				card.setHoldersName(textField.getText());
+				card.setValidYear((int) yearBox.getSelectedItem());
+				card.setValidMonth((int) monthBox.getSelectedItem());
+				card.setVerificationCode(Integer.parseInt(CVCText.getText()));
+				if (IMatDataHandler.getInstance().isCustomerComplete()) {
+					dispose();
+				}
 
 			}// end listener
 		});

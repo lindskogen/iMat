@@ -89,6 +89,7 @@ public class ListNode extends AbstractMutableTreeTableNode implements ActionList
 			btn.setBackground(Color.YELLOW);
 			btn.addActionListener(this);
 			btn.setActionCommand(AC_UNDO);
+			btn.setOpaque(false);
 			panel.add(btn);
 			model.showNotification(panel);
 			break;
