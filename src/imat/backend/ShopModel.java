@@ -121,10 +121,6 @@ public class ShopModel {
 	}
 	
 	public ShoppingCart getShoppingCart() {
-		sCart.clear();
-		for (ShoppingItem sItem : getProductCart()) {			
-			sCart.addItem(sItem);
-		}
 		return sCart;
 	}
 	

@@ -1,10 +1,14 @@
 package imat.gui;
 
+import imat.backend.ShopModel;
+
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,8 +39,9 @@ import javax.swing.border.LineBorder;
 
 import se.chalmers.ait.dat215.project.CreditCard;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.ShoppingCart;
 
-public class Checkout extends JPanel implements ActionListener {
+public class Checkout extends JPanel implements ActionListener, PropertyChangeListener {
 
 	// TODO: Confirmation screen after authentication (different card)
 	
@@ -84,11 +89,14 @@ public class Checkout extends JPanel implements ActionListener {
 	        destroyAndCreate("Felaktigt lösenord");
 	    }
 	};
+	private ShopModel model;
 
 	/**
 	 * Create the application.
 	 */
-	public Checkout() {
+	public Checkout(ShopModel model) {
+		this.model = model;
+		model.addPropertyChangeListener(this);
 		initialize();
 		initCardInfo();
 		initPassDialog();
@@ -213,6 +221,11 @@ public class Checkout extends JPanel implements ActionListener {
 	//Amends the displayed sum with the specified value
 	private void amendSum (int i) {
 		sum += i;
+		sumLabel.setText("Summa: " + sum + " kr");
+	}
+	
+	private void setSum(int i) {
+		sum = i;
 		sumLabel.setText("Summa: " + sum + " kr");
 	}
 	
@@ -467,7 +480,7 @@ public class Checkout extends JPanel implements ActionListener {
 		txtName = new JTextField();
 		txtName.setColumns(10);
 		
-		JLabel lblGiltligTill = new JLabel("Giltlig till (Månad/År)");
+		JLabel lblGiltligTill = new JLabel("Giltig till (Månad/År)");
 		
 		JLabel label = new JLabel("/");
 		
@@ -664,5 +677,13 @@ public class Checkout extends JPanel implements ActionListener {
 		);
 		panel.setLayout(gl_panel);
 		panel_1.setLayout(gl_panel_1);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals("cart")) {
+			setSum((int)model.getShoppingCart().getTotal());
+			amendSum(DELIVERY);
+		}
 	}
 }
