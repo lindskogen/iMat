@@ -56,7 +56,7 @@ public class MainFrame {
 		model = ShopModel.getInstance();
 		
 		NavigatorView navigatorView = new NavigatorView(model);
-		CenterView centerView = new CenterView(model, navigatorView.getProductsView(), new Checkout());
+		CenterView centerView = new CenterView(model, navigatorView.getProductsView(), new Checkout(model));
 		TabbedView tabbedView = new TabbedView(model);
 		
 
