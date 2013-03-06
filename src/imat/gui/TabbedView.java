@@ -67,7 +67,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		JPanel panel = new JPanel();
 		panel_1.add(panel, BorderLayout.SOUTH);
 		
-		createListBtn = new JButton("Skapa Lista");
+
+		createListBtn = new JButton("Spara som lista..");
 		panel.add(createListBtn);
 		createListBtn.addActionListener(this);
 		createListBtn.setActionCommand(AC_CART_LIST);

@@ -48,6 +48,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 	private JLabel priceLabel;
 	private JPanel panel_1;
 	private JLabel imageLabel;
+	private boolean list;
 
 	private ActionListener listener;
 	private JButton favButton;
@@ -68,6 +69,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		product = p;
 		setBorder(new LineBorder(Color.LIGHT_GRAY));
 		setLayout(new BorderLayout(0, 0));
+		this.list = list;
 
 		panel = new JPanel();
 		panel.setBackground(Color.WHITE);
@@ -101,102 +103,59 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			suffixLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
 
 			favButton = new JButton("");
-			favButton.setPreferredSize(new Dimension(32,32));
-			favButton.setMinimumSize(new Dimension(32,32));
+			favButton.setPreferredSize(new Dimension(20, 20));
+			favButton.setMinimumSize(new Dimension(20,20));
 			favButton.addActionListener(this);
 			favButton.setActionCommand("fav");
 			favButton.setFont(new Font("Dialog", Font.BOLD, 10));
 			if(IDH.isFavorite(product)) {
 				favButton.setIcon(new ImageIcon(ProductDisplay.class
-						.getResource("/imat/resources/fav.PNG")));
+						.getResource("/imat/resources/favmini.PNG")));
 				favButton.setToolTipText("Ta bort favorit");
 			}else{
 				favButton.setIcon(new ImageIcon(ProductDisplay.class
-						.getResource("/imat/resources/unfav.PNG")));
+						.getResource("/imat/resources/unfavmini.PNG")));
 				favButton.setToolTipText("Lägg till som favorit");
 			}
 			gl_panel = new GroupLayout(panel);
-			gl_panel.setHorizontalGroup(gl_panel
-					.createParallelGroup(Alignment.LEADING)
-					.addGroup(
-							gl_panel.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											gl_panel.createParallelGroup(
-													Alignment.LEADING)
-													.addComponent(priceLabel)
-													.addComponent(titleLabel))
+			gl_panel.setHorizontalGroup(
+					gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+								.addComponent(priceLabel)
+								.addComponent(titleLabel))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+								.addGroup(gl_panel.createSequentialGroup()
+									.addComponent(favButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(
-											gl_panel.createParallelGroup(
-													Alignment.TRAILING)
-													.addGroup(
-															gl_panel.createSequentialGroup()
-																	.addComponent(
-																			favButton)
-																	.addPreferredGap(
-																			ComponentPlacement.RELATED)
-																	.addComponent(
-																			qSpinner,
-																			GroupLayout.PREFERRED_SIZE,
-																			48,
-																			GroupLayout.PREFERRED_SIZE)
-																	.addGap(3)
-																	.addComponent(
-																			suffixLabel,
-																			GroupLayout.PREFERRED_SIZE,
-																			26,
-																			GroupLayout.PREFERRED_SIZE)
-																	.addGap(2)
-																	.addComponent(
-																			buyButton,
-																			GroupLayout.PREFERRED_SIZE,
-																			GroupLayout.DEFAULT_SIZE,
-																			GroupLayout.PREFERRED_SIZE))
-													.addComponent(
-															sumLabel,
-															GroupLayout.DEFAULT_SIZE,
-															776,
-															Short.MAX_VALUE))
-									.addContainerGap()));
-			gl_panel.setVerticalGroup(gl_panel
-					.createParallelGroup(Alignment.LEADING)
-					.addGroup(
-							gl_panel.createSequentialGroup()
-									.addContainerGap()
-									.addGroup(
-											gl_panel.createParallelGroup(
-													Alignment.TRAILING)
-													.addGroup(
-															gl_panel.createParallelGroup(
-																	Alignment.BASELINE)
-																	.addComponent(
-																			titleLabel)
-																	.addComponent(
-																			suffixLabel)
-																	.addComponent(
-																			qSpinner,
-																			GroupLayout.PREFERRED_SIZE,
-																			GroupLayout.DEFAULT_SIZE,
-																			GroupLayout.PREFERRED_SIZE)
-																	.addComponent(
-																			favButton,
-																			GroupLayout.PREFERRED_SIZE,
-																			13,
-																			GroupLayout.PREFERRED_SIZE))
-													.addComponent(
-															buyButton,
-															GroupLayout.PREFERRED_SIZE,
-															GroupLayout.DEFAULT_SIZE,
-															GroupLayout.PREFERRED_SIZE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(
-											gl_panel.createParallelGroup(
-													Alignment.BASELINE)
-													.addComponent(priceLabel)
-													.addComponent(sumLabel))
-									.addContainerGap(GroupLayout.DEFAULT_SIZE,
-											Short.MAX_VALUE)));
+									.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
+									.addGap(3)
+									.addComponent(suffixLabel, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
+									.addGap(2)
+									.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+								.addComponent(sumLabel, GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE))
+							.addContainerGap())
+				);
+				gl_panel.setVerticalGroup(
+					gl_panel.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addContainerGap()
+							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+								.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+									.addComponent(favButton, 0, 0, Short.MAX_VALUE)
+									.addGroup(Alignment.TRAILING, gl_panel.createParallelGroup(Alignment.BASELINE)
+										.addComponent(titleLabel)
+										.addComponent(suffixLabel)
+										.addComponent(qSpinner))))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(priceLabel)
+								.addComponent(sumLabel))
+							.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+				);
 		} else {
 			titleLabel = new JLabel("Label");
 			titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
@@ -382,14 +341,24 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		}else if(evt.getActionCommand().equals("fav")) {
 			if(IDH.isFavorite(product)) {
 				IDH.removeFavorite(product);
-				favButton.setIcon(new ImageIcon(ProductDisplay.class
-						.getResource("/imat/resources/unfav.PNG")));
+				if(list) {
+					favButton.setIcon(new ImageIcon(ProductDisplay.class
+							.getResource("/imat/resources/unfavmini.PNG")));
+				}else{
+					favButton.setIcon(new ImageIcon(ProductDisplay.class
+							.getResource("/imat/resources/unfav.PNG")));
+				}
 				favButton.setToolTipText("Lägg till som favorit");
 				listener.actionPerformed(evt);
 			}else{
 				IDH.addFavorite(product);
-				favButton.setIcon(new ImageIcon(ProductDisplay.class
-						.getResource("/imat/resources/fav.PNG")));
+				if(list) {
+					favButton.setIcon(new ImageIcon(ProductDisplay.class
+							.getResource("/imat/resources/favmini.PNG")));
+				}else{
+					favButton.setIcon(new ImageIcon(ProductDisplay.class
+							.getResource("/imat/resources/fav.PNG")));
+				}
 				listener.actionPerformed(evt);
 				favButton.setToolTipText("Ta bort som favorit");
 			}

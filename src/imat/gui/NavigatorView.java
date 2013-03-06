@@ -122,6 +122,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 		searchField.addKeyListener(this);
 
 		favouriteLabel = new JLabel("Favoriter");
+		favouriteLabel.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/favmini.PNG")));
 		favouriteLabel
 				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		favouriteLabel.setOpaque(true);

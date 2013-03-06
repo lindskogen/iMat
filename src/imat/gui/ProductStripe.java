@@ -93,7 +93,10 @@ public class ProductStripe extends JPanel implements ActionListener {
 		suffixLabel = new JLabel("st");
 		suffixLabel.setFont(new Font("SansSerif", Font.PLAIN, 10));
 		
-		favButton = new JButton("Fav");
+		favButton = new JButton("");
+		favButton.setMinimumSize(new Dimension(20, 20));
+		favButton.setPreferredSize(new Dimension(20, 20));
+		favButton.setIcon(new ImageIcon(ProductStripe.class.getResource("/imat/resources/unfavmini.PNG")));
 		favButton.setFont(new Font("Dialog", Font.BOLD, 10));
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
@@ -106,7 +109,7 @@ public class ProductStripe extends JPanel implements ActionListener {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(favButton)
+							.addComponent(favButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
 							.addGap(3)
@@ -121,12 +124,13 @@ public class ProductStripe extends JPanel implements ActionListener {
 				.addGroup(gl_panel.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
-						.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
-							.addComponent(titleLabel)
-							.addComponent(suffixLabel)
-							.addComponent(qSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(favButton, GroupLayout.PREFERRED_SIZE, 13, GroupLayout.PREFERRED_SIZE))
-						.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(buyButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(favButton, 0, 0, Short.MAX_VALUE)
+							.addGroup(Alignment.TRAILING, gl_panel.createParallelGroup(Alignment.BASELINE)
+								.addComponent(titleLabel)
+								.addComponent(suffixLabel)
+								.addComponent(qSpinner))))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(priceLabel)
