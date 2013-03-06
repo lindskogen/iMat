@@ -40,8 +40,8 @@ public class CenterView extends JPanel implements ActionListener, PropertyChange
 		add(cardPanel);
 		cardPanel.setLayout(new CardLayout());
 
-		cardPanel.add(productsView, "PRODUCTS");
-		cardPanel.add(checkout, "CHECKOUT");
+		cardPanel.add(productsView, "switchProducts");
+		cardPanel.add(checkout, "switchCheckout");
 
 		ntfyPanel = new JPanel();
 		ntfyPanel.setLayout(new BorderLayout());
@@ -80,16 +80,17 @@ public class CenterView extends JPanel implements ActionListener, PropertyChange
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("notify")) {
+		switch (evt.getPropertyName()) {
+		case "notify":
 			showNotification((JComponent) evt.getNewValue());
-		} else if (evt.getPropertyName().equals("unNotify")) {
+			break;
+		case "unNotify":
 			closeNotification();
-		} else if (evt.getPropertyName().equals("switchCart")) {
+			break;
+		case "switch":
 			CardLayout cl = (CardLayout) cardPanel.getLayout();
-			cl.last(cardPanel);
-		} else if (evt.getPropertyName().equals("switchShop")) {
-			CardLayout cl = (CardLayout) cardPanel.getLayout();
-			cl.first(cardPanel);
+			cl.show(cardPanel, (String)evt.getNewValue());
+			break;
 		}
 	}
 

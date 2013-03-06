@@ -7,6 +7,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeSupport;
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -29,8 +31,6 @@ import javax.swing.event.ChangeListener;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class ProductDisplay extends JPanel implements ActionListener {
 	private static final IMatDataHandler IDH = IMatDataHandler.getInstance();

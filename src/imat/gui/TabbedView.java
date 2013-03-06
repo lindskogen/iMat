@@ -9,30 +9,19 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
-import javax.swing.tree.TreePath;
 
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
@@ -49,10 +38,10 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	
 	private ShopModel model;
 	
-	private final ImageIcon LIST_ICN = new ImageIcon(TabbedView.class.getResource("/imat/resources/menuListIcon.PNG"));
-	
 	private final String AC_CART_LIST = "cartToList";
 	
+	private final String AC_CHECKOUT = "switchCheckout";
+
 	/**
 	 * Create the panel.
 	 */
@@ -69,10 +58,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		tabbedPane.addTab("Varukorg", null, basketPanel, null);
 		basketPanel.setLayout(new BorderLayout());
 		
-		shoppingBasket = new JXTreeTable();
-		shoppingBasket.setClosedIcon(LIST_ICN);
-		shoppingBasket.setOpenIcon(LIST_ICN);
-		shoppingBasket.setLeafIcon(null);
+		shoppingBasket = new IMatTreeTable(true);
 		
 		JScrollPane basketScroll = new JScrollPane(shoppingBasket);
 		basketPanel.add(basketScroll, BorderLayout.CENTER);
@@ -90,6 +76,8 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		createListBtn.setActionCommand(AC_CART_LIST);
 		
 		JButton toCheckoutBtn = new JButton("Till Kassan");
+		toCheckoutBtn.addActionListener(this);
+		toCheckoutBtn.setActionCommand(AC_CHECKOUT);
 		panel.add(toCheckoutBtn);
 		
 		JPanel panel_2 = new JPanel();
@@ -117,10 +105,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		tabbedPane.addTab("Listor", null, listPanel, null);
 		listPanel.setLayout(new BorderLayout());
 		
-		lists = new JXTreeTable();
-		lists.setClosedIcon(LIST_ICN);
-		lists.setOpenIcon(LIST_ICN);
-		lists.setLeafIcon(null);
+		lists = new IMatTreeTable(true);
 		
 		JScrollPane listScroll = new JScrollPane(lists);
 		listPanel.add(listScroll, BorderLayout.CENTER);
@@ -129,10 +114,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		tabbedPane.addTab("Historik", null, historyPanel, null);
 		historyPanel.setLayout(new BorderLayout());
 		
-		history = new JXTreeTable();
-		history.setClosedIcon(LIST_ICN);
-		history.setOpenIcon(LIST_ICN);
-		history.setLeafIcon(null);
+		history = new IMatTreeTable(false);
 		
 		JScrollPane historyScroll = new JScrollPane(lists);
 		listPanel.add(historyScroll, BorderLayout.CENTER);
@@ -152,7 +134,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	}
 	
 	private void setShoppingBasket(ProductList list) {
-		prepareTreeTable(shoppingBasket, new ListNode(list, model));
+		shoppingBasket.setTreeTableModel(toModel(new ListNode(list, model)));
 		totalSum.setText("Summa: " + NumberFormat.getCurrencyInstance(Locale.forLanguageTag("sv-SE")).format(list.getPrice()));
 	}
 	private void setLists(List<ProductList> list) {
@@ -160,111 +142,14 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		prepareTreeTable(lists, root);
+		lists.setTreeTableModel(toModel(root));
 	}
 	private void setHistory(List<ProductList> list) {
 		ListNode root = new ListNode();
 		for (ProductList p : list) {
 			root.add(new ListNode(p, model));
 		}
-		prepareTreeTable(history, root);
-	}
-	private void prepareTreeTable(JXTreeTable treetable, ListNode rootNode) {
-		treetable.setEditingColumn(0);
-		treetable.setEditingColumn(1);
-		
-		treetable.setTreeTableModel(toModel(rootNode));
-		formatColumns(treetable.getColumnModel());
-		treetable.addMouseListener(new ButtonMouseListener(treetable));
-		revalidate();
-	}
-	
-	private void formatColumns(TableColumnModel m) {
-		m.getColumn(1).setMaxWidth(40);
-		m.getColumn(2).setMaxWidth(120);
-		m.getColumn(3).setMaxWidth(30);
-		m.getColumn(4).setMaxWidth(30);
-		
-		m.getColumn(1).setCellRenderer(NumberFormatter.getNumber());
-		m.getColumn(2).setCellRenderer(NumberFormatter.getCurrency("sv-SE"));
-		
-		JButtonRenderer renderer = new JButtonRenderer();
-		m.getColumn(3).setCellRenderer(renderer);
-		if (m.getColumn(4) != null) {
-			m.getColumn(4).setCellRenderer(renderer);
-		}
-	}
-	
-	private static class NumberFormatter extends DefaultTableCellRenderer {
-		private Format formatter;
-		
-		private NumberFormatter(Format formatter) {
-			this.formatter = formatter;
-			setHorizontalAlignment(SwingConstants.RIGHT);
-		}
-		public void setValue(Object value) {
-			try {
-				if (value != null) {
-					value = formatter.format(value);
-				}
-			} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-			}
-			super.setValue(value);
-		}
-		public static NumberFormatter getCurrency(String locale) {
-			return new NumberFormatter(NumberFormat.getCurrencyInstance(Locale.forLanguageTag(locale)));
-		}
-		public static NumberFormatter getNumber() {
-			return new NumberFormatter(NumberFormat.getNumberInstance());
-		}
-	}
-	private static class JButtonRenderer implements TableCellRenderer {
-
-		@Override
-		public Component getTableCellRendererComponent(JTable table,
-				Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			JButton button = (JButton) value;
-			button.setBorderPainted(false);
-			if (isSelected) {
-				button.setForeground(table.getSelectionForeground());
-				button.setBackground(table.getSelectionBackground());
-			} else {
-				button.setForeground(table.getForeground());
-				button.setBackground(UIManager.getColor("Button.background"));
-			}
-			return button;
-		}	
-	}
-	private class ButtonMouseListener extends MouseAdapter {
-		private final JTable table;
-		
-		private ButtonMouseListener(JTable table) {
-			this.table = table;
-		}
-
-		@Override
-		public void mouseClicked(MouseEvent e) {			
-			fireEvent(e);
-		}
-		
-		private void fireEvent(MouseEvent e) {
-			int column = table.getColumnModel().getColumnIndexAtX(e.getX());
-			int row = e.getY()/table.getRowHeight(); 
-
-			if (row < table.getRowCount() && row >= 0 && column < table.getColumnCount() && column >= 0) {
-			    Object value = table.getValueAt(row, column);
-			    if (value instanceof JButton) {
-			    	((JButton) value).doClick();
-			    } else if (value instanceof String && e.getClickCount() == 2) {
-			    	if(table instanceof JXTreeTable) {
-			    		JXTreeTable treeTable = (JXTreeTable) table;
-			    		TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
-			    		// TODO: get node somehow?
-			    	}
-			    }
-			}
-		}
+		history.setTreeTableModel(toModel(root));
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -292,6 +177,9 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		if (e.getActionCommand().equals(AC_CART_LIST)) {
 			model.addList(model.getProductCart());
 			tabbedPane.setSelectedIndex(1);
+			revalidate();
+		} else if (e.getActionCommand().equals(AC_CHECKOUT)) {
+			model.switchCenter(AC_CHECKOUT);
 			revalidate();
 		}
 	}

@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +30,6 @@ public class ShopModel {
 	private List<ProductList> userLists = new LinkedList<ProductList>();
 	private List<ProductList> historyLists = new LinkedList<ProductList>();
 	private ProductList undoList;
-	private ProductList cart = new ProductList("Cart");
 	private IMatDataHandler imat = IMatDataHandler.getInstance();
 	private ShoppingCart sCart;
 	
@@ -132,18 +129,28 @@ public class ShopModel {
 	}
 	
 	public ProductList getProductCart() {
-		return cart;
+		return new ProductList(sCart.getItems());
 	}
 	
-	public void addToCart(ShoppingItem item) {
-		cart.add(item);
-		pcs.firePropertyChange("cart", null, cart);
+	public void addToCart(ShoppingItem s) {
+		boolean duplicate = false;
+		for (ShoppingItem item : sCart.getItems()) {
+		if(item.getProduct().equals(s.getProduct())) {
+			item.setAmount(item.getAmount() + s.getAmount());
+			duplicate = true;
+			break;
+		}
+	}
+		if (!duplicate) {
+			sCart.addItem(s);
+		}
+		pcs.firePropertyChange("cart", null, getProductCart());
 	}
 	public void addToCart(ProductList pList) {
 		for (ShoppingItem sItem : pList) {
-			cart.add(sItem);
+			addToCart(sItem);
 		}
-		pcs.firePropertyChange("cart", null, cart);
+		pcs.firePropertyChange("cart", null, getProductCart());
 	}
 	
 	public void addPropertyChangeListener(PropertyChangeListener pcl) {
@@ -155,12 +162,8 @@ public class ShopModel {
 	}
 	public void delete(ProductList pList, ShoppingItem item) {				
 		pList.remove(item);
-		
-		if (pList == cart) {			
-			pcs.firePropertyChange("cart", null, getProductCart());
-		} else {			
-			pcs.firePropertyChange("lists", null, getLists());
-		}
+		pcs.firePropertyChange("cart", null, getProductCart());
+		pcs.firePropertyChange("lists", null, getLists());
 	}
 	public void undoDeleteList() {
 		if (undoList != null) {
@@ -196,5 +199,9 @@ public class ShopModel {
 
 	public void closeNotification() {
 		pcs.firePropertyChange("unNotify", null, null);
+	}
+
+	public void switchCenter(String destination) {
+		pcs.firePropertyChange("switch", null, destination);
 	}
 }

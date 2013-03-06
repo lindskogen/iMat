@@ -30,6 +30,13 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
     	this("Namnlös");
     }
     
+    public ProductList(List<ShoppingItem> items) {
+	this("Namnlös");
+	for (ShoppingItem item : items) {
+		list.add(item);
+	}
+    }
+
     /**
      * Creates a list with the given name.
      * @param n the name of the list

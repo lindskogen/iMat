@@ -2,16 +2,20 @@ package imat.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,16 +24,12 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EmptyBorder;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
+import net.miginfocom.swing.MigLayout;
 import se.chalmers.ait.dat215.project.Customer;
 import se.chalmers.ait.dat215.project.IMatDataHandler;
-
-import java.awt.Insets;
-import java.awt.Cursor;
 
 public class Settings extends JFrame {
 	private JPanel contentPane;

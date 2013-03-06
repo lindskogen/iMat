@@ -15,7 +15,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -242,6 +241,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 					currentCategory = node.getCustomCategory();
 					if (currentCategory.getProducts() != null) {
 						view.setProducts(currentCategory.getProducts());
+						model.switchCenter("switchProducts");
 					}
 
 				}
@@ -275,13 +275,13 @@ public class NavigatorView extends JPanel implements ActionListener,
 			favouriteLabel.setForeground(Color.black);
 			favouriteLabel.setBorder(BorderFactory.createLineBorder(tcr
 					.getBorderSelectionColor()));
+			model.switchCenter("switchProducts");
 		}
 	}
 
 	private class BtnInstllningarActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			Settings.main(null);
-
 		}
 	}
 
@@ -294,6 +294,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 		long oldValue = System.currentTimeMillis();
 		if (e.getActionCommand().equals(AC_SEARCH)) {
 			model.closeNotification();
+			model.switchCenter("switchProducts");
 			Object o = e.getSource();
 			String searchString = "";
 			if (o instanceof JTextField) {
