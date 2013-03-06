@@ -138,8 +138,8 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 			//store data (and shutdown, for now)
 			
 			//---------------------DEBUG ONLY -------------------------
-			System.out.println("The password is now Test123");
-			imdh.getUser().setPassword("Test123");
+			//System.out.println("The password is now Test123");
+			//imdh.getUser().setPassword("Test123");
 			//---------------------DEBUG ONLY -------------------------
 			
 			if(checkInput()){ //If input is valid continues with authentication			

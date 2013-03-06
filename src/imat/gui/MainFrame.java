@@ -4,10 +4,23 @@ import imat.backend.ShopModel;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
+import se.chalmers.ait.dat215.project.User;
 
 public class MainFrame {
 
@@ -31,6 +44,7 @@ public class MainFrame {
 					MainFrame window = new MainFrame();
 					window.frame.setVisible(true);
 					window.frame.pack();
+					window.createUser();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -43,6 +57,7 @@ public class MainFrame {
 	 */
 	public MainFrame() {
 		initialize();
+		
 	}
 
 	/**
@@ -64,6 +79,31 @@ public class MainFrame {
 		frame.getContentPane().add(navigatorView, BorderLayout.WEST);
 		frame.getContentPane().add(centerView, BorderLayout.CENTER);
 		frame.getContentPane().add(tabbedView, BorderLayout.EAST);
+	}
+	
+	//If this is the first run, user will be prompted to create a user
+	private void createUser() {
+		//---------------DEBUG ONLY-----------------------
+		IMatDataHandler.getInstance().resetFirstRun();
+		//---------------DEBUG ONLY-----------------------
+		
+		if(IMatDataHandler.getInstance().isFirstRun()){
+			
+			User user = IMatDataHandler.getInstance().getUser();
+			Icon passIcon = new ImageIcon(Checkout.class.getResource("/imat/resources/passwordicon.PNG"));
+			JPasswordField passField = new JPasswordField();
+			JTextField userField = new JTextField();
+			JLabel userLabel = new JLabel("Användarnamn:");
+			JLabel passLabel = new JLabel("Lösenord: ");
+			
+			JComponent[] componentList = new JComponent[]{userLabel, userField, passLabel, passField};
+
+			JOptionPane.showMessageDialog(frame, componentList, "Mata in användaruppgifter", 
+					JOptionPane.QUESTION_MESSAGE, passIcon);
+			
+			user.setPassword(String.copyValueOf(passField.getPassword()));
+			user.setUserName(userField.getText());
+		}
 	}
 
 }
