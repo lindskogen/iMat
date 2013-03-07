@@ -276,7 +276,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			imageLabel.setIcon(IDH.getImageIcon(p, new Dimension(67, 50)));
 		} else {
 			if (featured) {
-				this.setPreferredSize(new Dimension(300, 10));
+//				this.setPreferredSize(new Dimension(300, 10));
 				titleLabel.setFont(new Font("SansSerif", Font.BOLD, 27));
 				priceLabel.setFont(new Font("SansSerif", Font.PLAIN, 18));
 				imageLabel

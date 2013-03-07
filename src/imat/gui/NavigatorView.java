@@ -51,14 +51,15 @@ public class NavigatorView extends JPanel implements ActionListener,
 	private static ProductsView view;
 	private JLabel searchLabel;
 	private JTextField searchField;
-	private static CustomCategory currentCategory;
-	private JLabel favouriteLabel;
+	private static CustomCategory currentCategory = CustomCategory.HOME;
+	private JLabel favoriteLabel;
 
 	private ShopModel model;
 	private final String AC_SEARCH = "search";
 	private JSeparator separator;
 	private JButton btnInstllningar;
 	private IMatDataHandler imat;
+	private JLabel homeLabel;
 
 	/**
 	 * Create the panel.
@@ -121,13 +122,13 @@ public class NavigatorView extends JPanel implements ActionListener,
 		searchField.addActionListener(this);
 		searchField.addKeyListener(this);
 
-		favouriteLabel = new JLabel("Favoriter");
-		favouriteLabel.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/favmini.PNG")));
-		favouriteLabel
+		favoriteLabel = new JLabel("Favoriter");
+		favoriteLabel.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/favmini.PNG")));
+		favoriteLabel
 				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		favouriteLabel.setOpaque(true);
-		favouriteLabel.addMouseListener(new FavouriteLabelMouseListener());
-		favouriteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		favoriteLabel.setOpaque(true);
+		favoriteLabel.addMouseListener(new FavHomeMouseListener());
+		favoriteLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 
 		separator = new JSeparator();
 
@@ -136,73 +137,48 @@ public class NavigatorView extends JPanel implements ActionListener,
 		btnInstllningar.setPreferredSize(new Dimension(32, 32));
 		btnInstllningar.setIcon(new ImageIcon(NavigatorView.class
 				.getResource("/imat/resources/settingsIcon.png")));
+		
+		homeLabel = new JLabel("Hem");
+		homeLabel.setIcon(new ImageIcon(NavigatorView.class.getResource("/imat/resources/home.png")));
+		homeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+		homeLabel.addMouseListener(new FavHomeMouseListener());
+		homeLabel.setOpaque(true);
 
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout
-				.setHorizontalGroup(groupLayout
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								groupLayout
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												groupLayout
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addGroup(
-																groupLayout
-																		.createParallelGroup(
-																				Alignment.LEADING,
-																				false)
-																		.addComponent(
-																				searchField,
-																				GroupLayout.DEFAULT_SIZE,
-																				221,
-																				Short.MAX_VALUE)
-																		.addComponent(
-																				searchLabel))
-														.addComponent(
-																favouriteLabel)
-														.addComponent(
-																tree,
-																Alignment.TRAILING,
-																GroupLayout.DEFAULT_SIZE,
-																226,
-																Short.MAX_VALUE)
-														.addComponent(
-																separator,
-																GroupLayout.DEFAULT_SIZE,
-																226,
-																Short.MAX_VALUE)
-														.addComponent(
-																btnInstllningar,
-																GroupLayout.PREFERRED_SIZE,
-																GroupLayout.DEFAULT_SIZE,
-																GroupLayout.PREFERRED_SIZE))
-										.addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addContainerGap()
-						.addComponent(searchLabel)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(searchField, GroupLayout.PREFERRED_SIZE,
-								30, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(favouriteLabel)
-						.addGap(18)
-						.addComponent(tree, GroupLayout.DEFAULT_SIZE, 402,
-								Short.MAX_VALUE)
-						.addGap(8)
-						.addComponent(separator, GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(btnInstllningar,
-								GroupLayout.PREFERRED_SIZE,
-								GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE).addContainerGap()));
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(tree, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+							.addComponent(searchField, GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+							.addComponent(searchLabel))
+						.addComponent(separator, GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+						.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(homeLabel)
+						.addComponent(favoriteLabel))
+					.addContainerGap())
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(searchLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(searchField, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(homeLabel)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(favoriteLabel)
+					.addGap(18)
+					.addComponent(tree, GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+					.addGap(8)
+					.addComponent(separator, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addComponent(btnInstllningar, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
+		);
 		setLayout(groupLayout);
 		DefaultTreeModel tmp = (DefaultTreeModel) tree.getModel();
 		tmp.reload();
@@ -227,8 +203,10 @@ public class NavigatorView extends JPanel implements ActionListener,
 	private class TreeMouseListener extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			favouriteLabel.setBackground(null);
-			favouriteLabel.setBorder(null);
+			favoriteLabel.setBackground(null);
+			favoriteLabel.setBorder(null);
+			homeLabel.setBackground(null);
+			homeLabel.setBorder(null);
 			TreePath path = tree.getPathForLocation(e.getX(), e.getY());
 			if (path != null) {
 				CategoryNode node = (CategoryNode) tree
@@ -251,31 +229,41 @@ public class NavigatorView extends JPanel implements ActionListener,
 		}
 	}
 
-	private class FavouriteLabelMouseListener extends MouseAdapter {
-
+	private class FavHomeMouseListener extends MouseAdapter {
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {
-
-			favouriteLabel.setForeground(new Color(106, 90, 205));
+			JLabel label = (JLabel)e.getSource();
+			label.setForeground(new Color(106, 90, 205));
 
 		}
 
 		@Override
 		public void mouseExited(MouseEvent e) {
-			favouriteLabel.setForeground(Color.black);
+			JLabel label = (JLabel)e.getSource();
+			label.setForeground(Color.black);
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
+			JLabel label = (JLabel)e.getSource();
 			tree.setSelectionPath(null);
-			currentCategory = CustomCategory.FAVORITES;
-			view.setProducts(IMatDataHandler.getInstance().favorites());
 			DefaultTreeCellRenderer tcr = (DefaultTreeCellRenderer) tree
 					.getWrappedCellRenderer();
-			favouriteLabel.setBackground(tcr.getBackgroundSelectionColor());
-			favouriteLabel.setForeground(Color.black);
-			favouriteLabel.setBorder(BorderFactory.createLineBorder(tcr
+			label.setBackground(tcr.getBackgroundSelectionColor());
+			label.setForeground(Color.black);
+			label.setBorder(BorderFactory.createLineBorder(tcr
 					.getBorderSelectionColor()));
+			if(label.equals(favoriteLabel)) {
+				currentCategory = CustomCategory.FAVORITES;
+				homeLabel.setBackground(null);
+				homeLabel.setBorder(null);
+			}else if(label.equals(homeLabel)) {
+				currentCategory = CustomCategory.HOME;
+				favoriteLabel.setBackground(null);
+				favoriteLabel.setBorder(null);
+			}
+			view.setProducts(currentCategory.getProducts());
 			model.switchCenter("switchProducts");
 		}
 	}
@@ -294,6 +282,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 	public void actionPerformed(ActionEvent e) {
 		long oldValue = System.currentTimeMillis();
 		if (e.getActionCommand().equals(AC_SEARCH)) {
+			
 			model.closeNotification();
 			model.switchCenter("switchProducts");
 			Object o = e.getSource();

@@ -47,7 +47,7 @@ public class ProductsView extends JPanel implements ActionListener {
 	private final String[] FILTER_CHOICES = new String[] { "Namn", "Pris" };
 
 	private final String TIDIGARE = "Du har tidigare köpt: ";
-	private final String BLABAR = "Det är blåbärssäsong!";
+	private final String ERBJUDANDE = "ERBJUDANDE!";
 	private final String RESULTAT = "Sökresultat för ";
 	private final String LIST_VIEW = "wrap 1";
 	private final String THUMB_VIEW = "wrap 2";
@@ -57,6 +57,7 @@ public class ProductsView extends JPanel implements ActionListener {
 	private JLabel sortLabel;
 	private JComboBox filterComboBox;
 	private JLabel label;
+	private JLabel categoryLabel;
 
 	/**
 	 * Create the panel.
@@ -80,42 +81,39 @@ public class ProductsView extends JPanel implements ActionListener {
 		featuredPanel.setBackground(Color.GRAY);
 
 		lblDuHarTidigare = new JLabel();
-		setTitle(BLABAR);
+		lblDuHarTidigare.setForeground(Color.BLACK);
+		setTitle(ERBJUDANDE);
 		setLayout(new BorderLayout(0, 0));
-		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 16));
+		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 20));
 
 		featuredThumb = new JPanel();
 		featuredThumb.setBackground(Color.GRAY);
 		featuredThumb.setPreferredSize(new Dimension(600, 126));
+		
+		categoryLabel = new JLabel("");
+		categoryLabel.setForeground(Color.BLACK);
+		categoryLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
 		GroupLayout gl_featuredPanel = new GroupLayout(featuredPanel);
-		gl_featuredPanel
-				.setHorizontalGroup(gl_featuredPanel
-						.createParallelGroup(Alignment.LEADING)
-						.addGroup(
-								gl_featuredPanel
-										.createSequentialGroup()
-										.addContainerGap()
-										.addGroup(
-												gl_featuredPanel
-														.createParallelGroup(
-																Alignment.LEADING)
-														.addComponent(
-																featuredThumb,
-																GroupLayout.DEFAULT_SIZE,
-																834,
-																Short.MAX_VALUE)
-														.addComponent(
-																lblDuHarTidigare))
-										.addContainerGap()));
-		gl_featuredPanel.setVerticalGroup(gl_featuredPanel.createParallelGroup(
-				Alignment.LEADING).addGroup(
-				gl_featuredPanel
-						.createSequentialGroup()
-						.addContainerGap()
+		gl_featuredPanel.setHorizontalGroup(
+			gl_featuredPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_featuredPanel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_featuredPanel.createParallelGroup(Alignment.LEADING)
+						.addComponent(featuredThumb, GroupLayout.DEFAULT_SIZE, 842, Short.MAX_VALUE)
 						.addComponent(lblDuHarTidigare)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(featuredThumb, GroupLayout.DEFAULT_SIZE,
-								161, Short.MAX_VALUE).addContainerGap()));
+						.addComponent(categoryLabel))
+					.addContainerGap())
+		);
+		gl_featuredPanel.setVerticalGroup(
+			gl_featuredPanel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_featuredPanel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(lblDuHarTidigare)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(featuredThumb, GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(categoryLabel))
+		);
 		featuredThumb.setLayout(new GridLayout(1, 1, 0, 0));
 		featuredPanel.setLayout(gl_featuredPanel);
 		scrollPanel.setLayout(new BorderLayout(0, 0));
@@ -242,6 +240,7 @@ public class ProductsView extends JPanel implements ActionListener {
 										.addContainerGap(13, Short.MAX_VALUE)));
 		buttonPanel.setLayout(gl_buttonPanel);
 //		scrollPanel.remove(featuredPanel);
+		setProducts(NavigatorView.getCurrentCategory().getProducts());
 		this.revalidate();
 
 	}
@@ -258,6 +257,7 @@ public class ProductsView extends JPanel implements ActionListener {
 	}
 
 	public void setProducts(List<Product> products) {
+		categoryLabel.setText(NavigatorView.getCurrentCategory().getTitle());
 		productsPanel.removeAll();
 		boolean hasFavorite = false;
 		featuredThumb.removeAll();

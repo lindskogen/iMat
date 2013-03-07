@@ -8,6 +8,7 @@ import se.chalmers.ait.dat215.project.ProductCategory;
 
 public enum CustomCategory {
 
+	HOME("Hem", CustomProductLists.getProductList("Hem"), false, false),
 	BAKE("Baka", CustomProductLists.getProductList("Baka"), false, false),
 	POD("Baljväxter", IMatDataHandler.getInstance().getProducts(ProductCategory.POD), false, false),
 	BREAD("Bröd", IMatDataHandler.getInstance().getProducts(ProductCategory.BREAD), false, true),
