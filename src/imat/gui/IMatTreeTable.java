@@ -2,8 +2,10 @@ package imat.gui;
 
 import imat.backend.ListNode;
 import imat.backend.ProductList;
+import imat.backend.ShopModel;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -13,6 +15,8 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -24,9 +28,11 @@ import java.util.Locale;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -44,6 +50,8 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 	
 	private static List<String> headers;
 	private final static ImageIcon ICN_LIST = new ImageIcon(IMatTreeTable.class.getResource("/imat/resources/menuListIcon.PNG"));
+
+	private final ShopModel model = ShopModel.getInstance();
 
 	public IMatTreeTable(ListNode root, boolean canDrop) {
 		super();
@@ -161,7 +169,6 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 				Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			JButton button = (JButton) value;
 			button.setBorderPainted(false);
-//			button.setOpaque(false);
 			button.setContentAreaFilled(false);
 			if (isSelected) {
 				button.setForeground(table.getSelectionForeground());
@@ -175,6 +182,7 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 	}
 	private class ButtonMouseListener extends MouseAdapter {
 		private final JTable table;
+		private boolean disabled;
 
 		private ButtonMouseListener(JTable table) {
 			this.table = table;
@@ -193,11 +201,25 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 			    Object value = table.getValueAt(row, column);
 			    if (value instanceof JButton) {
 				((JButton) value).doClick();
-			    } else if (value instanceof String && e.getClickCount() == 2) {
+			    } else if (value instanceof String && e.getClickCount() == 2 && !e.isConsumed()) {
+				e.consume();
 					if(table instanceof JXTreeTable) {
 						JXTreeTable treeTable = (JXTreeTable) table;
 						TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
-						// TODO: get node somehow?
+						System.out.println(path.getLastPathComponent().getClass());
+						Object oNode = path.getLastPathComponent();
+						if (oNode instanceof ListNode) {
+							ListNode ln = (ListNode) oNode;
+							ProductList pl = ln.getList();
+							if (pl.getOrder() != null) {
+								return;
+							}
+							String newName = JOptionPane.showInputDialog("Ange nytt namn för listan", pl.getName());
+							if (newName != null && newName.length() > 0) {
+								pl.setName(newName);
+							}
+						}
+
 					}
 			    }
 			}
