@@ -219,7 +219,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 					}
 					currentCategory = node.getCustomCategory();
 					if (currentCategory.getProducts() != null) {
-						view.setProducts(currentCategory.getProducts());
+						view.setProducts(currentCategory.getProducts(), true);
 						model.switchCenter("switchProducts");
 					}
 
@@ -263,7 +263,7 @@ public class NavigatorView extends JPanel implements ActionListener,
 				favoriteLabel.setBackground(null);
 				favoriteLabel.setBorder(null);
 			}
-			view.setProducts(currentCategory.getProducts());
+			view.setProducts(currentCategory.getProducts(), true);
 			model.switchCenter("switchProducts");
 		}
 	}

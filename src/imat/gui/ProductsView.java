@@ -82,7 +82,7 @@ public class ProductsView extends JPanel implements ActionListener {
 
 		lblDuHarTidigare = new JLabel();
 		lblDuHarTidigare.setForeground(Color.BLACK);
-		setTitle(ERBJUDANDE);
+		lblDuHarTidigare.setText(ERBJUDANDE);
 		setLayout(new BorderLayout(0, 0));
 		lblDuHarTidigare.setFont(new Font("SansSerif", Font.BOLD, 20));
 
@@ -240,24 +240,26 @@ public class ProductsView extends JPanel implements ActionListener {
 										.addContainerGap(13, Short.MAX_VALUE)));
 		buttonPanel.setLayout(gl_buttonPanel);
 //		scrollPanel.remove(featuredPanel);
-		setProducts(NavigatorView.getCurrentCategory().getProducts());
+		setProducts(NavigatorView.getCurrentCategory().getProducts(), true);
 		this.revalidate();
 
 	}
 
 	private void setTitle(String title) {
 		if (title != null) {
-			lblDuHarTidigare.setText("<html>" + title);
+			categoryLabel.setText(title);
 		}
 	}
 
 	public void setProducts(List<Product> products, String searchString) {
 		setTitle(RESULTAT + "\"" + searchString + "\":");
-		setProducts(products);
+		setProducts(products, false);
 	}
 
-	public void setProducts(List<Product> products) {
-		categoryLabel.setText(NavigatorView.getCurrentCategory().getTitle());
+	public void setProducts(List<Product> products, boolean category) {
+		if (category) {			
+			categoryLabel.setText(NavigatorView.getCurrentCategory().getTitle());
+		}
 		productsPanel.removeAll();
 		boolean hasFavorite = false;
 		featuredThumb.removeAll();
@@ -289,11 +291,11 @@ public class ProductsView extends JPanel implements ActionListener {
 		} else if (ac.matches("wrap \\d")) {
 			listView = ac.equals(LIST_VIEW);
 			productsPanel.setLayout(new MigLayout(ac));
-			setProducts(NavigatorView.getCurrentCategory().getProducts());
+			setProducts(NavigatorView.getCurrentCategory().getProducts(), true);
 			revalidate();
 		} else if (ac.equals("fav")) {
 			if (NavigatorView.getCurrentCategory() == CustomCategory.FAVORITES) {
-				setProducts(IDH.favorites());
+				setProducts(IDH.favorites(), false);
 			}
 
 		}
@@ -310,7 +312,7 @@ public class ProductsView extends JPanel implements ActionListener {
 			} else if (filter.equals(FILTER_CHOICES[1])) {
 				Collections.sort(tmp, new ProductPriceSort());
 			}
-			setProducts(tmp);
+			setProducts(tmp, false);
 
 		}
 	}
