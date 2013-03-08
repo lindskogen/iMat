@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jdesktop.swingx.treetable.TreeTableNode;
 
 import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Order;
@@ -134,22 +135,25 @@ public class ShopModel {
 	}
 	
 	public ProductList getProductCart() {
-		return new ProductList(sCart.getItems());
+		ProductList pl = new ProductList(sCart.getItems());
+		pl.setName("cart");
+		return pl;
 	}
 	
-	public void addToCart(ShoppingItem s) {
+	public boolean addToCart(ShoppingItem s) {
 		boolean duplicate = false;
 		for (ShoppingItem item : sCart.getItems()) {
-		if(item.getProduct().equals(s.getProduct())) {
-			item.setAmount(item.getAmount() + s.getAmount());
-			duplicate = true;
-			break;
-		}
-	}
+			if(item.getProduct().equals(s.getProduct())) {
+				item.setAmount(item.getAmount() + s.getAmount());
+				duplicate = true;
+				break;
+			}
+		}	
 		if (!duplicate) {
 			sCart.addItem(s);
 		}
 		pcs.firePropertyChange("cart", null, getProductCart());
+		return true;
 	}
 	public void addToCart(ProductList pList) {
 		for (ShoppingItem sItem : pList) {
@@ -231,5 +235,19 @@ public class ShopModel {
 		public int compare(Order o1, Order o2) {
 			return o2.getOrderNumber() - o1.getOrderNumber();
 		}
+	}
+	public boolean addToList(ProductList list, ShoppingItem item) {
+		System.out.println(list.getName());
+		if (getLists().contains(list)) {
+			list.add(item);
+			pcs.firePropertyChange("lists", null, getLists());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void expandPath(TreeTableNode node) {
+		pcs.firePropertyChange("path", null, node);
 	}
 }

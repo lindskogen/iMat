@@ -1,10 +1,22 @@
 package imat.gui;
 
+import imat.backend.DragHandler;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+import java.awt.dnd.DragSourceDragEvent;
+import java.awt.dnd.DragSourceDropEvent;
+import java.awt.dnd.DragSourceEvent;
+import java.awt.dnd.DragSourceListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -24,6 +36,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.TransferHandler;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -32,7 +45,7 @@ import se.chalmers.ait.dat215.project.IMatDataHandler;
 import se.chalmers.ait.dat215.project.Product;
 import se.chalmers.ait.dat215.project.ShoppingItem;
 
-public class ProductDisplay extends JPanel implements ActionListener {
+public class ProductDisplay extends JPanel implements ActionListener, Transferable, DragSourceListener, DragGestureListener {
 	private static final IMatDataHandler IDH = IMatDataHandler.getInstance();
 	SpinnerModel stModel = new SpinnerNumberModel(new Integer(1),
 			new Integer(1), null, new Integer(1));
@@ -52,6 +65,10 @@ public class ProductDisplay extends JPanel implements ActionListener {
 
 	private ActionListener listener;
 	private JButton favButton;
+	
+	private DragSource source;
+	private TransferHandler handler;
+	private DataFlavor flavor;
 
 	private PropertyChangeSupport ps;
 
@@ -262,7 +279,7 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		panel_1.add(imageLabel);
 
 		// Set labels and image according to the product
-		titleLabel.setText(p.getName());
+		titleLabel.setText(product.getName());
 		priceLabel.setText(format.format(p.getPrice())
 				+ p.getUnit().substring(2));
 		
@@ -270,6 +287,29 @@ public class ProductDisplay extends JPanel implements ActionListener {
 		// Add actions for the buy button
 		buyButton.setActionCommand("buy");
 		buyButton.addActionListener(this);
+		
+		
+		// Drag and drop!
+		
+		handler = new DragHandler();
+		try {
+			flavor = new DataFlavor(DataFlavor.javaSerializedObjectMimeType + ";class=se.chalmers.ait.dat215.project.ShoppingItem");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		setTransferHandler(handler);
+		
+		source = new DragSource();
+		source.createDefaultDragGestureRecognizer(this, DnDConstants.ACTION_COPY, this);
+		addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e) {
+				ProductDisplay.this.getTransferHandler().exportAsDrag(ProductDisplay.this, e, TransferHandler.COPY);
+			}
+		});
+		
+		
 		
 
 		if (list) {
@@ -368,5 +408,35 @@ public class ProductDisplay extends JPanel implements ActionListener {
 			listener.actionPerformed(evt);
 		}
 	}
+	
+	@Override
+	public Object getTransferData(DataFlavor flavor) {
+		if (flavor.equals(this.flavor)) {			
+			return getItem();
+		}
+		throw new IllegalArgumentException();
+	}
+
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		return new DataFlavor[]{flavor};
+	}
+
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return flavor.equals(this.flavor);
+	}
+
+	@Override
+	public void dragGestureRecognized(DragGestureEvent dge) {
+		source.startDrag(dge, DragSource.DefaultCopyDrop, this, this);
+		//System.out.println(getItem().getProduct().getName() + " " + getItem().getAmount());
+	}
+
+	public void dragDropEnd(DragSourceDropEvent dsde) {}
+	public void dragEnter(DragSourceDragEvent dsde) {}
+	public void dragExit(DragSourceEvent dse) {}
+	public void dragOver(DragSourceDragEvent dsde) {}
+	public void dropActionChanged(DragSourceDragEvent dsde) {}
 
 }

@@ -65,6 +65,7 @@ public class ProductNode extends AbstractMutableTreeTableNode implements ActionL
 			if (ttn instanceof ListNode) {
 				ListNode parent = (ListNode) getParent();
 				model.delete(parent.getList(), item);
+				model.expandPath(this);
 			}
 		}		
 	}

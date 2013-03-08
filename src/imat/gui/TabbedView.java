@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -22,6 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 
 public class TabbedView extends JPanel implements PropertyChangeListener, ActionListener {
 	private IMatTreeTable shoppingBasket;
@@ -56,7 +59,7 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 		tabbedPane.addTab("Varukorg", null, basketPanel, null);
 		basketPanel.setLayout(new BorderLayout());
 		
-		shoppingBasket = new IMatTreeTable(new ListNode(model.getProductCart(), model), true);
+		shoppingBasket = new IMatTreeTable(new ListNode(model.getProductCart(), model), true, true);
 		
 		JScrollPane basketScroll = new JScrollPane(shoppingBasket);
 		basketPanel.add(basketScroll, BorderLayout.CENTER);
@@ -143,9 +146,31 @@ public class TabbedView extends JPanel implements PropertyChangeListener, Action
 	private void setHistory(List<ProductList> list) {
 		history.setTreeTableModel(toListNode(list));
 	}
+	
+	public static TreePath toPath(TreeNode treeNode) {
+	    List<Object> nodes = new ArrayList<Object>();
+	    if (treeNode != null) {
+	      nodes.add(treeNode);
+	      treeNode = treeNode.getParent();
+	      while (treeNode != null) {
+	        nodes.add(0, treeNode);
+	        treeNode = treeNode.getParent();
+	      }
+	    }
+
+	    return nodes.isEmpty() ? null : new TreePath(nodes.toArray());
+	  }
+	
+	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		switch (evt.getPropertyName()) {
+		case "expand":
+			ListNode ln = (ListNode) evt.getNewValue();
+			TreePath path = toPath(ln);
+			//history.expandPath(path);
+			//lists.expandPath(path);
+			//shoppingBasket.expandPath(path);
 		case "cart":
 			setShoppingBasket(model.getProductCart());
 			tabbedPane.setSelectedIndex(0);

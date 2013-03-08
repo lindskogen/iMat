@@ -29,7 +29,7 @@ public class ProductList implements Iterable<ShoppingItem>, Cloneable {
      * Creates a list with the name "unnamed".
      */
     public ProductList() {
-	this("unnamed");
+    	this("unnamed");
     }
     
     public ProductList(List<ShoppingItem> items) {

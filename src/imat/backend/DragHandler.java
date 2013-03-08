@@ -1,21 +1,21 @@
 package imat.backend;
 
-import imat.gui.ProductThumbnail;
+import java.awt.datatransfer.DataFlavor;
 
+import javax.swing.JTree;
 import javax.swing.TransferHandler;
 
 public class DragHandler extends TransferHandler {
 	@Override
-	public boolean importData(TransferSupport support) {
-		if (!canImport(support)) {
-			return false;
-		}
-		Object transferable = support.getTransferable();
-		if (transferable instanceof ProductThumbnail) {
-			ProductThumbnail p = (ProductThumbnail) transferable;
-			// cart.add(p.getItem());
-			return true;
-		}
-		return false;
-	}
+	public boolean canImport(TransferHandler.TransferSupport support) {
+        if (!support.isDataFlavorSupported(DataFlavor.stringFlavor) ||
+            !support.isDrop()) {
+          return false;
+        }
+
+        JTree.DropLocation dropLocation =
+          (JTree.DropLocation)support.getDropLocation();
+
+        return dropLocation.getPath() != null;
+      }
 }

@@ -5,7 +5,7 @@ import imat.backend.ProductList;
 import imat.backend.ShopModel;
 
 import java.awt.Component;
-import java.awt.EventQueue;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -15,8 +15,6 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -32,7 +30,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -40,19 +37,29 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.jdesktop.swingx.JXTreeTable;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.jdesktop.swingx.treetable.TreeTableModel;
 
+import se.chalmers.ait.dat215.project.ShoppingItem;
+
 public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 
 	private DropTarget dt;
+	private boolean dropAnywhere;
 	
 	private static List<String> headers;
 	private final static ImageIcon ICN_LIST = new ImageIcon(IMatTreeTable.class.getResource("/imat/resources/menuListIcon.PNG"));
 
 	private final ShopModel model = ShopModel.getInstance();
-
+	
+	public IMatTreeTable(ListNode root, boolean canDrop, boolean canDropAnywhere) {
+		this(root, canDrop);
+		dropAnywhere = canDropAnywhere;
+	}
+	
+	
 	public IMatTreeTable(ListNode root, boolean canDrop) {
 		super();
 
@@ -109,13 +116,42 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 		Transferable tr = dtde.getTransferable();
 		try {
 			for (DataFlavor flavor : tr.getTransferDataFlavors()) {
-				if (flavor.isFlavorSerializedObjectType()) {
+				if (flavor.isMimeTypeSerializedObject()) {
 					dtde.acceptDrop(DnDConstants.ACTION_COPY);
-					Object o = tr.getTransferData(flavor);
+					Object data = tr.getTransferData(flavor);
+					ShoppingItem item = null;
+					if (data instanceof ShoppingItem) {
+						item = (ShoppingItem) data;
+					}
+					System.out.println(data.getClass());
+					
+					if (dt != null) {
+						Point p = dtde.getLocation();
+						TreePath path = getPathForLocation(p.x, p.y);
+						if (dropAnywhere) {
+							if (model.addToCart(item)) {
+								dtde.dropComplete(true);
+								return;
+							} else {
+								dtde.dropComplete(false);
+								return;
+							}
+						}
+						Object[] nodes = path.getPath();
+						ArrayUtils.reverse(nodes);
+						for (Object node : path.getPath()) {
+							if (node instanceof ListNode) {
+								ListNode ln = (ListNode) node;
+								if (ln.getList() == null) {
+									continue;
+								} else if (model.addToList(ln.getList(), item) || model.addToCart(item)) {
+									dtde.dropComplete(true);
+									return;
+								}
+							}
+						}
+					}
 
-					// TODO Handle drop!
-
-					dtde.dropComplete(true);
 				}
 			}
 		} catch (UnsupportedFlavorException e) {
@@ -182,7 +218,6 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 	}
 	private class ButtonMouseListener extends MouseAdapter {
 		private final JTable table;
-		private boolean disabled;
 
 		private ButtonMouseListener(JTable table) {
 			this.table = table;
@@ -206,7 +241,6 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 					if(table instanceof JXTreeTable) {
 						JXTreeTable treeTable = (JXTreeTable) table;
 						TreePath path = treeTable.getPathForLocation(e.getX(), e.getY());
-						System.out.println(path.getLastPathComponent().getClass());
 						Object oNode = path.getLastPathComponent();
 						if (oNode instanceof ListNode) {
 							ListNode ln = (ListNode) oNode;
