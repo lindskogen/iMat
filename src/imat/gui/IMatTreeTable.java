@@ -137,6 +137,10 @@ public class IMatTreeTable extends JXTreeTable implements DropTargetListener {
 								return;
 							}
 						}
+						if (path == null) {
+							dtde.dropComplete(false);
+							return;
+						}
 						Object[] nodes = path.getPath();
 						ArrayUtils.reverse(nodes);
 						for (Object node : path.getPath()) {
