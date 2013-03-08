@@ -330,8 +330,9 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		txtCard.setText(cc.getCardNumber());
 		if(cc.getVerificationCode() != 0){
 			txtSec.setText(String.valueOf(cc.getVerificationCode()));
+		} else {
+			txtSec.setText("");
 		}
-		txtSec.setText("");
 		setYearAndMonth();
 		if(cc.getCardType().equals("Mastercard")){
 			mastercard.setSelected(true);
