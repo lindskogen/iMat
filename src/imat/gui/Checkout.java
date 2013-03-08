@@ -37,6 +37,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 
@@ -438,13 +439,13 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 						.addComponent(rdbtnIButik)
 						.addComponent(lblHurVillDu_1)
 						.addComponent(rdbtnKreditkort))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panel_3.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, gl_panel_3.createSequentialGroup()
+					.addPreferredGap(ComponentPlacement.UNRELATED, 18, Short.MAX_VALUE)
+					.addGroup(gl_panel_3.createParallelGroup(Alignment.TRAILING, false)
+						.addGroup(gl_panel_3.createSequentialGroup()
 							.addComponent(chckbxSparaMinaUppgifter)
-							.addPreferredGap(ComponentPlacement.RELATED, 210, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(btnSlutfr))
-						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 421, Short.MAX_VALUE))
+						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 421, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		gl_panel_3.setVerticalGroup(
@@ -461,7 +462,7 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(rdbtnIButik))
 						.addComponent(panel_4, GroupLayout.PREFERRED_SIZE, 184, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
 					.addGroup(gl_panel_3.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnSlutfr)
 						.addComponent(chckbxSparaMinaUppgifter))
@@ -604,13 +605,19 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 		label_2.setIcon(new ImageIcon(Checkout.class.getResource("/imat/resources/inStore150x100.PNG")));
 		
 		JLabel lblSumma = new JLabel("Summa: " + format.format(sum));
+		lblSumma.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblSumma.setHorizontalAlignment(SwingConstants.LEFT);
 		sumLabel = lblSumma;
 		lblSumma.setFont(new Font("Dialog", Font.BOLD, 16));
 		
 		JLabel lblLeveransKr = new JLabel("Leverans: " + format.format(DELIVERY));
+		lblLeveransKr.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblLeveransKr.setHorizontalAlignment(SwingConstants.LEFT);
 		deliveryLabel = lblLeveransKr;
 		
 		JLabel lblVarukorgKr = new JLabel("Varukorg: " + format.format(shoppingCart));
+		lblVarukorgKr.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblVarukorgKr.setHorizontalAlignment(SwingConstants.LEFT);
 		cartLabel = lblVarukorgKr;
 		
 		GroupLayout gl_panel_2 = new GroupLayout(panel_2);
@@ -623,37 +630,39 @@ public class Checkout extends JPanel implements ActionListener, PropertyChangeLi
 						.addComponent(label_1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 					.addGap(18)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(pickupBox, 0, 150, Short.MAX_VALUE)
-						.addComponent(label_2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+						.addComponent(label_2, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+						.addComponent(rdbtnHmtaIButik, GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
+						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, 150, GroupLayout.PREFERRED_SIZE))
+					.addGap(105)
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblSumma)
-						.addComponent(lblVarukorgKr)
-						.addComponent(lblLeveransKr))
-					.addGap(125))
+						.addComponent(lblSumma, Alignment.TRAILING)
+						.addComponent(lblVarukorgKr, Alignment.TRAILING)
+						.addComponent(lblLeveransKr, Alignment.TRAILING))
+					.addContainerGap())
 		);
 		gl_panel_2.setVerticalGroup(
 			gl_panel_2.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel_2.createSequentialGroup()
 					.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel_2.createSequentialGroup()
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.LEADING)
+								.addComponent(label_1)
+								.addComponent(label_2))
+							.addGap(18)
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+								.addComponent(rdbtnHemleveransKr)
+								.addComponent(rdbtnHmtaIButik))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
+								.addComponent(deliveryBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panel_2.createSequentialGroup()
 							.addContainerGap()
 							.addComponent(lblSumma)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblVarukorgKr)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(lblLeveransKr))
-						.addComponent(label_1)
-						.addComponent(label_2))
-					.addGap(18)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(rdbtnHemleveransKr)
-						.addComponent(rdbtnHmtaIButik))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(gl_panel_2.createParallelGroup(Alignment.BASELINE)
-						.addComponent(deliveryBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(pickupBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addComponent(lblLeveransKr)))
 					.addContainerGap(29, Short.MAX_VALUE))
 		);
 		panel_2.setLayout(gl_panel_2);
