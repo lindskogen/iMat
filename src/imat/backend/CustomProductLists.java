@@ -28,7 +28,9 @@ public class CustomProductLists {
 		spices.add(IDH.getProduct(94));
 		rice = IDH.findProducts("ris");
 		for (int i = 0; i < 8; i++) {
-			home.add(IDH.getProduct(generator.nextInt(149)));
+			Product p = IDH.getProduct(generator.nextInt(148) +1);
+			System.out.println(p);
+			home.add(p);
 		}
 		Collections.sort(potatoes, new ProductNameSort());
 		Collections.sort(bake, new ProductNameSort());
